@@ -315,17 +315,18 @@ function TruthOrDareInner() {
             </div>
 
             {/* Add Player Input Form */}
-            <form onSubmit={handleAddPlayer} className="flex gap-2">
+            <form onSubmit={handleAddPlayer} className="flex gap-1.5 sm:gap-2">
               <input
                 type="text"
                 placeholder={t('game.playerNamePlaceholder')}
                 value={newPlayerName}
                 onChange={(e) => setNewPlayerName(e.target.value)}
                 maxLength={20}
-                className="flex-1 h-11 px-4 rounded-xl bg-surface-elevated border border-white/10 text-sm text-white placeholder:text-slate-500 focus:outline-none focus:border-brand-400"
+                className="flex-1 min-w-0 h-10 sm:h-11 px-3 sm:px-4 rounded-xl bg-surface-elevated border border-white/10 text-xs sm:text-sm text-white placeholder:text-slate-500 focus:outline-none focus:border-brand-400"
               />
-              <Button type="submit" variant="secondary" size="md" className="gap-1.5">
-                <Plus className="w-4 h-4" /> {t('game.addPlayer')}
+              <Button type="submit" variant="secondary" size="md" className="gap-1 sm:gap-1.5 shrink-0 px-2.5 sm:px-4 text-xs font-semibold h-10 sm:h-11">
+                <Plus className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" />
+                <span className="truncate">{t('game.addPlayer')}</span>
               </Button>
             </form>
           </div>
@@ -507,8 +508,20 @@ export function TruthOrDareGameClient() {
   return (
     <Suspense
       fallback={
-        <div className="w-full h-96 flex items-center justify-center text-slate-400 text-sm">
-          Loading Truth or Dare Engine...
+        <div className="w-full min-h-[680px] max-w-md mx-auto p-4 sm:p-6 rounded-3xl bg-surface-elevated/40 border border-white/5 animate-pulse space-y-6">
+          <div className="space-y-2">
+            <div className="h-4 w-32 bg-white/10 rounded-md" />
+            <div className="grid grid-cols-2 gap-2">
+              <div className="h-16 bg-white/5 rounded-2xl" />
+              <div className="h-16 bg-white/5 rounded-2xl" />
+            </div>
+          </div>
+          <div className="space-y-2">
+            <div className="h-4 w-28 bg-white/10 rounded-md" />
+            <div className="h-11 bg-white/5 rounded-xl" />
+            <div className="h-11 bg-white/5 rounded-xl" />
+          </div>
+          <div className="h-12 bg-brand-500/20 rounded-2xl mt-6" />
         </div>
       }
     >

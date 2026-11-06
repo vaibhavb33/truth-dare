@@ -114,13 +114,18 @@ export function QuestionsClient() {
                 setSelectedFilter(tab);
                 sound.triggerHaptic(10);
               }}
-              className={`px-4 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider transition-all flex-1 sm:flex-none select-none ${
+              className={`px-2.5 sm:px-4 py-2 sm:py-2.5 rounded-xl text-[11px] sm:text-xs font-bold uppercase tracking-wider transition-all flex-1 sm:flex-none select-none ${
                 selectedFilter === tab
                   ? 'bg-brand-500 text-white shadow-glow-brand border border-brand-400/40'
                   : 'bg-surface-elevated text-slate-400 hover:text-white border border-white/5'
               }`}
             >
-              {tab === 'all' ? 'All Cards' : tab === 'truth' ? 'Truth Questions' : 'Dare Questions'}
+              <span className="sm:hidden">
+                {tab === 'all' ? 'All' : tab === 'truth' ? 'Truth' : 'Dare'}
+              </span>
+              <span className="hidden sm:inline">
+                {tab === 'all' ? 'All Cards' : tab === 'truth' ? 'Truth Questions' : 'Dare Questions'}
+              </span>
             </button>
           ))}
         </div>
