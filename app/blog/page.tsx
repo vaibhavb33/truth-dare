@@ -1,8 +1,9 @@
 import React from 'react';
 import Link from 'next/link';
 import type { Metadata } from 'next';
-import { Clock, Calendar, ArrowRight } from 'lucide-react';
+import { Clock, Calendar, ArrowRight, Play, Sparkles, Disc, Flame } from 'lucide-react';
 import { JsonLd } from '@/components/seo/JsonLd';
+import { Breadcrumbs } from '@/components/seo/Breadcrumbs';
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://truthordarequiz.com';
 
@@ -105,9 +106,10 @@ export default function BlogListingPage() {
   ];
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-10 md:py-16 space-y-10 w-full flex-1">
+    <div className="max-w-4xl mx-auto px-4 py-6 md:py-12 space-y-10 w-full flex-1">
       <JsonLd data={blogBreadcrumbSchema} />
       <JsonLd data={blogCollectionSchema} />
+      <Breadcrumbs items={[{ label: 'Party Game Guides & Official Rules' }]} />
 
       <div className="space-y-2 text-center md:text-left">
         <span className="text-xs font-bold uppercase tracking-widest text-brand-400">
@@ -155,6 +157,39 @@ export default function BlogListingPage() {
           </Link>
         ))}
       </div>
+
+      {/* Quick Game Launch Section */}
+      <section className="p-8 rounded-3xl bg-surface-elevated/70 border border-white/10 space-y-4">
+        <h3 className="font-display font-bold text-lg text-white">
+          Ready to Host Your Game Night?
+        </h3>
+        <p className="text-xs text-slate-400 leading-relaxed">
+          Put these rules into practice with our ad-free party games. Launch instantly in your web browser:
+        </p>
+        <div className="flex flex-wrap gap-3 pt-1">
+          <Link
+            href="/games/truth-or-dare"
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-dare-500/20 hover:bg-dare-500/30 border border-dare-400/40 text-xs font-bold text-dare-300 transition-all"
+          >
+            <Flame className="w-4 h-4" />
+            <span>Play Truth or Dare Online</span>
+          </Link>
+          <Link
+            href="/games/spin-the-bottle"
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-brand-500/20 hover:bg-brand-500/30 border border-brand-400/40 text-xs font-bold text-brand-300 transition-all"
+          >
+            <Disc className="w-4 h-4" />
+            <span>Spin the Bottle Wheel</span>
+          </Link>
+          <Link
+            href="/questions"
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-truth-500/20 hover:bg-truth-500/30 border border-truth-400/40 text-xs font-bold text-truth-300 transition-all"
+          >
+            <Sparkles className="w-4 h-4" />
+            <span>Explore Truth Questions</span>
+          </Link>
+        </div>
+      </section>
     </div>
   );
 }

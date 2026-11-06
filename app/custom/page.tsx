@@ -1,6 +1,7 @@
 import React from 'react';
 import type { Metadata } from 'next';
 import { JsonLd } from '@/components/seo/JsonLd';
+import { Breadcrumbs } from '@/components/seo/Breadcrumbs';
 import { CustomDeckClient } from '@/components/custom/CustomDeckClient';
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://truthordarequiz.com';
@@ -75,6 +76,7 @@ export default function CustomDeckPage() {
     <>
       <JsonLd data={customDeckBreadcrumb} />
       <JsonLd data={customDeckWebApp} />
+      <Breadcrumbs items={[{ label: 'Custom Deck Studio' }]} />
       <CustomDeckClient />
     </>
   );

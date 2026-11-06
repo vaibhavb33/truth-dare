@@ -122,3 +122,4 @@ CLS is maintained at **`0.000`** through strict layout budgeting:
 Asteria achieves top-decile performance marks across all major audit categories. The platform delivers instant interactivity to human partygoers while providing search engine crawlers with ultra-fast, static HTML on first byte.
 
 *Report certified by Senior Technical SEO Engineer.*
+

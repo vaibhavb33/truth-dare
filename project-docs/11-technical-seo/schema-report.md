@@ -286,3 +286,4 @@ Implemented on `/games` to signal a structured index of playable party modules.
 | ID Hierarchy (`@id`) | Consistent | `#organization` and `#website` linked cleanly |
 
 *Report certified by Senior Technical SEO Engineer.*
+

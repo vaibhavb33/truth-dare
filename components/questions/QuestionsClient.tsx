@@ -2,7 +2,19 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { Search, Copy, Check, Flame, HelpCircle, ArrowRight, Sparkles, X } from 'lucide-react';
+import {
+  Search,
+  Copy,
+  Check,
+  Flame,
+  HelpCircle,
+  ArrowRight,
+  Sparkles,
+  X,
+  Play,
+  PlusCircle,
+  BookOpen,
+} from 'lucide-react';
 import { INITIAL_QUESTIONS } from '@/lib/questions/database';
 import { sound } from '@/lib/audio/soundSynthesizer';
 import { EmptyState } from '@/components/ui/States';
@@ -11,6 +23,14 @@ export function QuestionsClient() {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedFilter, setSelectedFilter] = useState('all');
   const [copiedId, setCopiedId] = useState<string | null>(null);
+
+  const categories = [
+    { id: 'classic-party', name: 'Classic Party', icon: '🎉', href: '/games/truth-or-dare?category=classic-party' },
+    { id: 'couples-flirty', name: 'Couples & Flirty', icon: '❤️', href: '/games/truth-or-dare?category=couples-flirty' },
+    { id: 'teens-hangout', name: 'Teens & Sleepovers', icon: '🍕', href: '/games/truth-or-dare?category=teens-hangout' },
+    { id: 'spicy-18', name: 'Spicy 18+', icon: '🌶️', href: '/games/truth-or-dare?category=spicy-18' },
+    { id: 'family-kids', name: 'Family Clean', icon: '🌟', href: '/games/truth-or-dare?category=family-kids' },
+  ];
 
   const filtered = INITIAL_QUESTIONS.filter((q) => {
     if (selectedFilter === 'truth' && q.type !== 'truth') return false;
@@ -43,6 +63,25 @@ export function QuestionsClient() {
         <p className="text-xs md:text-sm text-slate-400 max-w-xl">
           Browse, copy, or launch over {INITIAL_QUESTIONS.length} handcrafted party prompts tailored for couples, friends, teens, and wild parties.
         </p>
+      </div>
+
+      {/* Category Shortcuts */}
+      <div className="space-y-2">
+        <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
+          Browse by Game Category:
+        </span>
+        <div className="flex flex-wrap items-center gap-2">
+          {categories.map((cat) => (
+            <Link
+              key={cat.id}
+              href={cat.href}
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-surface-elevated hover:bg-surface-highlight border border-white/10 hover:border-brand-500/40 text-xs font-medium text-slate-300 hover:text-white transition-all shadow-subtle"
+            >
+              <span>{cat.icon}</span>
+              <span>{cat.name}</span>
+            </Link>
+          ))}
+        </div>
       </div>
 
       {/* Search & Filter Bar */}
@@ -81,7 +120,7 @@ export function QuestionsClient() {
                   : 'bg-surface-elevated text-slate-400 hover:text-white border border-white/5'
               }`}
             >
-              {tab === 'all' ? 'All Cards' : tab}
+              {tab === 'all' ? 'All Cards' : tab === 'truth' ? 'Truth Questions' : 'Dare Questions'}
             </button>
           ))}
         </div>
@@ -161,6 +200,45 @@ export function QuestionsClient() {
           }}
         />
       )}
+
+      {/* Contextual Action Bar */}
+      <section className="pt-8 border-t border-white/10 grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <Link
+          href="/games/truth-or-dare"
+          className="p-5 rounded-2xl bg-surface-elevated hover:bg-surface-highlight border border-white/10 hover:border-brand-500/40 transition-all space-y-2 group"
+        >
+          <div className="flex items-center justify-between text-brand-400">
+            <Play className="w-5 h-5 fill-current" />
+            <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+          </div>
+          <h4 className="font-bold text-sm text-white">Play Truth or Dare Online</h4>
+          <p className="text-xs text-slate-400">Launch 3D flip card arena with dare timer and sound effects.</p>
+        </Link>
+
+        <Link
+          href="/custom"
+          className="p-5 rounded-2xl bg-surface-elevated hover:bg-surface-highlight border border-white/10 hover:border-brand-500/40 transition-all space-y-2 group"
+        >
+          <div className="flex items-center justify-between text-brand-400">
+            <PlusCircle className="w-5 h-5" />
+            <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+          </div>
+          <h4 className="font-bold text-sm text-white">Create Custom Party Deck</h4>
+          <p className="text-xs text-slate-400">Write personalized inside jokes and export JSON packs.</p>
+        </Link>
+
+        <Link
+          href="/blog/official-truth-or-dare-rules"
+          className="p-5 rounded-2xl bg-surface-elevated hover:bg-surface-highlight border border-white/10 hover:border-brand-500/40 transition-all space-y-2 group"
+        >
+          <div className="flex items-center justify-between text-brand-400">
+            <BookOpen className="w-5 h-5" />
+            <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+          </div>
+          <h4 className="font-bold text-sm text-white">Official Truth or Dare Rules</h4>
+          <p className="text-xs text-slate-400">Learn classic turn rotations, forfeits, and safe skip boundaries.</p>
+        </Link>
+      </section>
     </div>
   );
 }

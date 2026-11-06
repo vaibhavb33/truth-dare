@@ -464,13 +464,38 @@ export function HomeClientContent() {
             The Ultimate Guide to Playing Truth or Dare Online
           </h3>
           <p>
-            Truth or Dare is universally recognized as the quintessential party game for icebreakers, dorm hangouts, road trips, and intimate date nights. Unlike dated static websites that force users to read through cluttered text lists or endure intrusive video advertisements, Project Asteria modernizes the classic party experience with hardware-accelerated 3D card flips, procedural audio synthesis, and real-time multiplayer room synchronization.
+            Truth or Dare is universally recognized as the quintessential party game for icebreakers, dorm hangouts, road trips, and intimate date nights. Unlike dated static websites that force users to read through cluttered text lists or endure intrusive video advertisements, Project Asteria modernizes the classic party experience. You can{' '}
+            <Link href="/games/truth-or-dare" className="text-brand-300 font-semibold hover:underline">
+              play Truth or Dare online
+            </Link>{' '}
+            with hardware-accelerated 3D card flips, try our interactive{' '}
+            <Link href="/games/spin-the-bottle" className="text-brand-300 font-semibold hover:underline">
+              spin the bottle wheel
+            </Link>
+            , or browse the complete{' '}
+            <Link href="/games" className="text-brand-300 font-semibold hover:underline">
+              online party games directory
+            </Link>
+            .
           </p>
           <p>
-            Whether you are hosting a living room gathering with friends using our Pass & Play turn rotation, hanging out with long-distance best friends on Discord, or enjoying an intimate date night at home, our hand-curated question categories ensure the right energy, intensity, and safety level for your crowd.
+            Whether you are hosting a living room gathering with friends using our Pass & Play turn rotation, hanging out with long-distance best friends on Discord, or enjoying an intimate date night at home, our hand-curated question categories ensure the right energy, intensity, and safety level for your crowd. Learn the standard parliamentary guidelines in our{' '}
+            <Link href="/blog/official-truth-or-dare-rules" className="text-brand-300 font-semibold hover:underline">
+              official party game rules guide
+            </Link>
+            , author inside jokes in our{' '}
+            <Link href="/custom" className="text-brand-300 font-semibold hover:underline">
+              Custom Deck Studio
+            </Link>
+            , or copy favorite challenges from our library of{' '}
+            <Link href="/questions" className="text-brand-300 font-semibold hover:underline">
+              500+ Truth or Dare questions
+            </Link>
+            .
           </p>
         </div>
       </section>
     </div>
   );
 }
+

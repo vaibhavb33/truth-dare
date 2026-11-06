@@ -1,7 +1,9 @@
 import React from 'react';
 import type { Metadata } from 'next';
 import { JsonLd } from '@/components/seo/JsonLd';
+import { Breadcrumbs } from '@/components/seo/Breadcrumbs';
 import { WouldYouRatherClient } from '@/components/games/WouldYouRatherClient';
+import { RelatedGames } from '@/components/games/RelatedGames';
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://truthordarequiz.com';
 
@@ -81,7 +83,18 @@ export default function WouldYouRatherPage() {
     <>
       <JsonLd data={wyrWebAppSchema} />
       <JsonLd data={wyrBreadcrumbSchema} />
+      <Breadcrumbs
+        items={[
+          { label: 'All Games', href: '/games' },
+          { label: 'Would You Rather Online' },
+        ]}
+      />
       <WouldYouRatherClient />
+      <RelatedGames
+        currentGameSlug="would-you-rather"
+        title="More Online Party Games"
+        subtitle="Vote on preferences, flip 3D truth or dare cards, or play rapid-fire This or That."
+      />
     </>
   );
 }

@@ -1,7 +1,9 @@
 import React from 'react';
 import type { Metadata } from 'next';
 import { JsonLd } from '@/components/seo/JsonLd';
+import { Breadcrumbs } from '@/components/seo/Breadcrumbs';
 import { NeverHaveIEverClient } from '@/components/games/NeverHaveIEverClient';
+import { RelatedGames } from '@/components/games/RelatedGames';
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://truthordarequiz.com';
 
@@ -81,7 +83,18 @@ export default function NeverHaveIEverPage() {
     <>
       <JsonLd data={nhieWebAppSchema} />
       <JsonLd data={nhieBreadcrumbSchema} />
+      <Breadcrumbs
+        items={[
+          { label: 'All Games', href: '/games' },
+          { label: 'Never Have I Ever Online' },
+        ]}
+      />
       <NeverHaveIEverClient />
+      <RelatedGames
+        currentGameSlug="never-have-i-ever"
+        title="More Online Party Games"
+        subtitle="Enjoyed Never Have I Ever? Test your friends with Truth or Dare, Spinner Wheel, or Most Likely To."
+      />
     </>
   );
 }

@@ -1,6 +1,7 @@
 import React from 'react';
 import type { Metadata } from 'next';
 import { JsonLd } from '@/components/seo/JsonLd';
+import { Breadcrumbs } from '@/components/seo/Breadcrumbs';
 import { ContactFormClient } from '@/components/contact/ContactFormClient';
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://truthordarequiz.com';
@@ -58,9 +59,10 @@ const contactPageSchema = {
 
 export default function ContactPage() {
   return (
-    <div className="max-w-2xl mx-auto px-4 py-12 md:py-20 space-y-8 flex-1">
+    <div className="max-w-2xl mx-auto px-4 py-6 md:py-16 space-y-8 flex-1 w-full">
       <JsonLd data={contactBreadcrumbSchema} />
       <JsonLd data={contactPageSchema} />
+      <Breadcrumbs items={[{ label: 'Contact Asteria' }]} />
 
       <div className="space-y-2 text-center">
         <span className="text-xs font-bold uppercase tracking-widest text-brand-400">Get In Touch</span>

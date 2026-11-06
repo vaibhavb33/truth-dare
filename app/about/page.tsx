@@ -1,9 +1,10 @@
 import React from 'react';
 import Link from 'next/link';
 import type { Metadata } from 'next';
-import { Shield, Heart, Zap } from 'lucide-react';
+import { Shield, Heart, Zap, Play, MessageSquare, Compass } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { JsonLd } from '@/components/seo/JsonLd';
+import { Breadcrumbs } from '@/components/seo/Breadcrumbs';
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://truthordarequiz.com';
 
@@ -74,9 +75,10 @@ const aboutPageSchema = {
 
 export default function AboutPage() {
   return (
-    <div className="max-w-4xl mx-auto px-4 py-12 md:py-20 space-y-12 flex-1">
+    <div className="max-w-4xl mx-auto px-4 py-6 md:py-16 space-y-12 flex-1 w-full">
       <JsonLd data={aboutBreadcrumbSchema} />
       <JsonLd data={aboutPageSchema} />
+      <Breadcrumbs items={[{ label: 'About Project Asteria' }]} />
 
       <div className="text-center space-y-4 max-w-2xl mx-auto">
         <span className="text-xs font-bold uppercase tracking-widest text-brand-400">Our Mission</span>
@@ -119,11 +121,26 @@ export default function AboutPage() {
         <p className="text-xs text-slate-400 max-w-md mx-auto">
           Gather your friends in person or over video call, choose your deck, and start playing right now.
         </p>
-        <Link href="/games/truth-or-dare">
-          <Button variant="primary" size="lg" className="font-bold">
-            Start Playing Free Now →
-          </Button>
-        </Link>
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
+          <Link href="/games/truth-or-dare">
+            <Button variant="primary" size="lg" className="font-bold gap-2">
+              <Play className="w-4 h-4 fill-white" />
+              <span>Play Truth or Dare Online</span>
+            </Button>
+          </Link>
+          <Link href="/games">
+            <Button variant="secondary" size="lg" className="font-semibold gap-2">
+              <Compass className="w-4 h-4 text-brand-400" />
+              <span>Browse All Games</span>
+            </Button>
+          </Link>
+          <Link href="/contact">
+            <Button variant="secondary" size="lg" className="font-semibold gap-2">
+              <MessageSquare className="w-4 h-4 text-truth-400" />
+              <span>Contact Us</span>
+            </Button>
+          </Link>
+        </div>
       </div>
     </div>
   );

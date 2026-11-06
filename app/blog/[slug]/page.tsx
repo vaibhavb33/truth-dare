@@ -2,9 +2,10 @@ import React from 'react';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
-import { ArrowLeft, Clock, Calendar, Flame, Play, Sparkles, Users } from 'lucide-react';
+import { ArrowLeft, Clock, Calendar, Flame, Play, Sparkles, Users, BookOpen, ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { JsonLd } from '@/components/seo/JsonLd';
+import { Breadcrumbs } from '@/components/seo/Breadcrumbs';
 
 interface ArticleData {
   slug: string;
@@ -20,13 +21,15 @@ interface ArticleData {
   ctaGameTitle: string;
   ctaGameDesc: string;
   ctaGameHref: string;
+  ctaButtonText: string;
   sections: Array<{
     heading?: string;
-    paragraphs?: string[];
+    paragraphs?: React.ReactNode[];
     listType?: 'ol' | 'ul';
-    listItems?: string[];
+    listItems?: React.ReactNode[];
   }>;
   schemaType: string;
+  relatedSlugs: string[];
 }
 
 const ARTICLES: Record<string, ArticleData> = {
@@ -44,9 +47,11 @@ const ARTICLES: Record<string, ArticleData> = {
     dateModified: '2026-11-05T00:00:00Z',
     tag: 'Rules & Guides',
     ctaGameTitle: 'Play Truth or Dare Right in Your Browser',
-    ctaGameDesc: 'No app download required. Instant 3D card flips with friends.',
+    ctaGameDesc: 'No app download required. Instant 3D card flips with countdown timer and audio.',
     ctaGameHref: '/games/truth-or-dare',
+    ctaButtonText: 'Play Truth or Dare Online',
     schemaType: 'HowTo',
+    relatedSlugs: ['50-best-dares-over-facetime', 'clean-icebreakers-for-work'],
     sections: [
       {
         paragraphs: [
@@ -78,6 +83,7 @@ const ARTICLES: Record<string, ArticleData> = {
         heading: 'Virtual & Video Call Adaptations',
         paragraphs: [
           'Playing over FaceTime, Google Meet, or Discord? Truth or Dare works seamlessly across video screens. Use screenshot proofs, camera angle challenges, or rapid message replies to verify dares digitally.',
+          'Looking for video-specific challenges? Browse our curated guide to 50 Best Dares to Do Over FaceTime, or jump straight into the Couples & Flirty game deck in your browser.',
         ],
       },
     ],
@@ -97,13 +103,15 @@ const ARTICLES: Record<string, ArticleData> = {
     tag: 'Couples & Romance',
     ctaGameTitle: 'Play Couples Truth or Dare Online',
     ctaGameDesc: 'Launch our Couples & Flirty deck directly in your browser with synchronized countdown timer.',
-    ctaGameHref: '/games/truth-or-dare',
+    ctaGameHref: '/games/truth-or-dare?category=couples-flirty',
+    ctaButtonText: 'Play Couples Truth or Dare',
     schemaType: 'ItemList',
+    relatedSlugs: ['official-truth-or-dare-rules', 'clean-icebreakers-for-work'],
     sections: [
       {
         paragraphs: [
           'Long-distance relationships and late-night FaceTime sessions need unexpected spark and laughter. Standard living-room dares often fall flat when you are miles apart, but video-optimized dares make virtual hangout sessions just as intimate and hilarious as being in the same room.',
-          'Here are 50 battle-tested dares designed specifically for smartphones, webcams, and group video chats.',
+          'Before beginning, make sure both partners agree on basic Official Truth or Dare Rules and safe veto limits.',
         ],
       },
       {
@@ -132,6 +140,7 @@ const ARTICLES: Record<string, ArticleData> = {
         heading: 'Virtual Safety & Boundary Rules',
         paragraphs: [
           'Remember: virtual dares should always be respectful, consent-based, and mutually hilarious. Never pressure anyone into dangerous activities or uncomfortable disclosures.',
+          'Looking for more inspiration? Explore over 500+ Truth or Dare questions in our searchable prompt vault.',
         ],
       },
     ],
@@ -152,7 +161,9 @@ const ARTICLES: Record<string, ArticleData> = {
     ctaGameTitle: 'Play Rapid This or That Icebreaker',
     ctaGameDesc: '60-second workplace-safe preference duels to get your colleagues laughing before team standups.',
     ctaGameHref: '/games/this-or-that',
+    ctaButtonText: 'Play This or That Gauntlet',
     schemaType: 'ItemList',
+    relatedSlugs: ['official-truth-or-dare-rules', '50-best-dares-over-facetime'],
     sections: [
       {
         paragraphs: [
@@ -184,6 +195,7 @@ const ARTICLES: Record<string, ArticleData> = {
         heading: 'Best Practices for Remote Game Hosts',
         paragraphs: [
           'Always keep icebreaker rounds brief (under 10 minutes), keep participation strictly voluntary, and celebrate diverse viewpoints. Using web-based tools like Asteria allows distributed teams to join without installing software or registering accounts.',
+          'For corporate group fun, try running Never Have I Ever Online in wholesome mode or launch a rapid This or That preference session.',
         ],
       },
     ],
@@ -309,16 +321,27 @@ export default async function BlogArticlePage({
     ],
   };
 
+  const relatedArticles = article.relatedSlugs
+    .map((slug) => ARTICLES[slug])
+    .filter(Boolean);
+
   return (
-    <article className="max-w-3xl mx-auto px-4 py-10 md:py-16 space-y-8 w-full flex-1">
+    <article className="max-w-4xl mx-auto px-4 py-6 md:py-12 space-y-8 w-full flex-1">
       <JsonLd data={articleSchema} />
       <JsonLd data={breadcrumbSchema} />
+
+      <Breadcrumbs
+        items={[
+          { label: 'Party Game Guides', href: '/blog' },
+          { label: article.title },
+        ]}
+      />
 
       <Link
         href="/blog"
         className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-400 hover:text-white transition-colors"
       >
-        <ArrowLeft className="w-4 h-4" /> Back to Guides
+        <ArrowLeft className="w-4 h-4" /> Back to Guides Hub
       </Link>
 
       <div className="space-y-4 border-b border-white/10 pb-8">
@@ -357,7 +380,7 @@ export default async function BlogArticlePage({
 
         <Link href={article.ctaGameHref}>
           <Button variant="primary" size="lg" className="gap-2 shrink-0 font-bold">
-            <Play className="w-4 h-4 fill-white" /> Launch Game
+            <Play className="w-4 h-4 fill-white" /> {article.ctaButtonText}
           </Button>
         </Link>
       </div>
@@ -395,8 +418,42 @@ export default async function BlogArticlePage({
         ))}
       </div>
 
+      {/* Related Guides Section */}
+      <section className="pt-10 border-t border-white/10 space-y-4">
+        <div className="flex items-center justify-between">
+          <h3 className="font-display font-bold text-lg text-white flex items-center gap-2">
+            <BookOpen className="w-4 h-4 text-brand-400" /> Related Party Game Guides
+          </h3>
+          <Link href="/blog" className="text-xs font-semibold text-brand-400 hover:text-white">
+            View All Guides →
+          </Link>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          {relatedArticles.map((rel) => (
+            <Link
+              key={rel.slug}
+              href={`/blog/${rel.slug}`}
+              className="p-5 rounded-2xl bg-surface-elevated hover:bg-surface-highlight border border-white/10 hover:border-brand-500/30 transition-all space-y-2 group"
+            >
+              <span className="text-[10px] font-bold uppercase tracking-wider text-brand-400">
+                {rel.tag}
+              </span>
+              <h4 className="font-bold text-sm text-white group-hover:text-brand-300 transition-colors line-clamp-2">
+                {rel.title}
+              </h4>
+              <p className="text-xs text-slate-400 line-clamp-2">{rel.excerpt}</p>
+              <div className="text-xs text-brand-400 font-semibold flex items-center gap-1 pt-1">
+                <span>Read Guide</span>
+                <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+              </div>
+            </Link>
+          ))}
+        </div>
+      </section>
+
       {/* Internal Navigation Links */}
-      <div className="pt-8 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-400">
+      <div className="pt-6 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-400">
         <Link href="/questions" className="hover:text-brand-300 transition-colors flex items-center gap-1">
           <Sparkles className="w-4 h-4 text-brand-400" /> Explore 500+ Truth or Dare Questions
         </Link>

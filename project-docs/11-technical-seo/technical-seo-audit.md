@@ -167,3 +167,4 @@ All private administrative and real-time room paths are fortified with technical
 The technical SEO foundations of Asteria are certified production-ready. The codebase passes all 29 automated unit tests, complies with Next.js 15 App Router standards, and delivers clean, pre-rendered semantic HTML to modern search engine crawlers.
 
 *Certified by Senior Technical SEO Engineer.*
+

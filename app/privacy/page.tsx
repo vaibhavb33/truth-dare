@@ -1,6 +1,7 @@
 import React from 'react';
 import type { Metadata } from 'next';
 import { JsonLd } from '@/components/seo/JsonLd';
+import { Breadcrumbs } from '@/components/seo/Breadcrumbs';
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://truthordarequiz.com';
 
@@ -57,9 +58,10 @@ const privacyPageSchema = {
 
 export default function PrivacyPolicyPage() {
   return (
-    <div className="max-w-3xl mx-auto px-4 py-12 md:py-20 space-y-6 flex-1 text-slate-300 text-sm leading-relaxed">
+    <div className="max-w-3xl mx-auto px-4 py-6 md:py-16 space-y-6 flex-1 text-slate-300 text-sm leading-relaxed w-full">
       <JsonLd data={privacyBreadcrumbSchema} />
       <JsonLd data={privacyPageSchema} />
+      <Breadcrumbs items={[{ label: 'Privacy Policy' }]} />
 
       <h1 className="font-display font-extrabold text-3xl md:text-4xl text-white">
         Asteria Privacy Policy

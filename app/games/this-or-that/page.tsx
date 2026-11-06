@@ -1,7 +1,9 @@
 import React from 'react';
 import type { Metadata } from 'next';
 import { JsonLd } from '@/components/seo/JsonLd';
+import { Breadcrumbs } from '@/components/seo/Breadcrumbs';
 import { ThisOrThatClient } from '@/components/games/ThisOrThatClient';
+import { RelatedGames } from '@/components/games/RelatedGames';
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://truthordarequiz.com';
 
@@ -81,7 +83,18 @@ export default function ThisOrThatPage() {
     <>
       <JsonLd data={totWebAppSchema} />
       <JsonLd data={totBreadcrumbSchema} />
+      <Breadcrumbs
+        items={[
+          { label: 'All Games', href: '/games' },
+          { label: 'This or That Gauntlet' },
+        ]}
+      />
       <ThisOrThatClient />
+      <RelatedGames
+        currentGameSlug="this-or-that"
+        title="More Online Party Games"
+        subtitle="Completed your speed run? Try Would You Rather or Truth or Dare next."
+      />
     </>
   );
 }

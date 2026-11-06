@@ -1,7 +1,9 @@
 import React from 'react';
 import type { Metadata } from 'next';
 import { JsonLd } from '@/components/seo/JsonLd';
+import { Breadcrumbs } from '@/components/seo/Breadcrumbs';
 import { MostLikelyToClient } from '@/components/games/MostLikelyToClient';
+import { RelatedGames } from '@/components/games/RelatedGames';
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://truthordarequiz.com';
 
@@ -81,7 +83,18 @@ export default function MostLikelyToPage() {
     <>
       <JsonLd data={mltWebAppSchema} />
       <JsonLd data={mltBreadcrumbSchema} />
+      <Breadcrumbs
+        items={[
+          { label: 'All Games', href: '/games' },
+          { label: 'Most Likely To Online' },
+        ]}
+      />
       <MostLikelyToClient />
+      <RelatedGames
+        currentGameSlug="most-likely-to"
+        title="More Online Party Games"
+        subtitle="Finished crowning your friends? Jump into Truth or Dare or Never Have I Ever."
+      />
     </>
   );
 }

@@ -1,7 +1,9 @@
 import React from 'react';
 import type { Metadata } from 'next';
 import { JsonLd } from '@/components/seo/JsonLd';
+import { Breadcrumbs } from '@/components/seo/Breadcrumbs';
 import { SpinnerWheelClient } from '@/components/games/SpinnerWheelClient';
+import { RelatedGames } from '@/components/games/RelatedGames';
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://truthordarequiz.com';
 
@@ -81,7 +83,18 @@ export default function SpinnerWheelPage() {
     <>
       <JsonLd data={spinnerWebAppSchema} />
       <JsonLd data={spinnerBreadcrumbSchema} />
+      <Breadcrumbs
+        items={[
+          { label: 'All Games', href: '/games' },
+          { label: 'Spin the Bottle Wheel' },
+        ]}
+      />
       <SpinnerWheelClient />
+      <RelatedGames
+        currentGameSlug="spin-the-bottle"
+        title="More Online Party Games"
+        subtitle="Keep the party rolling with Truth or Dare, Never Have I Ever, and Would You Rather."
+      />
     </>
   );
 }

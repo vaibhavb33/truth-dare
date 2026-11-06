@@ -1,0 +1,841 @@
+Source URL,Target URL,Anchor Text,Location / Context,Equity Priority,Rel Type
+/,/,"ASTERIA","Header Navigation","High (Hub/Home)",follow
+/,/games,"All Games","Main Editorial / In-Content","High (Game Engine)",follow
+/,/games/truth-or-dare,"Truth or Dare","Main Editorial / In-Content","Highest (Core Pillar)",follow
+/,/games/spin-the-bottle,"Spinner Wheel","Main Editorial / In-Content","High (Game Engine)",follow
+/,/custom,"Custom Deck","Main Editorial / In-Content","High (Key Feature)",follow
+/,/questions,"Question Library","Main Editorial / In-Content","High (Key Feature)",follow
+/,/blog,"Guides","Main Editorial / In-Content","High (Hub/Home)",follow
+/,/,"Room Code","Main Editorial / In-Content","High (Hub/Home)",follow
+/,/admin,"[Icon / Graphical Element]","Main Editorial / In-Content","Standard",follow
+/,/games/truth-or-dare,"Quick Play (Classic Party)","Main Editorial / In-Content","Highest (Core Pillar)",follow
+/,/games,"Explore All Games","Main Editorial / In-Content","High (Game Engine)",follow
+/,/games/truth-or-dare,"🎉 Classic Party Hilarious, universal icebreakers for everyone 150+ Cards Play →","Main Editorial / In-Content","Highest (Core Pillar)",follow
+/,/games/truth-or-dare,"❤️ Couples &amp; Flirty Romantic intimacy and playful sparks 120+ Cards Play →","Main Editorial / In-Content","Highest (Core Pillar)",follow
+/,/games/truth-or-dare,"🍕 Teens &amp; Sleepovers Social drama, school gossip and bold dares 110+ Cards Play →","Main Editorial / In-Content","Highest (Core Pillar)",follow
+/,/games/truth-or-dare,"🌶️ Spicy 18+ Adult, wild, provocative late-night challenges 140+ Cards Play →","Main Editorial / In-Content","Highest (Core Pillar)",follow
+/,/games/truth-or-dare,"🌟 Family Clean 100% wholesome, school-safe challenges for all ages 100+ Cards Play →","Main Editorial / In-Content","Highest (Core Pillar)",follow
+/,/games/truth-or-dare,"Launch Game","Main Editorial / In-Content","Highest (Core Pillar)",follow
+/,/games/spin-the-bottle,"Launch Game","Main Editorial / In-Content","High (Game Engine)",follow
+/,/games/never-have-i-ever,"Launch Game","Main Editorial / In-Content","High (Game Engine)",follow
+/,/games/would-you-rather,"Launch Game","Main Editorial / In-Content","High (Game Engine)",follow
+/,/games/most-likely-to,"Launch Game","Main Editorial / In-Content","High (Game Engine)",follow
+/,/games/this-or-that,"Launch Game","Main Editorial / In-Content","High (Game Engine)",follow
+/,/games/truth-or-dare,"Create a New Room as Host","Main Editorial / In-Content","Highest (Core Pillar)",follow
+/,/games/truth-or-dare,"play Truth or Dare online","Main Editorial / In-Content","Highest (Core Pillar)",follow
+/,/games/spin-the-bottle,"spin the bottle wheel","Main Editorial / In-Content","High (Game Engine)",follow
+/,/games,"online party games directory","Main Editorial / In-Content","High (Game Engine)",follow
+/,/blog/official-truth-or-dare-rules,"official party game rules guide","Main Editorial / In-Content","Medium (Topical Cluster)",follow
+/,/custom,"Custom Deck Studio","Main Editorial / In-Content","High (Key Feature)",follow
+/,/questions,"500+ Truth or Dare questions","Footer Matrix","High (Key Feature)",follow
+/,/,"ASTERIA","Footer Matrix","High (Hub/Home)",follow
+/,/games/truth-or-dare,"Truth or Dare Online","Main Editorial / In-Content","Highest (Core Pillar)",follow
+/,/games/spin-the-bottle,"Spin the Bottle Wheel","Main Editorial / In-Content","High (Game Engine)",follow
+/,/games/never-have-i-ever,"Never Have I Ever Online","Main Editorial / In-Content","High (Game Engine)",follow
+/,/games/would-you-rather,"Would You Rather Online","Main Editorial / In-Content","High (Game Engine)",follow
+/,/games/most-likely-to,"Most Likely To Online","Main Editorial / In-Content","High (Game Engine)",follow
+/,/games/this-or-that,"This or That Gauntlet","Main Editorial / In-Content","High (Game Engine)",follow
+/,/games,"View All Games Directory →","Main Editorial / In-Content","High (Game Engine)",follow
+/,/games/truth-or-dare,"🎉 Classic Party Deck","Main Editorial / In-Content","Highest (Core Pillar)",follow
+/,/games/truth-or-dare,"❤️ Couples &amp; Flirty Deck","Main Editorial / In-Content","Highest (Core Pillar)",follow
+/,/games/truth-or-dare,"🍕 Teens &amp; Sleepovers","Main Editorial / In-Content","Highest (Core Pillar)",follow
+/,/games/truth-or-dare,"🌶️ Spicy 18+ (Adults)","Main Editorial / In-Content","Highest (Core Pillar)",follow
+/,/games/truth-or-dare,"🌟 Family Clean Prompts","Main Editorial / In-Content","Highest (Core Pillar)",follow
+/,/custom,"Build a Custom Deck →","Main Editorial / In-Content","High (Key Feature)",follow
+/,/questions,"500+ Best Truth or Dare Questions","Main Editorial / In-Content","High (Key Feature)",follow
+/,/blog/official-truth-or-dare-rules,"Official Truth or Dare Rules","Main Editorial / In-Content","Medium (Topical Cluster)",follow
+/,/blog/50-best-dares-over-facetime,"50 Best FaceTime Dares","Main Editorial / In-Content","Medium (Topical Cluster)",follow
+/,/blog/clean-icebreakers-for-work,"Clean Icebreakers for Work","Main Editorial / In-Content","Medium (Topical Cluster)",follow
+/,/blog,"All Party Game Guides →","Main Editorial / In-Content","High (Hub/Home)",follow
+/,/about,"About Project Asteria","Main Editorial / In-Content","Standard (Trust & Legal)",follow
+/,/contact,"Contact &amp; Suggestions","Main Editorial / In-Content","Standard (Trust & Legal)",follow
+/,/privacy,"Privacy Policy","Main Editorial / In-Content","Standard (Trust & Legal)",follow
+/,/terms,"Terms of Service","Main Editorial / In-Content","Standard (Trust & Legal)",follow
+/,/admin,"Admin Control Center","Main Editorial / In-Content","Standard",follow
+/,/,"Home","Main Editorial / In-Content","High (Hub/Home)",follow
+/,/games,"Games","Main Editorial / In-Content","High (Game Engine)",follow
+/,/games/truth-or-dare,"Truth/Dare","Main Editorial / In-Content","Highest (Core Pillar)",follow
+/,/games/spin-the-bottle,"Spinner","Main Editorial / In-Content","High (Game Engine)",follow
+/,/custom,"Custom","Main Editorial / In-Content","High (Key Feature)",follow
+/games,/,"ASTERIA","Header Navigation","High (Hub/Home)",follow
+/games,/games,"All Games","Main Editorial / In-Content","High (Game Engine)",follow
+/games,/games/truth-or-dare,"Truth or Dare","Main Editorial / In-Content","Highest (Core Pillar)",follow
+/games,/games/spin-the-bottle,"Spinner Wheel","Main Editorial / In-Content","High (Game Engine)",follow
+/games,/custom,"Custom Deck","Main Editorial / In-Content","High (Key Feature)",follow
+/games,/questions,"Question Library","Main Editorial / In-Content","High (Key Feature)",follow
+/games,/blog,"Guides","Main Editorial / In-Content","High (Hub/Home)",follow
+/games,/,"Room Code","Main Editorial / In-Content","High (Hub/Home)",follow
+/games,/admin,"[Icon / Graphical Element]","Main Editorial / In-Content","Standard",follow
+/games,/,"Home","Breadcrumbs Navigation","High (Hub/Home)",follow
+/games,/games/truth-or-dare,"Start Game","Main Editorial / In-Content","Highest (Core Pillar)",follow
+/games,/games/spin-the-bottle,"Start Game","Main Editorial / In-Content","High (Game Engine)",follow
+/games,/games/never-have-i-ever,"Start Game","Main Editorial / In-Content","High (Game Engine)",follow
+/games,/games/would-you-rather,"Start Game","Main Editorial / In-Content","High (Game Engine)",follow
+/games,/games/most-likely-to,"Start Game","Main Editorial / In-Content","High (Game Engine)",follow
+/games,/games/this-or-that,"Start Game","Main Editorial / In-Content","High (Game Engine)",follow
+/games,/questions,"Explore Question Library","Main Editorial / In-Content","High (Key Feature)",follow
+/games,/custom,"Launch Custom Deck Studio","Main Editorial / In-Content","High (Key Feature)",follow
+/games,/,"ASTERIA","Footer Matrix","High (Hub/Home)",follow
+/games,/games/truth-or-dare,"Truth or Dare Online","Main Editorial / In-Content","Highest (Core Pillar)",follow
+/games,/games/spin-the-bottle,"Spin the Bottle Wheel","Main Editorial / In-Content","High (Game Engine)",follow
+/games,/games/never-have-i-ever,"Never Have I Ever Online","Main Editorial / In-Content","High (Game Engine)",follow
+/games,/games/would-you-rather,"Would You Rather Online","Main Editorial / In-Content","High (Game Engine)",follow
+/games,/games/most-likely-to,"Most Likely To Online","Main Editorial / In-Content","High (Game Engine)",follow
+/games,/games/this-or-that,"This or That Gauntlet","Main Editorial / In-Content","High (Game Engine)",follow
+/games,/games,"View All Games Directory →","Main Editorial / In-Content","High (Game Engine)",follow
+/games,/games/truth-or-dare,"🎉 Classic Party Deck","Main Editorial / In-Content","Highest (Core Pillar)",follow
+/games,/games/truth-or-dare,"❤️ Couples &amp; Flirty Deck","Main Editorial / In-Content","Highest (Core Pillar)",follow
+/games,/games/truth-or-dare,"🍕 Teens &amp; Sleepovers","Main Editorial / In-Content","Highest (Core Pillar)",follow
+/games,/games/truth-or-dare,"🌶️ Spicy 18+ (Adults)","Main Editorial / In-Content","Highest (Core Pillar)",follow
+/games,/games/truth-or-dare,"🌟 Family Clean Prompts","Main Editorial / In-Content","Highest (Core Pillar)",follow
+/games,/custom,"Build a Custom Deck →","Main Editorial / In-Content","High (Key Feature)",follow
+/games,/questions,"500+ Best Truth or Dare Questions","Main Editorial / In-Content","High (Key Feature)",follow
+/games,/blog/official-truth-or-dare-rules,"Official Truth or Dare Rules","Main Editorial / In-Content","Medium (Topical Cluster)",follow
+/games,/blog/50-best-dares-over-facetime,"50 Best FaceTime Dares","Main Editorial / In-Content","Medium (Topical Cluster)",follow
+/games,/blog/clean-icebreakers-for-work,"Clean Icebreakers for Work","Main Editorial / In-Content","Medium (Topical Cluster)",follow
+/games,/blog,"All Party Game Guides →","Main Editorial / In-Content","High (Hub/Home)",follow
+/games,/about,"About Project Asteria","Main Editorial / In-Content","Standard (Trust & Legal)",follow
+/games,/contact,"Contact &amp; Suggestions","Main Editorial / In-Content","Standard (Trust & Legal)",follow
+/games,/privacy,"Privacy Policy","Main Editorial / In-Content","Standard (Trust & Legal)",follow
+/games,/terms,"Terms of Service","Main Editorial / In-Content","Standard (Trust & Legal)",follow
+/games,/admin,"Admin Control Center","Main Editorial / In-Content","Standard",follow
+/games,/,"Home","Main Editorial / In-Content","High (Hub/Home)",follow
+/games,/games,"Games","Main Editorial / In-Content","High (Game Engine)",follow
+/games,/games/truth-or-dare,"Truth/Dare","Main Editorial / In-Content","Highest (Core Pillar)",follow
+/games,/games/spin-the-bottle,"Spinner","Main Editorial / In-Content","High (Game Engine)",follow
+/games,/custom,"Custom","Main Editorial / In-Content","High (Key Feature)",follow
+/games/truth-or-dare,/,"ASTERIA","Header Navigation","High (Hub/Home)",follow
+/games/truth-or-dare,/games,"All Games","Main Editorial / In-Content","High (Game Engine)",follow
+/games/truth-or-dare,/games/truth-or-dare,"Truth or Dare","Main Editorial / In-Content","Highest (Core Pillar)",follow
+/games/truth-or-dare,/games/spin-the-bottle,"Spinner Wheel","Main Editorial / In-Content","High (Game Engine)",follow
+/games/truth-or-dare,/custom,"Custom Deck","Main Editorial / In-Content","High (Key Feature)",follow
+/games/truth-or-dare,/questions,"Question Library","Main Editorial / In-Content","High (Key Feature)",follow
+/games/truth-or-dare,/blog,"Guides","Main Editorial / In-Content","High (Hub/Home)",follow
+/games/truth-or-dare,/,"Room Code","Main Editorial / In-Content","High (Hub/Home)",follow
+/games/truth-or-dare,/admin,"[Icon / Graphical Element]","Main Editorial / In-Content","Standard",follow
+/games/truth-or-dare,/,"Home","Breadcrumbs Navigation","High (Hub/Home)",follow
+/games/truth-or-dare,/games/truth-or-dare,"🎉 Classic Party Hilarious, universal icebreakers for friend groups and house parties. Play Classic Party Truth or Dare","Main Editorial / In-Content","Highest (Core Pillar)",follow
+/games/truth-or-dare,/games/truth-or-dare,"❤️ Couples &amp; Flirty Romantic intimacy, cute questions, and playful flirty dares for couples. Play Couples Truth or Dare Online","Main Editorial / In-Content","Highest (Core Pillar)",follow
+/games/truth-or-dare,/games/truth-or-dare,"🍕 Teens &amp; Sleepovers School gossip, harmless dares, and sleepover fun for teenagers. Play Truth or Dare for Teens","Main Editorial / In-Content","Highest (Core Pillar)",follow
+/games/truth-or-dare,/games/truth-or-dare,"🌶️ Spicy 18+ Wild, provocative late-night questions for consenting adults with age verification. Play Spicy Truth or Dare (Adults Only)","Main Editorial / In-Content","Highest (Core Pillar)",follow
+/games/truth-or-dare,/games/truth-or-dare,"🌟 Family Clean 100% wholesome, school-safe challenges for parents and kids. Play Family Clean Truth or Dare","Main Editorial / In-Content","Highest (Core Pillar)",follow
+/games/truth-or-dare,/questions,"Explore Truth Questions","Main Editorial / In-Content","High (Key Feature)",follow
+/games/truth-or-dare,/questions,"Try Funny Dare Questions","Main Editorial / In-Content","High (Key Feature)",follow
+/games/truth-or-dare,/custom,"Build a Custom Deck","Main Editorial / In-Content","High (Key Feature)",follow
+/games/truth-or-dare,/blog/official-truth-or-dare-rules,"Read Official Game Rules","Main Editorial / In-Content","Medium (Topical Cluster)",follow
+/games/truth-or-dare,/games,"View All 6 Party Games","Main Editorial / In-Content","High (Game Engine)",follow
+/games/truth-or-dare,/games/spin-the-bottle,"Spin the Bottle Wheel","Main Editorial / In-Content","High (Game Engine)",follow
+/games/truth-or-dare,/games/never-have-i-ever,"Play Never Have I Ever","Main Editorial / In-Content","High (Game Engine)",follow
+/games/truth-or-dare,/games/would-you-rather,"Play Would You Rather","Main Editorial / In-Content","High (Game Engine)",follow
+/games/truth-or-dare,/,"ASTERIA","Footer Matrix","High (Hub/Home)",follow
+/games/truth-or-dare,/games/truth-or-dare,"Truth or Dare Online","Main Editorial / In-Content","Highest (Core Pillar)",follow
+/games/truth-or-dare,/games/never-have-i-ever,"Never Have I Ever Online","Main Editorial / In-Content","High (Game Engine)",follow
+/games/truth-or-dare,/games/would-you-rather,"Would You Rather Online","Main Editorial / In-Content","High (Game Engine)",follow
+/games/truth-or-dare,/games/most-likely-to,"Most Likely To Online","Main Editorial / In-Content","High (Game Engine)",follow
+/games/truth-or-dare,/games/this-or-that,"This or That Gauntlet","Main Editorial / In-Content","High (Game Engine)",follow
+/games/truth-or-dare,/games,"View All Games Directory →","Main Editorial / In-Content","High (Game Engine)",follow
+/games/truth-or-dare,/games/truth-or-dare,"🎉 Classic Party Deck","Main Editorial / In-Content","Highest (Core Pillar)",follow
+/games/truth-or-dare,/games/truth-or-dare,"❤️ Couples &amp; Flirty Deck","Main Editorial / In-Content","Highest (Core Pillar)",follow
+/games/truth-or-dare,/games/truth-or-dare,"🍕 Teens &amp; Sleepovers","Main Editorial / In-Content","Highest (Core Pillar)",follow
+/games/truth-or-dare,/games/truth-or-dare,"🌶️ Spicy 18+ (Adults)","Main Editorial / In-Content","Highest (Core Pillar)",follow
+/games/truth-or-dare,/games/truth-or-dare,"🌟 Family Clean Prompts","Main Editorial / In-Content","Highest (Core Pillar)",follow
+/games/truth-or-dare,/custom,"Build a Custom Deck →","Main Editorial / In-Content","High (Key Feature)",follow
+/games/truth-or-dare,/questions,"500+ Best Truth or Dare Questions","Main Editorial / In-Content","High (Key Feature)",follow
+/games/truth-or-dare,/blog/official-truth-or-dare-rules,"Official Truth or Dare Rules","Main Editorial / In-Content","Medium (Topical Cluster)",follow
+/games/truth-or-dare,/blog/50-best-dares-over-facetime,"50 Best FaceTime Dares","Main Editorial / In-Content","Medium (Topical Cluster)",follow
+/games/truth-or-dare,/blog/clean-icebreakers-for-work,"Clean Icebreakers for Work","Main Editorial / In-Content","Medium (Topical Cluster)",follow
+/games/truth-or-dare,/blog,"All Party Game Guides →","Main Editorial / In-Content","High (Hub/Home)",follow
+/games/truth-or-dare,/about,"About Project Asteria","Main Editorial / In-Content","Standard (Trust & Legal)",follow
+/games/truth-or-dare,/contact,"Contact &amp; Suggestions","Main Editorial / In-Content","Standard (Trust & Legal)",follow
+/games/truth-or-dare,/privacy,"Privacy Policy","Main Editorial / In-Content","Standard (Trust & Legal)",follow
+/games/truth-or-dare,/terms,"Terms of Service","Main Editorial / In-Content","Standard (Trust & Legal)",follow
+/games/truth-or-dare,/admin,"Admin Control Center","Main Editorial / In-Content","Standard",follow
+/games/truth-or-dare,/,"Home","Main Editorial / In-Content","High (Hub/Home)",follow
+/games/truth-or-dare,/games,"Games","Main Editorial / In-Content","High (Game Engine)",follow
+/games/truth-or-dare,/games/truth-or-dare,"Truth/Dare","Main Editorial / In-Content","Highest (Core Pillar)",follow
+/games/truth-or-dare,/games/spin-the-bottle,"Spinner","Main Editorial / In-Content","High (Game Engine)",follow
+/games/truth-or-dare,/custom,"Custom","Main Editorial / In-Content","High (Key Feature)",follow
+/games/spin-the-bottle,/,"ASTERIA","Header Navigation","High (Hub/Home)",follow
+/games/spin-the-bottle,/games,"All Games","Main Editorial / In-Content","High (Game Engine)",follow
+/games/spin-the-bottle,/games/truth-or-dare,"Truth or Dare","Main Editorial / In-Content","Highest (Core Pillar)",follow
+/games/spin-the-bottle,/games/spin-the-bottle,"Spinner Wheel","Main Editorial / In-Content","High (Game Engine)",follow
+/games/spin-the-bottle,/custom,"Custom Deck","Main Editorial / In-Content","High (Key Feature)",follow
+/games/spin-the-bottle,/questions,"Question Library","Main Editorial / In-Content","High (Key Feature)",follow
+/games/spin-the-bottle,/blog,"Guides","Main Editorial / In-Content","High (Hub/Home)",follow
+/games/spin-the-bottle,/,"Room Code","Main Editorial / In-Content","High (Hub/Home)",follow
+/games/spin-the-bottle,/admin,"[Icon / Graphical Element]","Main Editorial / In-Content","Standard",follow
+/games/spin-the-bottle,/,"Home","Breadcrumbs Navigation","High (Hub/Home)",follow
+/games/spin-the-bottle,/games,"View All 6 Party Games","Main Editorial / In-Content","High (Game Engine)",follow
+/games/spin-the-bottle,/games/truth-or-dare,"Play Truth or Dare Online","Main Editorial / In-Content","Highest (Core Pillar)",follow
+/games/spin-the-bottle,/games/never-have-i-ever,"Play Never Have I Ever","Main Editorial / In-Content","High (Game Engine)",follow
+/games/spin-the-bottle,/games/would-you-rather,"Play Would You Rather","Main Editorial / In-Content","High (Game Engine)",follow
+/games/spin-the-bottle,/,"ASTERIA","Footer Matrix","High (Hub/Home)",follow
+/games/spin-the-bottle,/games/truth-or-dare,"Truth or Dare Online","Main Editorial / In-Content","Highest (Core Pillar)",follow
+/games/spin-the-bottle,/games/spin-the-bottle,"Spin the Bottle Wheel","Main Editorial / In-Content","High (Game Engine)",follow
+/games/spin-the-bottle,/games/never-have-i-ever,"Never Have I Ever Online","Main Editorial / In-Content","High (Game Engine)",follow
+/games/spin-the-bottle,/games/would-you-rather,"Would You Rather Online","Main Editorial / In-Content","High (Game Engine)",follow
+/games/spin-the-bottle,/games/most-likely-to,"Most Likely To Online","Main Editorial / In-Content","High (Game Engine)",follow
+/games/spin-the-bottle,/games/this-or-that,"This or That Gauntlet","Main Editorial / In-Content","High (Game Engine)",follow
+/games/spin-the-bottle,/games,"View All Games Directory →","Main Editorial / In-Content","High (Game Engine)",follow
+/games/spin-the-bottle,/games/truth-or-dare,"🎉 Classic Party Deck","Main Editorial / In-Content","Highest (Core Pillar)",follow
+/games/spin-the-bottle,/games/truth-or-dare,"❤️ Couples &amp; Flirty Deck","Main Editorial / In-Content","Highest (Core Pillar)",follow
+/games/spin-the-bottle,/games/truth-or-dare,"🍕 Teens &amp; Sleepovers","Main Editorial / In-Content","Highest (Core Pillar)",follow
+/games/spin-the-bottle,/games/truth-or-dare,"🌶️ Spicy 18+ (Adults)","Main Editorial / In-Content","Highest (Core Pillar)",follow
+/games/spin-the-bottle,/games/truth-or-dare,"🌟 Family Clean Prompts","Main Editorial / In-Content","Highest (Core Pillar)",follow
+/games/spin-the-bottle,/custom,"Build a Custom Deck →","Main Editorial / In-Content","High (Key Feature)",follow
+/games/spin-the-bottle,/questions,"500+ Best Truth or Dare Questions","Main Editorial / In-Content","High (Key Feature)",follow
+/games/spin-the-bottle,/blog/official-truth-or-dare-rules,"Official Truth or Dare Rules","Main Editorial / In-Content","Medium (Topical Cluster)",follow
+/games/spin-the-bottle,/blog/50-best-dares-over-facetime,"50 Best FaceTime Dares","Main Editorial / In-Content","Medium (Topical Cluster)",follow
+/games/spin-the-bottle,/blog/clean-icebreakers-for-work,"Clean Icebreakers for Work","Main Editorial / In-Content","Medium (Topical Cluster)",follow
+/games/spin-the-bottle,/blog,"All Party Game Guides →","Main Editorial / In-Content","High (Hub/Home)",follow
+/games/spin-the-bottle,/about,"About Project Asteria","Main Editorial / In-Content","Standard (Trust & Legal)",follow
+/games/spin-the-bottle,/contact,"Contact &amp; Suggestions","Main Editorial / In-Content","Standard (Trust & Legal)",follow
+/games/spin-the-bottle,/privacy,"Privacy Policy","Main Editorial / In-Content","Standard (Trust & Legal)",follow
+/games/spin-the-bottle,/terms,"Terms of Service","Main Editorial / In-Content","Standard (Trust & Legal)",follow
+/games/spin-the-bottle,/admin,"Admin Control Center","Main Editorial / In-Content","Standard",follow
+/games/spin-the-bottle,/,"Home","Main Editorial / In-Content","High (Hub/Home)",follow
+/games/spin-the-bottle,/games,"Games","Main Editorial / In-Content","High (Game Engine)",follow
+/games/spin-the-bottle,/games/truth-or-dare,"Truth/Dare","Main Editorial / In-Content","Highest (Core Pillar)",follow
+/games/spin-the-bottle,/games/spin-the-bottle,"Spinner","Main Editorial / In-Content","High (Game Engine)",follow
+/games/spin-the-bottle,/custom,"Custom","Main Editorial / In-Content","High (Key Feature)",follow
+/games/never-have-i-ever,/,"ASTERIA","Header Navigation","High (Hub/Home)",follow
+/games/never-have-i-ever,/games,"All Games","Main Editorial / In-Content","High (Game Engine)",follow
+/games/never-have-i-ever,/games/truth-or-dare,"Truth or Dare","Main Editorial / In-Content","Highest (Core Pillar)",follow
+/games/never-have-i-ever,/games/spin-the-bottle,"Spinner Wheel","Main Editorial / In-Content","High (Game Engine)",follow
+/games/never-have-i-ever,/custom,"Custom Deck","Main Editorial / In-Content","High (Key Feature)",follow
+/games/never-have-i-ever,/questions,"Question Library","Main Editorial / In-Content","High (Key Feature)",follow
+/games/never-have-i-ever,/blog,"Guides","Main Editorial / In-Content","High (Hub/Home)",follow
+/games/never-have-i-ever,/,"Room Code","Main Editorial / In-Content","High (Hub/Home)",follow
+/games/never-have-i-ever,/admin,"[Icon / Graphical Element]","Main Editorial / In-Content","Standard",follow
+/games/never-have-i-ever,/,"Home","Breadcrumbs Navigation","High (Hub/Home)",follow
+/games/never-have-i-ever,/games,"View All 6 Party Games","Main Editorial / In-Content","High (Game Engine)",follow
+/games/never-have-i-ever,/games/truth-or-dare,"Play Truth or Dare Online","Main Editorial / In-Content","Highest (Core Pillar)",follow
+/games/never-have-i-ever,/games/spin-the-bottle,"Spin the Bottle Wheel","Main Editorial / In-Content","High (Game Engine)",follow
+/games/never-have-i-ever,/games/would-you-rather,"Play Would You Rather","Main Editorial / In-Content","High (Game Engine)",follow
+/games/never-have-i-ever,/,"ASTERIA","Footer Matrix","High (Hub/Home)",follow
+/games/never-have-i-ever,/games/truth-or-dare,"Truth or Dare Online","Main Editorial / In-Content","Highest (Core Pillar)",follow
+/games/never-have-i-ever,/games/never-have-i-ever,"Never Have I Ever Online","Main Editorial / In-Content","High (Game Engine)",follow
+/games/never-have-i-ever,/games/would-you-rather,"Would You Rather Online","Main Editorial / In-Content","High (Game Engine)",follow
+/games/never-have-i-ever,/games/most-likely-to,"Most Likely To Online","Main Editorial / In-Content","High (Game Engine)",follow
+/games/never-have-i-ever,/games/this-or-that,"This or That Gauntlet","Main Editorial / In-Content","High (Game Engine)",follow
+/games/never-have-i-ever,/games,"View All Games Directory →","Main Editorial / In-Content","High (Game Engine)",follow
+/games/never-have-i-ever,/games/truth-or-dare,"🎉 Classic Party Deck","Main Editorial / In-Content","Highest (Core Pillar)",follow
+/games/never-have-i-ever,/games/truth-or-dare,"❤️ Couples &amp; Flirty Deck","Main Editorial / In-Content","Highest (Core Pillar)",follow
+/games/never-have-i-ever,/games/truth-or-dare,"🍕 Teens &amp; Sleepovers","Main Editorial / In-Content","Highest (Core Pillar)",follow
+/games/never-have-i-ever,/games/truth-or-dare,"🌶️ Spicy 18+ (Adults)","Main Editorial / In-Content","Highest (Core Pillar)",follow
+/games/never-have-i-ever,/games/truth-or-dare,"🌟 Family Clean Prompts","Main Editorial / In-Content","Highest (Core Pillar)",follow
+/games/never-have-i-ever,/custom,"Build a Custom Deck →","Main Editorial / In-Content","High (Key Feature)",follow
+/games/never-have-i-ever,/questions,"500+ Best Truth or Dare Questions","Main Editorial / In-Content","High (Key Feature)",follow
+/games/never-have-i-ever,/blog/official-truth-or-dare-rules,"Official Truth or Dare Rules","Main Editorial / In-Content","Medium (Topical Cluster)",follow
+/games/never-have-i-ever,/blog/50-best-dares-over-facetime,"50 Best FaceTime Dares","Main Editorial / In-Content","Medium (Topical Cluster)",follow
+/games/never-have-i-ever,/blog/clean-icebreakers-for-work,"Clean Icebreakers for Work","Main Editorial / In-Content","Medium (Topical Cluster)",follow
+/games/never-have-i-ever,/blog,"All Party Game Guides →","Main Editorial / In-Content","High (Hub/Home)",follow
+/games/never-have-i-ever,/about,"About Project Asteria","Main Editorial / In-Content","Standard (Trust & Legal)",follow
+/games/never-have-i-ever,/contact,"Contact &amp; Suggestions","Main Editorial / In-Content","Standard (Trust & Legal)",follow
+/games/never-have-i-ever,/privacy,"Privacy Policy","Main Editorial / In-Content","Standard (Trust & Legal)",follow
+/games/never-have-i-ever,/terms,"Terms of Service","Main Editorial / In-Content","Standard (Trust & Legal)",follow
+/games/never-have-i-ever,/admin,"Admin Control Center","Main Editorial / In-Content","Standard",follow
+/games/never-have-i-ever,/,"Home","Main Editorial / In-Content","High (Hub/Home)",follow
+/games/never-have-i-ever,/games,"Games","Main Editorial / In-Content","High (Game Engine)",follow
+/games/never-have-i-ever,/games/truth-or-dare,"Truth/Dare","Main Editorial / In-Content","Highest (Core Pillar)",follow
+/games/never-have-i-ever,/games/spin-the-bottle,"Spinner","Main Editorial / In-Content","High (Game Engine)",follow
+/games/never-have-i-ever,/custom,"Custom","Main Editorial / In-Content","High (Key Feature)",follow
+/games/would-you-rather,/,"ASTERIA","Header Navigation","High (Hub/Home)",follow
+/games/would-you-rather,/games,"All Games","Main Editorial / In-Content","High (Game Engine)",follow
+/games/would-you-rather,/games/truth-or-dare,"Truth or Dare","Main Editorial / In-Content","Highest (Core Pillar)",follow
+/games/would-you-rather,/games/spin-the-bottle,"Spinner Wheel","Main Editorial / In-Content","High (Game Engine)",follow
+/games/would-you-rather,/custom,"Custom Deck","Main Editorial / In-Content","High (Key Feature)",follow
+/games/would-you-rather,/questions,"Question Library","Main Editorial / In-Content","High (Key Feature)",follow
+/games/would-you-rather,/blog,"Guides","Main Editorial / In-Content","High (Hub/Home)",follow
+/games/would-you-rather,/,"Room Code","Main Editorial / In-Content","High (Hub/Home)",follow
+/games/would-you-rather,/admin,"[Icon / Graphical Element]","Main Editorial / In-Content","Standard",follow
+/games/would-you-rather,/,"Home","Breadcrumbs Navigation","High (Hub/Home)",follow
+/games/would-you-rather,/games,"View All 6 Party Games","Main Editorial / In-Content","High (Game Engine)",follow
+/games/would-you-rather,/games/truth-or-dare,"Play Truth or Dare Online","Main Editorial / In-Content","Highest (Core Pillar)",follow
+/games/would-you-rather,/games/spin-the-bottle,"Spin the Bottle Wheel","Main Editorial / In-Content","High (Game Engine)",follow
+/games/would-you-rather,/games/never-have-i-ever,"Play Never Have I Ever","Main Editorial / In-Content","High (Game Engine)",follow
+/games/would-you-rather,/,"ASTERIA","Footer Matrix","High (Hub/Home)",follow
+/games/would-you-rather,/games/truth-or-dare,"Truth or Dare Online","Main Editorial / In-Content","Highest (Core Pillar)",follow
+/games/would-you-rather,/games/never-have-i-ever,"Never Have I Ever Online","Main Editorial / In-Content","High (Game Engine)",follow
+/games/would-you-rather,/games/would-you-rather,"Would You Rather Online","Main Editorial / In-Content","High (Game Engine)",follow
+/games/would-you-rather,/games/most-likely-to,"Most Likely To Online","Main Editorial / In-Content","High (Game Engine)",follow
+/games/would-you-rather,/games/this-or-that,"This or That Gauntlet","Main Editorial / In-Content","High (Game Engine)",follow
+/games/would-you-rather,/games,"View All Games Directory →","Main Editorial / In-Content","High (Game Engine)",follow
+/games/would-you-rather,/games/truth-or-dare,"🎉 Classic Party Deck","Main Editorial / In-Content","Highest (Core Pillar)",follow
+/games/would-you-rather,/games/truth-or-dare,"❤️ Couples &amp; Flirty Deck","Main Editorial / In-Content","Highest (Core Pillar)",follow
+/games/would-you-rather,/games/truth-or-dare,"🍕 Teens &amp; Sleepovers","Main Editorial / In-Content","Highest (Core Pillar)",follow
+/games/would-you-rather,/games/truth-or-dare,"🌶️ Spicy 18+ (Adults)","Main Editorial / In-Content","Highest (Core Pillar)",follow
+/games/would-you-rather,/games/truth-or-dare,"🌟 Family Clean Prompts","Main Editorial / In-Content","Highest (Core Pillar)",follow
+/games/would-you-rather,/custom,"Build a Custom Deck →","Main Editorial / In-Content","High (Key Feature)",follow
+/games/would-you-rather,/questions,"500+ Best Truth or Dare Questions","Main Editorial / In-Content","High (Key Feature)",follow
+/games/would-you-rather,/blog/official-truth-or-dare-rules,"Official Truth or Dare Rules","Main Editorial / In-Content","Medium (Topical Cluster)",follow
+/games/would-you-rather,/blog/50-best-dares-over-facetime,"50 Best FaceTime Dares","Main Editorial / In-Content","Medium (Topical Cluster)",follow
+/games/would-you-rather,/blog/clean-icebreakers-for-work,"Clean Icebreakers for Work","Main Editorial / In-Content","Medium (Topical Cluster)",follow
+/games/would-you-rather,/blog,"All Party Game Guides →","Main Editorial / In-Content","High (Hub/Home)",follow
+/games/would-you-rather,/about,"About Project Asteria","Main Editorial / In-Content","Standard (Trust & Legal)",follow
+/games/would-you-rather,/contact,"Contact &amp; Suggestions","Main Editorial / In-Content","Standard (Trust & Legal)",follow
+/games/would-you-rather,/privacy,"Privacy Policy","Main Editorial / In-Content","Standard (Trust & Legal)",follow
+/games/would-you-rather,/terms,"Terms of Service","Main Editorial / In-Content","Standard (Trust & Legal)",follow
+/games/would-you-rather,/admin,"Admin Control Center","Main Editorial / In-Content","Standard",follow
+/games/would-you-rather,/,"Home","Main Editorial / In-Content","High (Hub/Home)",follow
+/games/would-you-rather,/games,"Games","Main Editorial / In-Content","High (Game Engine)",follow
+/games/would-you-rather,/games/truth-or-dare,"Truth/Dare","Main Editorial / In-Content","Highest (Core Pillar)",follow
+/games/would-you-rather,/games/spin-the-bottle,"Spinner","Main Editorial / In-Content","High (Game Engine)",follow
+/games/would-you-rather,/custom,"Custom","Main Editorial / In-Content","High (Key Feature)",follow
+/games/most-likely-to,/,"ASTERIA","Header Navigation","High (Hub/Home)",follow
+/games/most-likely-to,/games,"All Games","Main Editorial / In-Content","High (Game Engine)",follow
+/games/most-likely-to,/games/truth-or-dare,"Truth or Dare","Main Editorial / In-Content","Highest (Core Pillar)",follow
+/games/most-likely-to,/games/spin-the-bottle,"Spinner Wheel","Main Editorial / In-Content","High (Game Engine)",follow
+/games/most-likely-to,/custom,"Custom Deck","Main Editorial / In-Content","High (Key Feature)",follow
+/games/most-likely-to,/questions,"Question Library","Main Editorial / In-Content","High (Key Feature)",follow
+/games/most-likely-to,/blog,"Guides","Main Editorial / In-Content","High (Hub/Home)",follow
+/games/most-likely-to,/,"Room Code","Main Editorial / In-Content","High (Hub/Home)",follow
+/games/most-likely-to,/admin,"[Icon / Graphical Element]","Main Editorial / In-Content","Standard",follow
+/games/most-likely-to,/,"Home","Breadcrumbs Navigation","High (Hub/Home)",follow
+/games/most-likely-to,/games,"View All 6 Party Games","Main Editorial / In-Content","High (Game Engine)",follow
+/games/most-likely-to,/games/truth-or-dare,"Play Truth or Dare Online","Main Editorial / In-Content","Highest (Core Pillar)",follow
+/games/most-likely-to,/games/spin-the-bottle,"Spin the Bottle Wheel","Main Editorial / In-Content","High (Game Engine)",follow
+/games/most-likely-to,/games/never-have-i-ever,"Play Never Have I Ever","Main Editorial / In-Content","High (Game Engine)",follow
+/games/most-likely-to,/,"ASTERIA","Footer Matrix","High (Hub/Home)",follow
+/games/most-likely-to,/games/truth-or-dare,"Truth or Dare Online","Main Editorial / In-Content","Highest (Core Pillar)",follow
+/games/most-likely-to,/games/never-have-i-ever,"Never Have I Ever Online","Main Editorial / In-Content","High (Game Engine)",follow
+/games/most-likely-to,/games/would-you-rather,"Would You Rather Online","Main Editorial / In-Content","High (Game Engine)",follow
+/games/most-likely-to,/games/most-likely-to,"Most Likely To Online","Main Editorial / In-Content","High (Game Engine)",follow
+/games/most-likely-to,/games/this-or-that,"This or That Gauntlet","Main Editorial / In-Content","High (Game Engine)",follow
+/games/most-likely-to,/games,"View All Games Directory →","Main Editorial / In-Content","High (Game Engine)",follow
+/games/most-likely-to,/games/truth-or-dare,"🎉 Classic Party Deck","Main Editorial / In-Content","Highest (Core Pillar)",follow
+/games/most-likely-to,/games/truth-or-dare,"❤️ Couples &amp; Flirty Deck","Main Editorial / In-Content","Highest (Core Pillar)",follow
+/games/most-likely-to,/games/truth-or-dare,"🍕 Teens &amp; Sleepovers","Main Editorial / In-Content","Highest (Core Pillar)",follow
+/games/most-likely-to,/games/truth-or-dare,"🌶️ Spicy 18+ (Adults)","Main Editorial / In-Content","Highest (Core Pillar)",follow
+/games/most-likely-to,/games/truth-or-dare,"🌟 Family Clean Prompts","Main Editorial / In-Content","Highest (Core Pillar)",follow
+/games/most-likely-to,/custom,"Build a Custom Deck →","Main Editorial / In-Content","High (Key Feature)",follow
+/games/most-likely-to,/questions,"500+ Best Truth or Dare Questions","Main Editorial / In-Content","High (Key Feature)",follow
+/games/most-likely-to,/blog/official-truth-or-dare-rules,"Official Truth or Dare Rules","Main Editorial / In-Content","Medium (Topical Cluster)",follow
+/games/most-likely-to,/blog/50-best-dares-over-facetime,"50 Best FaceTime Dares","Main Editorial / In-Content","Medium (Topical Cluster)",follow
+/games/most-likely-to,/blog/clean-icebreakers-for-work,"Clean Icebreakers for Work","Main Editorial / In-Content","Medium (Topical Cluster)",follow
+/games/most-likely-to,/blog,"All Party Game Guides →","Main Editorial / In-Content","High (Hub/Home)",follow
+/games/most-likely-to,/about,"About Project Asteria","Main Editorial / In-Content","Standard (Trust & Legal)",follow
+/games/most-likely-to,/contact,"Contact &amp; Suggestions","Main Editorial / In-Content","Standard (Trust & Legal)",follow
+/games/most-likely-to,/privacy,"Privacy Policy","Main Editorial / In-Content","Standard (Trust & Legal)",follow
+/games/most-likely-to,/terms,"Terms of Service","Main Editorial / In-Content","Standard (Trust & Legal)",follow
+/games/most-likely-to,/admin,"Admin Control Center","Main Editorial / In-Content","Standard",follow
+/games/most-likely-to,/,"Home","Main Editorial / In-Content","High (Hub/Home)",follow
+/games/most-likely-to,/games,"Games","Main Editorial / In-Content","High (Game Engine)",follow
+/games/most-likely-to,/games/truth-or-dare,"Truth/Dare","Main Editorial / In-Content","Highest (Core Pillar)",follow
+/games/most-likely-to,/games/spin-the-bottle,"Spinner","Main Editorial / In-Content","High (Game Engine)",follow
+/games/most-likely-to,/custom,"Custom","Main Editorial / In-Content","High (Key Feature)",follow
+/games/this-or-that,/,"ASTERIA","Header Navigation","High (Hub/Home)",follow
+/games/this-or-that,/games,"All Games","Main Editorial / In-Content","High (Game Engine)",follow
+/games/this-or-that,/games/truth-or-dare,"Truth or Dare","Main Editorial / In-Content","Highest (Core Pillar)",follow
+/games/this-or-that,/games/spin-the-bottle,"Spinner Wheel","Main Editorial / In-Content","High (Game Engine)",follow
+/games/this-or-that,/custom,"Custom Deck","Main Editorial / In-Content","High (Key Feature)",follow
+/games/this-or-that,/questions,"Question Library","Main Editorial / In-Content","High (Key Feature)",follow
+/games/this-or-that,/blog,"Guides","Main Editorial / In-Content","High (Hub/Home)",follow
+/games/this-or-that,/,"Room Code","Main Editorial / In-Content","High (Hub/Home)",follow
+/games/this-or-that,/admin,"[Icon / Graphical Element]","Main Editorial / In-Content","Standard",follow
+/games/this-or-that,/,"Home","Breadcrumbs Navigation","High (Hub/Home)",follow
+/games/this-or-that,/games,"View All 6 Party Games","Main Editorial / In-Content","High (Game Engine)",follow
+/games/this-or-that,/games/truth-or-dare,"Play Truth or Dare Online","Main Editorial / In-Content","Highest (Core Pillar)",follow
+/games/this-or-that,/games/spin-the-bottle,"Spin the Bottle Wheel","Main Editorial / In-Content","High (Game Engine)",follow
+/games/this-or-that,/games/never-have-i-ever,"Play Never Have I Ever","Main Editorial / In-Content","High (Game Engine)",follow
+/games/this-or-that,/,"ASTERIA","Footer Matrix","High (Hub/Home)",follow
+/games/this-or-that,/games/truth-or-dare,"Truth or Dare Online","Main Editorial / In-Content","Highest (Core Pillar)",follow
+/games/this-or-that,/games/never-have-i-ever,"Never Have I Ever Online","Main Editorial / In-Content","High (Game Engine)",follow
+/games/this-or-that,/games/would-you-rather,"Would You Rather Online","Main Editorial / In-Content","High (Game Engine)",follow
+/games/this-or-that,/games/most-likely-to,"Most Likely To Online","Main Editorial / In-Content","High (Game Engine)",follow
+/games/this-or-that,/games/this-or-that,"This or That Gauntlet","Main Editorial / In-Content","High (Game Engine)",follow
+/games/this-or-that,/games,"View All Games Directory →","Main Editorial / In-Content","High (Game Engine)",follow
+/games/this-or-that,/games/truth-or-dare,"🎉 Classic Party Deck","Main Editorial / In-Content","Highest (Core Pillar)",follow
+/games/this-or-that,/games/truth-or-dare,"❤️ Couples &amp; Flirty Deck","Main Editorial / In-Content","Highest (Core Pillar)",follow
+/games/this-or-that,/games/truth-or-dare,"🍕 Teens &amp; Sleepovers","Main Editorial / In-Content","Highest (Core Pillar)",follow
+/games/this-or-that,/games/truth-or-dare,"🌶️ Spicy 18+ (Adults)","Main Editorial / In-Content","Highest (Core Pillar)",follow
+/games/this-or-that,/games/truth-or-dare,"🌟 Family Clean Prompts","Main Editorial / In-Content","Highest (Core Pillar)",follow
+/games/this-or-that,/custom,"Build a Custom Deck →","Main Editorial / In-Content","High (Key Feature)",follow
+/games/this-or-that,/questions,"500+ Best Truth or Dare Questions","Main Editorial / In-Content","High (Key Feature)",follow
+/games/this-or-that,/blog/official-truth-or-dare-rules,"Official Truth or Dare Rules","Main Editorial / In-Content","Medium (Topical Cluster)",follow
+/games/this-or-that,/blog/50-best-dares-over-facetime,"50 Best FaceTime Dares","Main Editorial / In-Content","Medium (Topical Cluster)",follow
+/games/this-or-that,/blog/clean-icebreakers-for-work,"Clean Icebreakers for Work","Main Editorial / In-Content","Medium (Topical Cluster)",follow
+/games/this-or-that,/blog,"All Party Game Guides →","Main Editorial / In-Content","High (Hub/Home)",follow
+/games/this-or-that,/about,"About Project Asteria","Main Editorial / In-Content","Standard (Trust & Legal)",follow
+/games/this-or-that,/contact,"Contact &amp; Suggestions","Main Editorial / In-Content","Standard (Trust & Legal)",follow
+/games/this-or-that,/privacy,"Privacy Policy","Main Editorial / In-Content","Standard (Trust & Legal)",follow
+/games/this-or-that,/terms,"Terms of Service","Main Editorial / In-Content","Standard (Trust & Legal)",follow
+/games/this-or-that,/admin,"Admin Control Center","Main Editorial / In-Content","Standard",follow
+/games/this-or-that,/,"Home","Main Editorial / In-Content","High (Hub/Home)",follow
+/games/this-or-that,/games,"Games","Main Editorial / In-Content","High (Game Engine)",follow
+/games/this-or-that,/games/truth-or-dare,"Truth/Dare","Main Editorial / In-Content","Highest (Core Pillar)",follow
+/games/this-or-that,/games/spin-the-bottle,"Spinner","Main Editorial / In-Content","High (Game Engine)",follow
+/games/this-or-that,/custom,"Custom","Main Editorial / In-Content","High (Key Feature)",follow
+/questions,/,"ASTERIA","Header Navigation","High (Hub/Home)",follow
+/questions,/games,"All Games","Main Editorial / In-Content","High (Game Engine)",follow
+/questions,/games/truth-or-dare,"Truth or Dare","Main Editorial / In-Content","Highest (Core Pillar)",follow
+/questions,/games/spin-the-bottle,"Spinner Wheel","Main Editorial / In-Content","High (Game Engine)",follow
+/questions,/custom,"Custom Deck","Main Editorial / In-Content","High (Key Feature)",follow
+/questions,/questions,"Question Library","Main Editorial / In-Content","High (Key Feature)",follow
+/questions,/blog,"Guides","Main Editorial / In-Content","High (Hub/Home)",follow
+/questions,/,"Room Code","Main Editorial / In-Content","High (Hub/Home)",follow
+/questions,/admin,"[Icon / Graphical Element]","Main Editorial / In-Content","Standard",follow
+/questions,/,"Home","Breadcrumbs Navigation","High (Hub/Home)",follow
+/questions,/games/truth-or-dare,"🎉 Classic Party","Main Editorial / In-Content","Highest (Core Pillar)",follow
+/questions,/games/truth-or-dare,"❤️ Couples &amp; Flirty","Main Editorial / In-Content","Highest (Core Pillar)",follow
+/questions,/games/truth-or-dare,"🍕 Teens &amp; Sleepovers","Main Editorial / In-Content","Highest (Core Pillar)",follow
+/questions,/games/truth-or-dare,"🌶️ Spicy 18+","Main Editorial / In-Content","Highest (Core Pillar)",follow
+/questions,/games/truth-or-dare,"🌟 Family Clean","Main Editorial / In-Content","Highest (Core Pillar)",follow
+/questions,/games/truth-or-dare,"Play In Game","Main Editorial / In-Content","Highest (Core Pillar)",follow
+/questions,/games/never-have-i-ever,"Play In Game","Main Editorial / In-Content","High (Game Engine)",follow
+/questions,/games/would-you-rather,"Play In Game","Main Editorial / In-Content","High (Game Engine)",follow
+/questions,/games/most-likely-to,"Play In Game","Main Editorial / In-Content","High (Game Engine)",follow
+/questions,/games/this-or-that,"Play In Game","Main Editorial / In-Content","High (Game Engine)",follow
+/questions,/games/truth-or-dare,"Play Truth or Dare Online Launch 3D flip card arena with dare timer and sound effects.","Main Editorial / In-Content","Highest (Core Pillar)",follow
+/questions,/custom,"Create Custom Party Deck Write personalized inside jokes and export JSON packs.","Main Editorial / In-Content","High (Key Feature)",follow
+/questions,/blog/official-truth-or-dare-rules,"Official Truth or Dare Rules Learn classic turn rotations, forfeits, and safe skip boundaries.","Main Editorial / In-Content","Medium (Topical Cluster)",follow
+/questions,/,"ASTERIA","Footer Matrix","High (Hub/Home)",follow
+/questions,/games/truth-or-dare,"Truth or Dare Online","Main Editorial / In-Content","Highest (Core Pillar)",follow
+/questions,/games/spin-the-bottle,"Spin the Bottle Wheel","Main Editorial / In-Content","High (Game Engine)",follow
+/questions,/games/never-have-i-ever,"Never Have I Ever Online","Main Editorial / In-Content","High (Game Engine)",follow
+/questions,/games/would-you-rather,"Would You Rather Online","Main Editorial / In-Content","High (Game Engine)",follow
+/questions,/games/most-likely-to,"Most Likely To Online","Main Editorial / In-Content","High (Game Engine)",follow
+/questions,/games/this-or-that,"This or That Gauntlet","Main Editorial / In-Content","High (Game Engine)",follow
+/questions,/games,"View All Games Directory →","Main Editorial / In-Content","High (Game Engine)",follow
+/questions,/games/truth-or-dare,"🎉 Classic Party Deck","Main Editorial / In-Content","Highest (Core Pillar)",follow
+/questions,/games/truth-or-dare,"❤️ Couples &amp; Flirty Deck","Main Editorial / In-Content","Highest (Core Pillar)",follow
+/questions,/games/truth-or-dare,"🌶️ Spicy 18+ (Adults)","Main Editorial / In-Content","Highest (Core Pillar)",follow
+/questions,/games/truth-or-dare,"🌟 Family Clean Prompts","Main Editorial / In-Content","Highest (Core Pillar)",follow
+/questions,/custom,"Build a Custom Deck →","Main Editorial / In-Content","High (Key Feature)",follow
+/questions,/questions,"500+ Best Truth or Dare Questions","Main Editorial / In-Content","High (Key Feature)",follow
+/questions,/blog/official-truth-or-dare-rules,"Official Truth or Dare Rules","Main Editorial / In-Content","Medium (Topical Cluster)",follow
+/questions,/blog/50-best-dares-over-facetime,"50 Best FaceTime Dares","Main Editorial / In-Content","Medium (Topical Cluster)",follow
+/questions,/blog/clean-icebreakers-for-work,"Clean Icebreakers for Work","Main Editorial / In-Content","Medium (Topical Cluster)",follow
+/questions,/blog,"All Party Game Guides →","Main Editorial / In-Content","High (Hub/Home)",follow
+/questions,/about,"About Project Asteria","Main Editorial / In-Content","Standard (Trust & Legal)",follow
+/questions,/contact,"Contact &amp; Suggestions","Main Editorial / In-Content","Standard (Trust & Legal)",follow
+/questions,/privacy,"Privacy Policy","Main Editorial / In-Content","Standard (Trust & Legal)",follow
+/questions,/terms,"Terms of Service","Main Editorial / In-Content","Standard (Trust & Legal)",follow
+/questions,/admin,"Admin Control Center","Main Editorial / In-Content","Standard",follow
+/questions,/,"Home","Main Editorial / In-Content","High (Hub/Home)",follow
+/questions,/games,"Games","Main Editorial / In-Content","High (Game Engine)",follow
+/questions,/games/truth-or-dare,"Truth/Dare","Main Editorial / In-Content","Highest (Core Pillar)",follow
+/questions,/games/spin-the-bottle,"Spinner","Main Editorial / In-Content","High (Game Engine)",follow
+/questions,/custom,"Custom","Main Editorial / In-Content","High (Key Feature)",follow
+/custom,/,"ASTERIA","Header Navigation","High (Hub/Home)",follow
+/custom,/games,"All Games","Main Editorial / In-Content","High (Game Engine)",follow
+/custom,/games/truth-or-dare,"Truth or Dare","Main Editorial / In-Content","Highest (Core Pillar)",follow
+/custom,/games/spin-the-bottle,"Spinner Wheel","Main Editorial / In-Content","High (Game Engine)",follow
+/custom,/custom,"Custom Deck","Main Editorial / In-Content","High (Key Feature)",follow
+/custom,/questions,"Question Library","Main Editorial / In-Content","High (Key Feature)",follow
+/custom,/blog,"Guides","Main Editorial / In-Content","High (Hub/Home)",follow
+/custom,/,"Room Code","Main Editorial / In-Content","High (Hub/Home)",follow
+/custom,/admin,"[Icon / Graphical Element]","Main Editorial / In-Content","Standard",follow
+/custom,/,"Home","Breadcrumbs Navigation","High (Hub/Home)",follow
+/custom,/games/truth-or-dare,"Play Deck","Main Editorial / In-Content","Highest (Core Pillar)",follow
+/custom,/,"ASTERIA","Footer Matrix","High (Hub/Home)",follow
+/custom,/games/truth-or-dare,"Truth or Dare Online","Main Editorial / In-Content","Highest (Core Pillar)",follow
+/custom,/games/spin-the-bottle,"Spin the Bottle Wheel","Main Editorial / In-Content","High (Game Engine)",follow
+/custom,/games/never-have-i-ever,"Never Have I Ever Online","Main Editorial / In-Content","High (Game Engine)",follow
+/custom,/games/would-you-rather,"Would You Rather Online","Main Editorial / In-Content","High (Game Engine)",follow
+/custom,/games/most-likely-to,"Most Likely To Online","Main Editorial / In-Content","High (Game Engine)",follow
+/custom,/games/this-or-that,"This or That Gauntlet","Main Editorial / In-Content","High (Game Engine)",follow
+/custom,/games,"View All Games Directory →","Main Editorial / In-Content","High (Game Engine)",follow
+/custom,/games/truth-or-dare,"🎉 Classic Party Deck","Main Editorial / In-Content","Highest (Core Pillar)",follow
+/custom,/games/truth-or-dare,"❤️ Couples &amp; Flirty Deck","Main Editorial / In-Content","Highest (Core Pillar)",follow
+/custom,/games/truth-or-dare,"🍕 Teens &amp; Sleepovers","Main Editorial / In-Content","Highest (Core Pillar)",follow
+/custom,/games/truth-or-dare,"🌶️ Spicy 18+ (Adults)","Main Editorial / In-Content","Highest (Core Pillar)",follow
+/custom,/games/truth-or-dare,"🌟 Family Clean Prompts","Main Editorial / In-Content","Highest (Core Pillar)",follow
+/custom,/custom,"Build a Custom Deck →","Main Editorial / In-Content","High (Key Feature)",follow
+/custom,/questions,"500+ Best Truth or Dare Questions","Main Editorial / In-Content","High (Key Feature)",follow
+/custom,/blog/official-truth-or-dare-rules,"Official Truth or Dare Rules","Main Editorial / In-Content","Medium (Topical Cluster)",follow
+/custom,/blog/50-best-dares-over-facetime,"50 Best FaceTime Dares","Main Editorial / In-Content","Medium (Topical Cluster)",follow
+/custom,/blog/clean-icebreakers-for-work,"Clean Icebreakers for Work","Main Editorial / In-Content","Medium (Topical Cluster)",follow
+/custom,/blog,"All Party Game Guides →","Main Editorial / In-Content","High (Hub/Home)",follow
+/custom,/about,"About Project Asteria","Main Editorial / In-Content","Standard (Trust & Legal)",follow
+/custom,/contact,"Contact &amp; Suggestions","Main Editorial / In-Content","Standard (Trust & Legal)",follow
+/custom,/privacy,"Privacy Policy","Main Editorial / In-Content","Standard (Trust & Legal)",follow
+/custom,/terms,"Terms of Service","Main Editorial / In-Content","Standard (Trust & Legal)",follow
+/custom,/admin,"Admin Control Center","Main Editorial / In-Content","Standard",follow
+/custom,/,"Home","Main Editorial / In-Content","High (Hub/Home)",follow
+/custom,/games,"Games","Main Editorial / In-Content","High (Game Engine)",follow
+/custom,/games/truth-or-dare,"Truth/Dare","Main Editorial / In-Content","Highest (Core Pillar)",follow
+/custom,/games/spin-the-bottle,"Spinner","Main Editorial / In-Content","High (Game Engine)",follow
+/custom,/custom,"Custom","Main Editorial / In-Content","High (Key Feature)",follow
+/blog,/,"ASTERIA","Header Navigation","High (Hub/Home)",follow
+/blog,/games,"All Games","Main Editorial / In-Content","High (Game Engine)",follow
+/blog,/games/truth-or-dare,"Truth or Dare","Main Editorial / In-Content","Highest (Core Pillar)",follow
+/blog,/games/spin-the-bottle,"Spinner Wheel","Main Editorial / In-Content","High (Game Engine)",follow
+/blog,/custom,"Custom Deck","Main Editorial / In-Content","High (Key Feature)",follow
+/blog,/questions,"Question Library","Main Editorial / In-Content","High (Key Feature)",follow
+/blog,/blog,"Guides","Main Editorial / In-Content","High (Hub/Home)",follow
+/blog,/,"Room Code","Main Editorial / In-Content","High (Hub/Home)",follow
+/blog,/admin,"[Icon / Graphical Element]","Main Editorial / In-Content","Standard",follow
+/blog,/,"Home","Breadcrumbs Navigation","High (Hub/Home)",follow
+/blog,/blog/official-truth-or-dare-rules,"Rules &amp; Guides 4 min read • Nov 2026 The Official Rules of Truth or Dare: How to Play &amp; House Variations Learn standard turns, pass limits, drinking penalties, and how to keep party games exciting without awkward boundaries. Read Full Guide","Main Editorial / In-Content","Medium (Topical Cluster)",follow
+/blog,/blog/50-best-dares-over-facetime,"Couples &amp; Romance 6 min read • Nov 2026 50 Best Dares Over FaceTime for Long-Distance Relationships Keep the romantic spark and laughter alive across different time zones with camera-friendly dare challenges. Read Full Guide","Main Editorial / In-Content","Medium (Topical Cluster)",follow
+/blog,/blog/clean-icebreakers-for-work,"Team Building 5 min read • Nov 2026 100+ Clean Icebreaker Questions for Remote Teams &amp; Discord Ditch the awkward silence on Zoom calls with engaging, school and workplace safe conversation starters. Read Full Guide","Main Editorial / In-Content","Medium (Topical Cluster)",follow
+/blog,/games/truth-or-dare,"Play Truth or Dare Online","Main Editorial / In-Content","Highest (Core Pillar)",follow
+/blog,/games/spin-the-bottle,"Spin the Bottle Wheel","Main Editorial / In-Content","High (Game Engine)",follow
+/blog,/questions,"Explore Truth Questions","Main Editorial / In-Content","High (Key Feature)",follow
+/blog,/,"ASTERIA","Footer Matrix","High (Hub/Home)",follow
+/blog,/games/truth-or-dare,"Truth or Dare Online","Main Editorial / In-Content","Highest (Core Pillar)",follow
+/blog,/games/never-have-i-ever,"Never Have I Ever Online","Main Editorial / In-Content","High (Game Engine)",follow
+/blog,/games/would-you-rather,"Would You Rather Online","Main Editorial / In-Content","High (Game Engine)",follow
+/blog,/games/most-likely-to,"Most Likely To Online","Main Editorial / In-Content","High (Game Engine)",follow
+/blog,/games/this-or-that,"This or That Gauntlet","Main Editorial / In-Content","High (Game Engine)",follow
+/blog,/games,"View All Games Directory →","Main Editorial / In-Content","High (Game Engine)",follow
+/blog,/games/truth-or-dare,"🎉 Classic Party Deck","Main Editorial / In-Content","Highest (Core Pillar)",follow
+/blog,/games/truth-or-dare,"❤️ Couples &amp; Flirty Deck","Main Editorial / In-Content","Highest (Core Pillar)",follow
+/blog,/games/truth-or-dare,"🍕 Teens &amp; Sleepovers","Main Editorial / In-Content","Highest (Core Pillar)",follow
+/blog,/games/truth-or-dare,"🌶️ Spicy 18+ (Adults)","Main Editorial / In-Content","Highest (Core Pillar)",follow
+/blog,/games/truth-or-dare,"🌟 Family Clean Prompts","Main Editorial / In-Content","Highest (Core Pillar)",follow
+/blog,/custom,"Build a Custom Deck →","Main Editorial / In-Content","High (Key Feature)",follow
+/blog,/questions,"500+ Best Truth or Dare Questions","Main Editorial / In-Content","High (Key Feature)",follow
+/blog,/blog/official-truth-or-dare-rules,"Official Truth or Dare Rules","Main Editorial / In-Content","Medium (Topical Cluster)",follow
+/blog,/blog/50-best-dares-over-facetime,"50 Best FaceTime Dares","Main Editorial / In-Content","Medium (Topical Cluster)",follow
+/blog,/blog/clean-icebreakers-for-work,"Clean Icebreakers for Work","Main Editorial / In-Content","Medium (Topical Cluster)",follow
+/blog,/blog,"All Party Game Guides →","Main Editorial / In-Content","High (Hub/Home)",follow
+/blog,/about,"About Project Asteria","Main Editorial / In-Content","Standard (Trust & Legal)",follow
+/blog,/contact,"Contact &amp; Suggestions","Main Editorial / In-Content","Standard (Trust & Legal)",follow
+/blog,/privacy,"Privacy Policy","Main Editorial / In-Content","Standard (Trust & Legal)",follow
+/blog,/terms,"Terms of Service","Main Editorial / In-Content","Standard (Trust & Legal)",follow
+/blog,/admin,"Admin Control Center","Main Editorial / In-Content","Standard",follow
+/blog,/,"Home","Main Editorial / In-Content","High (Hub/Home)",follow
+/blog,/games,"Games","Main Editorial / In-Content","High (Game Engine)",follow
+/blog,/games/truth-or-dare,"Truth/Dare","Main Editorial / In-Content","Highest (Core Pillar)",follow
+/blog,/games/spin-the-bottle,"Spinner","Main Editorial / In-Content","High (Game Engine)",follow
+/blog,/custom,"Custom","Main Editorial / In-Content","High (Key Feature)",follow
+/blog/official-truth-or-dare-rules,/,"ASTERIA","Header Navigation","High (Hub/Home)",follow
+/blog/official-truth-or-dare-rules,/games,"All Games","Main Editorial / In-Content","High (Game Engine)",follow
+/blog/official-truth-or-dare-rules,/games/truth-or-dare,"Truth or Dare","Main Editorial / In-Content","Highest (Core Pillar)",follow
+/blog/official-truth-or-dare-rules,/games/spin-the-bottle,"Spinner Wheel","Main Editorial / In-Content","High (Game Engine)",follow
+/blog/official-truth-or-dare-rules,/custom,"Custom Deck","Main Editorial / In-Content","High (Key Feature)",follow
+/blog/official-truth-or-dare-rules,/questions,"Question Library","Main Editorial / In-Content","High (Key Feature)",follow
+/blog/official-truth-or-dare-rules,/blog,"Guides","Main Editorial / In-Content","High (Hub/Home)",follow
+/blog/official-truth-or-dare-rules,/,"Room Code","Main Editorial / In-Content","High (Hub/Home)",follow
+/blog/official-truth-or-dare-rules,/admin,"[Icon / Graphical Element]","Main Editorial / In-Content","Standard",follow
+/blog/official-truth-or-dare-rules,/,"Home","Breadcrumbs Navigation","High (Hub/Home)",follow
+/blog/official-truth-or-dare-rules,/blog,"Party Game Guides","Main Editorial / In-Content","High (Hub/Home)",follow
+/blog/official-truth-or-dare-rules,/blog,"Back to Guides Hub","Main Editorial / In-Content","High (Hub/Home)",follow
+/blog/official-truth-or-dare-rules,/games/truth-or-dare,"Play Truth or Dare Online","Main Editorial / In-Content","Highest (Core Pillar)",follow
+/blog/official-truth-or-dare-rules,/blog,"View All Guides →","Lateral Related Games Module","High (Hub/Home)",follow
+/blog/official-truth-or-dare-rules,/blog/50-best-dares-over-facetime,"Couples &amp; Romance 50 Best Dares to Do Over FaceTime, Zoom &amp; Text Keep the romantic spark and laughter alive across different time zones with camera-friendly dare challenges. Read Guide","Lateral Related Games Module","Medium (Topical Cluster)",follow
+/blog/official-truth-or-dare-rules,/blog/clean-icebreakers-for-work,"Team Building Clean Icebreakers &amp; Safe Party Games for Remote Teams Ditch the awkward silence on Zoom calls with engaging, school and workplace safe conversation starters. Read Guide","Main Editorial / In-Content","Medium (Topical Cluster)",follow
+/blog/official-truth-or-dare-rules,/questions,"Explore 500+ Truth or Dare Questions","Main Editorial / In-Content","High (Key Feature)",follow
+/blog/official-truth-or-dare-rules,/games,"View All Party Games","Main Editorial / In-Content","High (Game Engine)",follow
+/blog/official-truth-or-dare-rules,/,"ASTERIA","Footer Matrix","High (Hub/Home)",follow
+/blog/official-truth-or-dare-rules,/games/truth-or-dare,"Truth or Dare Online","Main Editorial / In-Content","Highest (Core Pillar)",follow
+/blog/official-truth-or-dare-rules,/games/spin-the-bottle,"Spin the Bottle Wheel","Main Editorial / In-Content","High (Game Engine)",follow
+/blog/official-truth-or-dare-rules,/games/never-have-i-ever,"Never Have I Ever Online","Main Editorial / In-Content","High (Game Engine)",follow
+/blog/official-truth-or-dare-rules,/games/would-you-rather,"Would You Rather Online","Main Editorial / In-Content","High (Game Engine)",follow
+/blog/official-truth-or-dare-rules,/games/most-likely-to,"Most Likely To Online","Main Editorial / In-Content","High (Game Engine)",follow
+/blog/official-truth-or-dare-rules,/games/this-or-that,"This or That Gauntlet","Main Editorial / In-Content","High (Game Engine)",follow
+/blog/official-truth-or-dare-rules,/games,"View All Games Directory →","Main Editorial / In-Content","High (Game Engine)",follow
+/blog/official-truth-or-dare-rules,/games/truth-or-dare,"🎉 Classic Party Deck","Main Editorial / In-Content","Highest (Core Pillar)",follow
+/blog/official-truth-or-dare-rules,/games/truth-or-dare,"❤️ Couples &amp; Flirty Deck","Main Editorial / In-Content","Highest (Core Pillar)",follow
+/blog/official-truth-or-dare-rules,/games/truth-or-dare,"🍕 Teens &amp; Sleepovers","Main Editorial / In-Content","Highest (Core Pillar)",follow
+/blog/official-truth-or-dare-rules,/games/truth-or-dare,"🌶️ Spicy 18+ (Adults)","Main Editorial / In-Content","Highest (Core Pillar)",follow
+/blog/official-truth-or-dare-rules,/games/truth-or-dare,"🌟 Family Clean Prompts","Main Editorial / In-Content","Highest (Core Pillar)",follow
+/blog/official-truth-or-dare-rules,/custom,"Build a Custom Deck →","Main Editorial / In-Content","High (Key Feature)",follow
+/blog/official-truth-or-dare-rules,/questions,"500+ Best Truth or Dare Questions","Main Editorial / In-Content","High (Key Feature)",follow
+/blog/official-truth-or-dare-rules,/blog/official-truth-or-dare-rules,"Official Truth or Dare Rules","Main Editorial / In-Content","Medium (Topical Cluster)",follow
+/blog/official-truth-or-dare-rules,/blog/50-best-dares-over-facetime,"50 Best FaceTime Dares","Main Editorial / In-Content","Medium (Topical Cluster)",follow
+/blog/official-truth-or-dare-rules,/blog/clean-icebreakers-for-work,"Clean Icebreakers for Work","Main Editorial / In-Content","Medium (Topical Cluster)",follow
+/blog/official-truth-or-dare-rules,/blog,"All Party Game Guides →","Main Editorial / In-Content","High (Hub/Home)",follow
+/blog/official-truth-or-dare-rules,/about,"About Project Asteria","Main Editorial / In-Content","Standard (Trust & Legal)",follow
+/blog/official-truth-or-dare-rules,/contact,"Contact &amp; Suggestions","Main Editorial / In-Content","Standard (Trust & Legal)",follow
+/blog/official-truth-or-dare-rules,/privacy,"Privacy Policy","Main Editorial / In-Content","Standard (Trust & Legal)",follow
+/blog/official-truth-or-dare-rules,/terms,"Terms of Service","Main Editorial / In-Content","Standard (Trust & Legal)",follow
+/blog/official-truth-or-dare-rules,/admin,"Admin Control Center","Main Editorial / In-Content","Standard",follow
+/blog/official-truth-or-dare-rules,/,"Home","Main Editorial / In-Content","High (Hub/Home)",follow
+/blog/official-truth-or-dare-rules,/games,"Games","Main Editorial / In-Content","High (Game Engine)",follow
+/blog/official-truth-or-dare-rules,/games/truth-or-dare,"Truth/Dare","Main Editorial / In-Content","Highest (Core Pillar)",follow
+/blog/official-truth-or-dare-rules,/games/spin-the-bottle,"Spinner","Main Editorial / In-Content","High (Game Engine)",follow
+/blog/official-truth-or-dare-rules,/custom,"Custom","Main Editorial / In-Content","High (Key Feature)",follow
+/blog/50-best-dares-over-facetime,/,"ASTERIA","Header Navigation","High (Hub/Home)",follow
+/blog/50-best-dares-over-facetime,/games,"All Games","Main Editorial / In-Content","High (Game Engine)",follow
+/blog/50-best-dares-over-facetime,/games/truth-or-dare,"Truth or Dare","Main Editorial / In-Content","Highest (Core Pillar)",follow
+/blog/50-best-dares-over-facetime,/games/spin-the-bottle,"Spinner Wheel","Main Editorial / In-Content","High (Game Engine)",follow
+/blog/50-best-dares-over-facetime,/custom,"Custom Deck","Main Editorial / In-Content","High (Key Feature)",follow
+/blog/50-best-dares-over-facetime,/questions,"Question Library","Main Editorial / In-Content","High (Key Feature)",follow
+/blog/50-best-dares-over-facetime,/blog,"Guides","Main Editorial / In-Content","High (Hub/Home)",follow
+/blog/50-best-dares-over-facetime,/,"Room Code","Main Editorial / In-Content","High (Hub/Home)",follow
+/blog/50-best-dares-over-facetime,/admin,"[Icon / Graphical Element]","Main Editorial / In-Content","Standard",follow
+/blog/50-best-dares-over-facetime,/,"Home","Breadcrumbs Navigation","High (Hub/Home)",follow
+/blog/50-best-dares-over-facetime,/blog,"Party Game Guides","Main Editorial / In-Content","High (Hub/Home)",follow
+/blog/50-best-dares-over-facetime,/blog,"Back to Guides Hub","Main Editorial / In-Content","High (Hub/Home)",follow
+/blog/50-best-dares-over-facetime,/games/truth-or-dare,"Play Couples Truth or Dare","Main Editorial / In-Content","Highest (Core Pillar)",follow
+/blog/50-best-dares-over-facetime,/blog,"View All Guides →","Lateral Related Games Module","High (Hub/Home)",follow
+/blog/50-best-dares-over-facetime,/blog/official-truth-or-dare-rules,"Rules &amp; Guides The Official Rules of Truth or Dare: How to Play &amp; House Variations Learn standard turns, pass limits, drinking penalties, and how to keep party games exciting without awkward boundaries. Read Guide","Lateral Related Games Module","Medium (Topical Cluster)",follow
+/blog/50-best-dares-over-facetime,/blog/clean-icebreakers-for-work,"Team Building Clean Icebreakers &amp; Safe Party Games for Remote Teams Ditch the awkward silence on Zoom calls with engaging, school and workplace safe conversation starters. Read Guide","Main Editorial / In-Content","Medium (Topical Cluster)",follow
+/blog/50-best-dares-over-facetime,/questions,"Explore 500+ Truth or Dare Questions","Main Editorial / In-Content","High (Key Feature)",follow
+/blog/50-best-dares-over-facetime,/games,"View All Party Games","Main Editorial / In-Content","High (Game Engine)",follow
+/blog/50-best-dares-over-facetime,/,"ASTERIA","Footer Matrix","High (Hub/Home)",follow
+/blog/50-best-dares-over-facetime,/games/truth-or-dare,"Truth or Dare Online","Main Editorial / In-Content","Highest (Core Pillar)",follow
+/blog/50-best-dares-over-facetime,/games/spin-the-bottle,"Spin the Bottle Wheel","Main Editorial / In-Content","High (Game Engine)",follow
+/blog/50-best-dares-over-facetime,/games/never-have-i-ever,"Never Have I Ever Online","Main Editorial / In-Content","High (Game Engine)",follow
+/blog/50-best-dares-over-facetime,/games/would-you-rather,"Would You Rather Online","Main Editorial / In-Content","High (Game Engine)",follow
+/blog/50-best-dares-over-facetime,/games/most-likely-to,"Most Likely To Online","Main Editorial / In-Content","High (Game Engine)",follow
+/blog/50-best-dares-over-facetime,/games/this-or-that,"This or That Gauntlet","Main Editorial / In-Content","High (Game Engine)",follow
+/blog/50-best-dares-over-facetime,/games,"View All Games Directory →","Main Editorial / In-Content","High (Game Engine)",follow
+/blog/50-best-dares-over-facetime,/games/truth-or-dare,"🎉 Classic Party Deck","Main Editorial / In-Content","Highest (Core Pillar)",follow
+/blog/50-best-dares-over-facetime,/games/truth-or-dare,"❤️ Couples &amp; Flirty Deck","Main Editorial / In-Content","Highest (Core Pillar)",follow
+/blog/50-best-dares-over-facetime,/games/truth-or-dare,"🍕 Teens &amp; Sleepovers","Main Editorial / In-Content","Highest (Core Pillar)",follow
+/blog/50-best-dares-over-facetime,/games/truth-or-dare,"🌶️ Spicy 18+ (Adults)","Main Editorial / In-Content","Highest (Core Pillar)",follow
+/blog/50-best-dares-over-facetime,/games/truth-or-dare,"🌟 Family Clean Prompts","Main Editorial / In-Content","Highest (Core Pillar)",follow
+/blog/50-best-dares-over-facetime,/custom,"Build a Custom Deck →","Main Editorial / In-Content","High (Key Feature)",follow
+/blog/50-best-dares-over-facetime,/questions,"500+ Best Truth or Dare Questions","Main Editorial / In-Content","High (Key Feature)",follow
+/blog/50-best-dares-over-facetime,/blog/official-truth-or-dare-rules,"Official Truth or Dare Rules","Main Editorial / In-Content","Medium (Topical Cluster)",follow
+/blog/50-best-dares-over-facetime,/blog/50-best-dares-over-facetime,"50 Best FaceTime Dares","Main Editorial / In-Content","Medium (Topical Cluster)",follow
+/blog/50-best-dares-over-facetime,/blog/clean-icebreakers-for-work,"Clean Icebreakers for Work","Main Editorial / In-Content","Medium (Topical Cluster)",follow
+/blog/50-best-dares-over-facetime,/blog,"All Party Game Guides →","Main Editorial / In-Content","High (Hub/Home)",follow
+/blog/50-best-dares-over-facetime,/about,"About Project Asteria","Main Editorial / In-Content","Standard (Trust & Legal)",follow
+/blog/50-best-dares-over-facetime,/contact,"Contact &amp; Suggestions","Main Editorial / In-Content","Standard (Trust & Legal)",follow
+/blog/50-best-dares-over-facetime,/privacy,"Privacy Policy","Main Editorial / In-Content","Standard (Trust & Legal)",follow
+/blog/50-best-dares-over-facetime,/terms,"Terms of Service","Main Editorial / In-Content","Standard (Trust & Legal)",follow
+/blog/50-best-dares-over-facetime,/admin,"Admin Control Center","Main Editorial / In-Content","Standard",follow
+/blog/50-best-dares-over-facetime,/,"Home","Main Editorial / In-Content","High (Hub/Home)",follow
+/blog/50-best-dares-over-facetime,/games,"Games","Main Editorial / In-Content","High (Game Engine)",follow
+/blog/50-best-dares-over-facetime,/games/truth-or-dare,"Truth/Dare","Main Editorial / In-Content","Highest (Core Pillar)",follow
+/blog/50-best-dares-over-facetime,/games/spin-the-bottle,"Spinner","Main Editorial / In-Content","High (Game Engine)",follow
+/blog/50-best-dares-over-facetime,/custom,"Custom","Main Editorial / In-Content","High (Key Feature)",follow
+/blog/clean-icebreakers-for-work,/,"ASTERIA","Header Navigation","High (Hub/Home)",follow
+/blog/clean-icebreakers-for-work,/games,"All Games","Main Editorial / In-Content","High (Game Engine)",follow
+/blog/clean-icebreakers-for-work,/games/truth-or-dare,"Truth or Dare","Main Editorial / In-Content","Highest (Core Pillar)",follow
+/blog/clean-icebreakers-for-work,/games/spin-the-bottle,"Spinner Wheel","Main Editorial / In-Content","High (Game Engine)",follow
+/blog/clean-icebreakers-for-work,/custom,"Custom Deck","Main Editorial / In-Content","High (Key Feature)",follow
+/blog/clean-icebreakers-for-work,/questions,"Question Library","Main Editorial / In-Content","High (Key Feature)",follow
+/blog/clean-icebreakers-for-work,/blog,"Guides","Main Editorial / In-Content","High (Hub/Home)",follow
+/blog/clean-icebreakers-for-work,/,"Room Code","Main Editorial / In-Content","High (Hub/Home)",follow
+/blog/clean-icebreakers-for-work,/admin,"[Icon / Graphical Element]","Main Editorial / In-Content","Standard",follow
+/blog/clean-icebreakers-for-work,/,"Home","Breadcrumbs Navigation","High (Hub/Home)",follow
+/blog/clean-icebreakers-for-work,/blog,"Party Game Guides","Main Editorial / In-Content","High (Hub/Home)",follow
+/blog/clean-icebreakers-for-work,/blog,"Back to Guides Hub","Main Editorial / In-Content","High (Hub/Home)",follow
+/blog/clean-icebreakers-for-work,/games/this-or-that,"Play This or That Gauntlet","Main Editorial / In-Content","High (Game Engine)",follow
+/blog/clean-icebreakers-for-work,/blog,"View All Guides →","Lateral Related Games Module","High (Hub/Home)",follow
+/blog/clean-icebreakers-for-work,/blog/official-truth-or-dare-rules,"Rules &amp; Guides The Official Rules of Truth or Dare: How to Play &amp; House Variations Learn standard turns, pass limits, drinking penalties, and how to keep party games exciting without awkward boundaries. Read Guide","Lateral Related Games Module","Medium (Topical Cluster)",follow
+/blog/clean-icebreakers-for-work,/blog/50-best-dares-over-facetime,"Couples &amp; Romance 50 Best Dares to Do Over FaceTime, Zoom &amp; Text Keep the romantic spark and laughter alive across different time zones with camera-friendly dare challenges. Read Guide","Main Editorial / In-Content","Medium (Topical Cluster)",follow
+/blog/clean-icebreakers-for-work,/questions,"Explore 500+ Truth or Dare Questions","Main Editorial / In-Content","High (Key Feature)",follow
+/blog/clean-icebreakers-for-work,/games,"View All Party Games","Main Editorial / In-Content","High (Game Engine)",follow
+/blog/clean-icebreakers-for-work,/,"ASTERIA","Footer Matrix","High (Hub/Home)",follow
+/blog/clean-icebreakers-for-work,/games/truth-or-dare,"Truth or Dare Online","Main Editorial / In-Content","Highest (Core Pillar)",follow
+/blog/clean-icebreakers-for-work,/games/spin-the-bottle,"Spin the Bottle Wheel","Main Editorial / In-Content","High (Game Engine)",follow
+/blog/clean-icebreakers-for-work,/games/never-have-i-ever,"Never Have I Ever Online","Main Editorial / In-Content","High (Game Engine)",follow
+/blog/clean-icebreakers-for-work,/games/would-you-rather,"Would You Rather Online","Main Editorial / In-Content","High (Game Engine)",follow
+/blog/clean-icebreakers-for-work,/games/most-likely-to,"Most Likely To Online","Main Editorial / In-Content","High (Game Engine)",follow
+/blog/clean-icebreakers-for-work,/games/this-or-that,"This or That Gauntlet","Main Editorial / In-Content","High (Game Engine)",follow
+/blog/clean-icebreakers-for-work,/games,"View All Games Directory →","Main Editorial / In-Content","High (Game Engine)",follow
+/blog/clean-icebreakers-for-work,/games/truth-or-dare,"🎉 Classic Party Deck","Main Editorial / In-Content","Highest (Core Pillar)",follow
+/blog/clean-icebreakers-for-work,/games/truth-or-dare,"❤️ Couples &amp; Flirty Deck","Main Editorial / In-Content","Highest (Core Pillar)",follow
+/blog/clean-icebreakers-for-work,/games/truth-or-dare,"🍕 Teens &amp; Sleepovers","Main Editorial / In-Content","Highest (Core Pillar)",follow
+/blog/clean-icebreakers-for-work,/games/truth-or-dare,"🌶️ Spicy 18+ (Adults)","Main Editorial / In-Content","Highest (Core Pillar)",follow
+/blog/clean-icebreakers-for-work,/games/truth-or-dare,"🌟 Family Clean Prompts","Main Editorial / In-Content","Highest (Core Pillar)",follow
+/blog/clean-icebreakers-for-work,/custom,"Build a Custom Deck →","Main Editorial / In-Content","High (Key Feature)",follow
+/blog/clean-icebreakers-for-work,/questions,"500+ Best Truth or Dare Questions","Main Editorial / In-Content","High (Key Feature)",follow
+/blog/clean-icebreakers-for-work,/blog/official-truth-or-dare-rules,"Official Truth or Dare Rules","Main Editorial / In-Content","Medium (Topical Cluster)",follow
+/blog/clean-icebreakers-for-work,/blog/50-best-dares-over-facetime,"50 Best FaceTime Dares","Main Editorial / In-Content","Medium (Topical Cluster)",follow
+/blog/clean-icebreakers-for-work,/blog/clean-icebreakers-for-work,"Clean Icebreakers for Work","Main Editorial / In-Content","Medium (Topical Cluster)",follow
+/blog/clean-icebreakers-for-work,/blog,"All Party Game Guides →","Main Editorial / In-Content","High (Hub/Home)",follow
+/blog/clean-icebreakers-for-work,/about,"About Project Asteria","Main Editorial / In-Content","Standard (Trust & Legal)",follow
+/blog/clean-icebreakers-for-work,/contact,"Contact &amp; Suggestions","Main Editorial / In-Content","Standard (Trust & Legal)",follow
+/blog/clean-icebreakers-for-work,/privacy,"Privacy Policy","Main Editorial / In-Content","Standard (Trust & Legal)",follow
+/blog/clean-icebreakers-for-work,/terms,"Terms of Service","Main Editorial / In-Content","Standard (Trust & Legal)",follow
+/blog/clean-icebreakers-for-work,/admin,"Admin Control Center","Main Editorial / In-Content","Standard",follow
+/blog/clean-icebreakers-for-work,/,"Home","Main Editorial / In-Content","High (Hub/Home)",follow
+/blog/clean-icebreakers-for-work,/games,"Games","Main Editorial / In-Content","High (Game Engine)",follow
+/blog/clean-icebreakers-for-work,/games/truth-or-dare,"Truth/Dare","Main Editorial / In-Content","Highest (Core Pillar)",follow
+/blog/clean-icebreakers-for-work,/games/spin-the-bottle,"Spinner","Main Editorial / In-Content","High (Game Engine)",follow
+/blog/clean-icebreakers-for-work,/custom,"Custom","Main Editorial / In-Content","High (Key Feature)",follow
+/about,/,"ASTERIA","Header Navigation","High (Hub/Home)",follow
+/about,/games,"All Games","Main Editorial / In-Content","High (Game Engine)",follow
+/about,/games/truth-or-dare,"Truth or Dare","Main Editorial / In-Content","Highest (Core Pillar)",follow
+/about,/games/spin-the-bottle,"Spinner Wheel","Main Editorial / In-Content","High (Game Engine)",follow
+/about,/custom,"Custom Deck","Main Editorial / In-Content","High (Key Feature)",follow
+/about,/questions,"Question Library","Main Editorial / In-Content","High (Key Feature)",follow
+/about,/blog,"Guides","Main Editorial / In-Content","High (Hub/Home)",follow
+/about,/,"Room Code","Main Editorial / In-Content","High (Hub/Home)",follow
+/about,/admin,"[Icon / Graphical Element]","Main Editorial / In-Content","Standard",follow
+/about,/,"Home","Breadcrumbs Navigation","High (Hub/Home)",follow
+/about,/games/truth-or-dare,"Play Truth or Dare Online","Main Editorial / In-Content","Highest (Core Pillar)",follow
+/about,/games,"Browse All Games","Main Editorial / In-Content","High (Game Engine)",follow
+/about,/contact,"Contact Us","Main Editorial / In-Content","Standard (Trust & Legal)",follow
+/about,/,"ASTERIA","Footer Matrix","High (Hub/Home)",follow
+/about,/games/truth-or-dare,"Truth or Dare Online","Main Editorial / In-Content","Highest (Core Pillar)",follow
+/about,/games/spin-the-bottle,"Spin the Bottle Wheel","Main Editorial / In-Content","High (Game Engine)",follow
+/about,/games/never-have-i-ever,"Never Have I Ever Online","Main Editorial / In-Content","High (Game Engine)",follow
+/about,/games/would-you-rather,"Would You Rather Online","Main Editorial / In-Content","High (Game Engine)",follow
+/about,/games/most-likely-to,"Most Likely To Online","Main Editorial / In-Content","High (Game Engine)",follow
+/about,/games/this-or-that,"This or That Gauntlet","Main Editorial / In-Content","High (Game Engine)",follow
+/about,/games,"View All Games Directory →","Main Editorial / In-Content","High (Game Engine)",follow
+/about,/games/truth-or-dare,"🎉 Classic Party Deck","Main Editorial / In-Content","Highest (Core Pillar)",follow
+/about,/games/truth-or-dare,"❤️ Couples &amp; Flirty Deck","Main Editorial / In-Content","Highest (Core Pillar)",follow
+/about,/games/truth-or-dare,"🍕 Teens &amp; Sleepovers","Main Editorial / In-Content","Highest (Core Pillar)",follow
+/about,/games/truth-or-dare,"🌶️ Spicy 18+ (Adults)","Main Editorial / In-Content","Highest (Core Pillar)",follow
+/about,/games/truth-or-dare,"🌟 Family Clean Prompts","Main Editorial / In-Content","Highest (Core Pillar)",follow
+/about,/custom,"Build a Custom Deck →","Main Editorial / In-Content","High (Key Feature)",follow
+/about,/questions,"500+ Best Truth or Dare Questions","Main Editorial / In-Content","High (Key Feature)",follow
+/about,/blog/official-truth-or-dare-rules,"Official Truth or Dare Rules","Main Editorial / In-Content","Medium (Topical Cluster)",follow
+/about,/blog/50-best-dares-over-facetime,"50 Best FaceTime Dares","Main Editorial / In-Content","Medium (Topical Cluster)",follow
+/about,/blog/clean-icebreakers-for-work,"Clean Icebreakers for Work","Main Editorial / In-Content","Medium (Topical Cluster)",follow
+/about,/blog,"All Party Game Guides →","Main Editorial / In-Content","High (Hub/Home)",follow
+/about,/about,"About Project Asteria","Main Editorial / In-Content","Standard (Trust & Legal)",follow
+/about,/contact,"Contact &amp; Suggestions","Main Editorial / In-Content","Standard (Trust & Legal)",follow
+/about,/privacy,"Privacy Policy","Main Editorial / In-Content","Standard (Trust & Legal)",follow
+/about,/terms,"Terms of Service","Main Editorial / In-Content","Standard (Trust & Legal)",follow
+/about,/admin,"Admin Control Center","Main Editorial / In-Content","Standard",follow
+/about,/,"Home","Main Editorial / In-Content","High (Hub/Home)",follow
+/about,/games,"Games","Main Editorial / In-Content","High (Game Engine)",follow
+/about,/games/truth-or-dare,"Truth/Dare","Main Editorial / In-Content","Highest (Core Pillar)",follow
+/about,/games/spin-the-bottle,"Spinner","Main Editorial / In-Content","High (Game Engine)",follow
+/about,/custom,"Custom","Main Editorial / In-Content","High (Key Feature)",follow
+/contact,/,"ASTERIA","Header Navigation","High (Hub/Home)",follow
+/contact,/games,"All Games","Main Editorial / In-Content","High (Game Engine)",follow
+/contact,/games/truth-or-dare,"Truth or Dare","Main Editorial / In-Content","Highest (Core Pillar)",follow
+/contact,/games/spin-the-bottle,"Spinner Wheel","Main Editorial / In-Content","High (Game Engine)",follow
+/contact,/custom,"Custom Deck","Main Editorial / In-Content","High (Key Feature)",follow
+/contact,/questions,"Question Library","Main Editorial / In-Content","High (Key Feature)",follow
+/contact,/blog,"Guides","Main Editorial / In-Content","High (Hub/Home)",follow
+/contact,/,"Room Code","Main Editorial / In-Content","High (Hub/Home)",follow
+/contact,/admin,"[Icon / Graphical Element]","Main Editorial / In-Content","Standard",follow
+/contact,/,"Home","Breadcrumbs Navigation","High (Hub/Home)",follow
+/contact,/,"ASTERIA","Footer Matrix","High (Hub/Home)",follow
+/contact,/games/truth-or-dare,"Truth or Dare Online","Main Editorial / In-Content","Highest (Core Pillar)",follow
+/contact,/games/spin-the-bottle,"Spin the Bottle Wheel","Main Editorial / In-Content","High (Game Engine)",follow
+/contact,/games/never-have-i-ever,"Never Have I Ever Online","Main Editorial / In-Content","High (Game Engine)",follow
+/contact,/games/would-you-rather,"Would You Rather Online","Main Editorial / In-Content","High (Game Engine)",follow
+/contact,/games/most-likely-to,"Most Likely To Online","Main Editorial / In-Content","High (Game Engine)",follow
+/contact,/games/this-or-that,"This or That Gauntlet","Main Editorial / In-Content","High (Game Engine)",follow
+/contact,/games,"View All Games Directory →","Main Editorial / In-Content","High (Game Engine)",follow
+/contact,/games/truth-or-dare,"🎉 Classic Party Deck","Main Editorial / In-Content","Highest (Core Pillar)",follow
+/contact,/games/truth-or-dare,"❤️ Couples &amp; Flirty Deck","Main Editorial / In-Content","Highest (Core Pillar)",follow
+/contact,/games/truth-or-dare,"🍕 Teens &amp; Sleepovers","Main Editorial / In-Content","Highest (Core Pillar)",follow
+/contact,/games/truth-or-dare,"🌶️ Spicy 18+ (Adults)","Main Editorial / In-Content","Highest (Core Pillar)",follow
+/contact,/games/truth-or-dare,"🌟 Family Clean Prompts","Main Editorial / In-Content","Highest (Core Pillar)",follow
+/contact,/custom,"Build a Custom Deck →","Main Editorial / In-Content","High (Key Feature)",follow
+/contact,/questions,"500+ Best Truth or Dare Questions","Main Editorial / In-Content","High (Key Feature)",follow
+/contact,/blog/official-truth-or-dare-rules,"Official Truth or Dare Rules","Main Editorial / In-Content","Medium (Topical Cluster)",follow
+/contact,/blog/50-best-dares-over-facetime,"50 Best FaceTime Dares","Main Editorial / In-Content","Medium (Topical Cluster)",follow
+/contact,/blog/clean-icebreakers-for-work,"Clean Icebreakers for Work","Main Editorial / In-Content","Medium (Topical Cluster)",follow
+/contact,/blog,"All Party Game Guides →","Main Editorial / In-Content","High (Hub/Home)",follow
+/contact,/about,"About Project Asteria","Main Editorial / In-Content","Standard (Trust & Legal)",follow
+/contact,/contact,"Contact &amp; Suggestions","Main Editorial / In-Content","Standard (Trust & Legal)",follow
+/contact,/privacy,"Privacy Policy","Main Editorial / In-Content","Standard (Trust & Legal)",follow
+/contact,/terms,"Terms of Service","Main Editorial / In-Content","Standard (Trust & Legal)",follow
+/contact,/admin,"Admin Control Center","Main Editorial / In-Content","Standard",follow
+/contact,/,"Home","Main Editorial / In-Content","High (Hub/Home)",follow
+/contact,/games,"Games","Main Editorial / In-Content","High (Game Engine)",follow
+/contact,/games/truth-or-dare,"Truth/Dare","Main Editorial / In-Content","Highest (Core Pillar)",follow
+/contact,/games/spin-the-bottle,"Spinner","Main Editorial / In-Content","High (Game Engine)",follow
+/contact,/custom,"Custom","Main Editorial / In-Content","High (Key Feature)",follow
+/privacy,/,"ASTERIA","Header Navigation","High (Hub/Home)",follow
+/privacy,/games,"All Games","Main Editorial / In-Content","High (Game Engine)",follow
+/privacy,/games/truth-or-dare,"Truth or Dare","Main Editorial / In-Content","Highest (Core Pillar)",follow
+/privacy,/games/spin-the-bottle,"Spinner Wheel","Main Editorial / In-Content","High (Game Engine)",follow
+/privacy,/custom,"Custom Deck","Main Editorial / In-Content","High (Key Feature)",follow
+/privacy,/questions,"Question Library","Main Editorial / In-Content","High (Key Feature)",follow
+/privacy,/blog,"Guides","Main Editorial / In-Content","High (Hub/Home)",follow
+/privacy,/,"Room Code","Main Editorial / In-Content","High (Hub/Home)",follow
+/privacy,/admin,"[Icon / Graphical Element]","Main Editorial / In-Content","Standard",follow
+/privacy,/,"Home","Breadcrumbs Navigation","High (Hub/Home)",follow
+/privacy,/,"ASTERIA","Footer Matrix","High (Hub/Home)",follow
+/privacy,/games/truth-or-dare,"Truth or Dare Online","Main Editorial / In-Content","Highest (Core Pillar)",follow
+/privacy,/games/spin-the-bottle,"Spin the Bottle Wheel","Main Editorial / In-Content","High (Game Engine)",follow
+/privacy,/games/never-have-i-ever,"Never Have I Ever Online","Main Editorial / In-Content","High (Game Engine)",follow
+/privacy,/games/would-you-rather,"Would You Rather Online","Main Editorial / In-Content","High (Game Engine)",follow
+/privacy,/games/most-likely-to,"Most Likely To Online","Main Editorial / In-Content","High (Game Engine)",follow
+/privacy,/games/this-or-that,"This or That Gauntlet","Main Editorial / In-Content","High (Game Engine)",follow
+/privacy,/games,"View All Games Directory →","Main Editorial / In-Content","High (Game Engine)",follow
+/privacy,/games/truth-or-dare,"🎉 Classic Party Deck","Main Editorial / In-Content","Highest (Core Pillar)",follow
+/privacy,/games/truth-or-dare,"❤️ Couples &amp; Flirty Deck","Main Editorial / In-Content","Highest (Core Pillar)",follow
+/privacy,/games/truth-or-dare,"🍕 Teens &amp; Sleepovers","Main Editorial / In-Content","Highest (Core Pillar)",follow
+/privacy,/games/truth-or-dare,"🌶️ Spicy 18+ (Adults)","Main Editorial / In-Content","Highest (Core Pillar)",follow
+/privacy,/games/truth-or-dare,"🌟 Family Clean Prompts","Main Editorial / In-Content","Highest (Core Pillar)",follow
+/privacy,/custom,"Build a Custom Deck →","Main Editorial / In-Content","High (Key Feature)",follow
+/privacy,/questions,"500+ Best Truth or Dare Questions","Main Editorial / In-Content","High (Key Feature)",follow
+/privacy,/blog/official-truth-or-dare-rules,"Official Truth or Dare Rules","Main Editorial / In-Content","Medium (Topical Cluster)",follow
+/privacy,/blog/50-best-dares-over-facetime,"50 Best FaceTime Dares","Main Editorial / In-Content","Medium (Topical Cluster)",follow
+/privacy,/blog/clean-icebreakers-for-work,"Clean Icebreakers for Work","Main Editorial / In-Content","Medium (Topical Cluster)",follow
+/privacy,/blog,"All Party Game Guides →","Main Editorial / In-Content","High (Hub/Home)",follow
+/privacy,/about,"About Project Asteria","Main Editorial / In-Content","Standard (Trust & Legal)",follow
+/privacy,/contact,"Contact &amp; Suggestions","Main Editorial / In-Content","Standard (Trust & Legal)",follow
+/privacy,/privacy,"Privacy Policy","Main Editorial / In-Content","Standard (Trust & Legal)",follow
+/privacy,/terms,"Terms of Service","Main Editorial / In-Content","Standard (Trust & Legal)",follow
+/privacy,/admin,"Admin Control Center","Main Editorial / In-Content","Standard",follow
+/privacy,/,"Home","Main Editorial / In-Content","High (Hub/Home)",follow
+/privacy,/games,"Games","Main Editorial / In-Content","High (Game Engine)",follow
+/privacy,/games/truth-or-dare,"Truth/Dare","Main Editorial / In-Content","Highest (Core Pillar)",follow
+/privacy,/games/spin-the-bottle,"Spinner","Main Editorial / In-Content","High (Game Engine)",follow
+/privacy,/custom,"Custom","Main Editorial / In-Content","High (Key Feature)",follow
+/terms,/,"ASTERIA","Header Navigation","High (Hub/Home)",follow
+/terms,/games,"All Games","Main Editorial / In-Content","High (Game Engine)",follow
+/terms,/games/truth-or-dare,"Truth or Dare","Main Editorial / In-Content","Highest (Core Pillar)",follow
+/terms,/games/spin-the-bottle,"Spinner Wheel","Main Editorial / In-Content","High (Game Engine)",follow
+/terms,/custom,"Custom Deck","Main Editorial / In-Content","High (Key Feature)",follow
+/terms,/questions,"Question Library","Main Editorial / In-Content","High (Key Feature)",follow
+/terms,/blog,"Guides","Main Editorial / In-Content","High (Hub/Home)",follow
+/terms,/,"Room Code","Main Editorial / In-Content","High (Hub/Home)",follow
+/terms,/admin,"[Icon / Graphical Element]","Main Editorial / In-Content","Standard",follow
+/terms,/,"Home","Breadcrumbs Navigation","High (Hub/Home)",follow
+/terms,/,"ASTERIA","Footer Matrix","High (Hub/Home)",follow
+/terms,/games/truth-or-dare,"Truth or Dare Online","Main Editorial / In-Content","Highest (Core Pillar)",follow
+/terms,/games/spin-the-bottle,"Spin the Bottle Wheel","Main Editorial / In-Content","High (Game Engine)",follow
+/terms,/games/never-have-i-ever,"Never Have I Ever Online","Main Editorial / In-Content","High (Game Engine)",follow
+/terms,/games/would-you-rather,"Would You Rather Online","Main Editorial / In-Content","High (Game Engine)",follow
+/terms,/games/most-likely-to,"Most Likely To Online","Main Editorial / In-Content","High (Game Engine)",follow
+/terms,/games/this-or-that,"This or That Gauntlet","Main Editorial / In-Content","High (Game Engine)",follow
+/terms,/games,"View All Games Directory →","Main Editorial / In-Content","High (Game Engine)",follow
+/terms,/games/truth-or-dare,"🎉 Classic Party Deck","Main Editorial / In-Content","Highest (Core Pillar)",follow
+/terms,/games/truth-or-dare,"❤️ Couples &amp; Flirty Deck","Main Editorial / In-Content","Highest (Core Pillar)",follow
+/terms,/games/truth-or-dare,"🍕 Teens &amp; Sleepovers","Main Editorial / In-Content","Highest (Core Pillar)",follow
+/terms,/games/truth-or-dare,"🌶️ Spicy 18+ (Adults)","Main Editorial / In-Content","Highest (Core Pillar)",follow
+/terms,/games/truth-or-dare,"🌟 Family Clean Prompts","Main Editorial / In-Content","Highest (Core Pillar)",follow
+/terms,/custom,"Build a Custom Deck →","Main Editorial / In-Content","High (Key Feature)",follow
+/terms,/questions,"500+ Best Truth or Dare Questions","Main Editorial / In-Content","High (Key Feature)",follow
+/terms,/blog/official-truth-or-dare-rules,"Official Truth or Dare Rules","Main Editorial / In-Content","Medium (Topical Cluster)",follow
+/terms,/blog/50-best-dares-over-facetime,"50 Best FaceTime Dares","Main Editorial / In-Content","Medium (Topical Cluster)",follow
+/terms,/blog/clean-icebreakers-for-work,"Clean Icebreakers for Work","Main Editorial / In-Content","Medium (Topical Cluster)",follow
+/terms,/blog,"All Party Game Guides →","Main Editorial / In-Content","High (Hub/Home)",follow
+/terms,/about,"About Project Asteria","Main Editorial / In-Content","Standard (Trust & Legal)",follow
+/terms,/contact,"Contact &amp; Suggestions","Main Editorial / In-Content","Standard (Trust & Legal)",follow
+/terms,/privacy,"Privacy Policy","Main Editorial / In-Content","Standard (Trust & Legal)",follow
+/terms,/terms,"Terms of Service","Main Editorial / In-Content","Standard (Trust & Legal)",follow
+/terms,/admin,"Admin Control Center","Main Editorial / In-Content","Standard",follow
+/terms,/,"Home","Main Editorial / In-Content","High (Hub/Home)",follow
+/terms,/games,"Games","Main Editorial / In-Content","High (Game Engine)",follow
+/terms,/games/truth-or-dare,"Truth/Dare","Main Editorial / In-Content","Highest (Core Pillar)",follow
+/terms,/games/spin-the-bottle,"Spinner","Main Editorial / In-Content","High (Game Engine)",follow
+/terms,/custom,"Custom","Main Editorial / In-Content","High (Key Feature)",follow
+/admin,/,"ASTERIA","Header Navigation","High (Hub/Home)",follow
+/admin,/games,"All Games","Main Editorial / In-Content","High (Game Engine)",follow
+/admin,/games/truth-or-dare,"Truth or Dare","Main Editorial / In-Content","Highest (Core Pillar)",follow
+/admin,/games/spin-the-bottle,"Spinner Wheel","Main Editorial / In-Content","High (Game Engine)",follow
+/admin,/custom,"Custom Deck","Main Editorial / In-Content","High (Key Feature)",follow
+/admin,/questions,"Question Library","Main Editorial / In-Content","High (Key Feature)",follow
+/admin,/blog,"Guides","Main Editorial / In-Content","High (Hub/Home)",follow
+/admin,/,"Room Code","Main Editorial / In-Content","High (Hub/Home)",follow
+/admin,/admin,"[Icon / Graphical Element]","Main Editorial / In-Content","Standard",follow
+/admin,/,"ASTERIA","Footer Matrix","High (Hub/Home)",follow
+/admin,/games/truth-or-dare,"Truth or Dare Online","Main Editorial / In-Content","Highest (Core Pillar)",follow
+/admin,/games/spin-the-bottle,"Spin the Bottle Wheel","Main Editorial / In-Content","High (Game Engine)",follow
+/admin,/games/never-have-i-ever,"Never Have I Ever Online","Main Editorial / In-Content","High (Game Engine)",follow
+/admin,/games/would-you-rather,"Would You Rather Online","Main Editorial / In-Content","High (Game Engine)",follow
+/admin,/games/most-likely-to,"Most Likely To Online","Main Editorial / In-Content","High (Game Engine)",follow
+/admin,/games/this-or-that,"This or That Gauntlet","Main Editorial / In-Content","High (Game Engine)",follow
+/admin,/games,"View All Games Directory →","Main Editorial / In-Content","High (Game Engine)",follow
+/admin,/games/truth-or-dare,"🎉 Classic Party Deck","Main Editorial / In-Content","Highest (Core Pillar)",follow
+/admin,/games/truth-or-dare,"❤️ Couples &amp; Flirty Deck","Main Editorial / In-Content","Highest (Core Pillar)",follow
+/admin,/games/truth-or-dare,"🍕 Teens &amp; Sleepovers","Main Editorial / In-Content","Highest (Core Pillar)",follow
+/admin,/games/truth-or-dare,"🌶️ Spicy 18+ (Adults)","Main Editorial / In-Content","Highest (Core Pillar)",follow
+/admin,/games/truth-or-dare,"🌟 Family Clean Prompts","Main Editorial / In-Content","Highest (Core Pillar)",follow
+/admin,/custom,"Build a Custom Deck →","Main Editorial / In-Content","High (Key Feature)",follow
+/admin,/questions,"500+ Best Truth or Dare Questions","Main Editorial / In-Content","High (Key Feature)",follow
+/admin,/blog/official-truth-or-dare-rules,"Official Truth or Dare Rules","Main Editorial / In-Content","Medium (Topical Cluster)",follow
+/admin,/blog/50-best-dares-over-facetime,"50 Best FaceTime Dares","Main Editorial / In-Content","Medium (Topical Cluster)",follow
+/admin,/blog/clean-icebreakers-for-work,"Clean Icebreakers for Work","Main Editorial / In-Content","Medium (Topical Cluster)",follow
+/admin,/blog,"All Party Game Guides →","Main Editorial / In-Content","High (Hub/Home)",follow
+/admin,/about,"About Project Asteria","Main Editorial / In-Content","Standard (Trust & Legal)",follow
+/admin,/contact,"Contact &amp; Suggestions","Main Editorial / In-Content","Standard (Trust & Legal)",follow
+/admin,/privacy,"Privacy Policy","Main Editorial / In-Content","Standard (Trust & Legal)",follow
+/admin,/terms,"Terms of Service","Main Editorial / In-Content","Standard (Trust & Legal)",follow
+/admin,/admin,"Admin Control Center","Main Editorial / In-Content","Standard",follow
+/admin,/,"Home","Main Editorial / In-Content","High (Hub/Home)",follow
+/admin,/games,"Games","Main Editorial / In-Content","High (Game Engine)",follow
+/admin,/games/truth-or-dare,"Truth/Dare","Main Editorial / In-Content","Highest (Core Pillar)",follow
+/admin,/games/spin-the-bottle,"Spinner","Main Editorial / In-Content","High (Game Engine)",follow
+/admin,/custom,"Custom","Main Editorial / In-Content","High (Key Feature)",follow

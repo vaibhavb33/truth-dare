@@ -1,7 +1,10 @@
 import React from 'react';
 import type { Metadata } from 'next';
 import { JsonLd } from '@/components/seo/JsonLd';
+import { Breadcrumbs } from '@/components/seo/Breadcrumbs';
 import { TruthOrDareGameClient } from '@/components/games/TruthOrDareGameClient';
+import { TruthOrDareHubLinks } from '@/components/games/TruthOrDareHubLinks';
+import { RelatedGames } from '@/components/games/RelatedGames';
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://truthordarequiz.com';
 
@@ -81,7 +84,19 @@ export default function TruthOrDarePage() {
     <>
       <JsonLd data={todWebAppSchema} />
       <JsonLd data={todBreadcrumbSchema} />
+      <Breadcrumbs
+        items={[
+          { label: 'All Games', href: '/games' },
+          { label: 'Truth or Dare Online' },
+        ]}
+      />
       <TruthOrDareGameClient />
+      <TruthOrDareHubLinks />
+      <RelatedGames
+        currentGameSlug="truth-or-dare"
+        title="More Online Party Games"
+        subtitle="When your group is ready for a change of pace, launch another free game instantly."
+      />
     </>
   );
 }
