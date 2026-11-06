@@ -50,6 +50,7 @@ function TruthOrDareInner() {
   const [drawnCardIds, setDrawnCardIds] = useState<string[]>([]);
   const [isDeckExhausted, setIsDeckExhausted] = useState(false);
   const [showSummaryModal, setShowSummaryModal] = useState(false);
+  const [categoryUnavailableNotice, setCategoryUnavailableNotice] = useState<string | null>(null);
   const [, startTransition] = useTransition();
 
   // Categories Metadata with Localized Names
@@ -141,6 +142,7 @@ function TruthOrDareInner() {
     setActivePlayerIndex(0);
     setDrawnCardIds([]);
     setIsDeckExhausted(false);
+    setCategoryUnavailableNotice(null);
     if (typeof window !== 'undefined') {
       window.scrollTo({ top: 0, behavior: 'instant' });
     }
@@ -156,10 +158,16 @@ function TruthOrDareInner() {
         gameId: 'truth-or-dare',
         categoryId: selectedCategory,
         type,
+        language: locale,
         drawnCardIds,
       });
 
       if (!card || isExhausted) {
+        if (drawnCardIds.length === 0) {
+          setCategoryUnavailableNotice(
+            `No questions currently available in this category for ${locale.toUpperCase()}. Please choose another category.`
+          );
+        }
         setIsDeckExhausted(true);
         setShowSummaryModal(true);
         sound.playVictory();
@@ -167,6 +175,7 @@ function TruthOrDareInner() {
         return;
       }
 
+      setCategoryUnavailableNotice(null);
       setCurrentCard(card);
       setDrawnCardIds((prev) => [...prev, card.id]);
       setIsFlipped(true);
@@ -441,36 +450,50 @@ function TruthOrDareInner() {
             </div>
 
             <div className="space-y-1">
-              <h3 className="font-display font-extrabold text-2xl text-white">{t('game.scoresTitle')}</h3>
+              <h3 className="font-display font-extrabold text-2xl text-white">
+                {categoryUnavailableNotice ? 'Category Unavailable' : t('game.scoresTitle')}
+              </h3>
               <p className="text-xs text-slate-400">
-                You’ve conquered all cards in this category deck without repetition!
+                {categoryUnavailableNotice || 'You’ve conquered all cards in this category deck without repetition!'}
               </p>
             </div>
 
             {/* Leaderboard Table */}
-            <div className="p-4 rounded-2xl bg-canvas-base border border-white/5 space-y-2 text-left">
-              <p className="text-xs font-bold text-slate-300 uppercase tracking-wider mb-2">Final Scores:</p>
-              {players
-                .slice()
-                .sort((a, b) => b.score - a.score)
-                .map((p, idx) => (
-                  <div key={p.id} className="flex items-center justify-between text-xs py-1 border-b border-white/5">
-                    <span className="font-semibold text-white">
-                      #{idx + 1} {p.name}
-                    </span>
-                    <span className="text-brand-400 font-mono font-bold">
-                      {p.score} pts ({p.skips} skips)
-                    </span>
-                  </div>
-                ))}
-            </div>
+            {!categoryUnavailableNotice && (
+              <div className="p-4 rounded-2xl bg-canvas-base border border-white/5 space-y-2 text-left">
+                <p className="text-xs font-bold text-slate-300 uppercase tracking-wider mb-2">Final Scores:</p>
+                {players
+                  .slice()
+                  .sort((a, b) => b.score - a.score)
+                  .map((p, idx) => (
+                    <div key={p.id} className="flex items-center justify-between text-xs py-1 border-b border-white/5">
+                      <span className="font-semibold text-white">
+                        #{idx + 1} {p.name}
+                      </span>
+                      <span className="text-brand-400 font-mono font-bold">
+                        {p.score} pts ({p.skips} skips)
+                      </span>
+                    </div>
+                  ))}
+              </div>
+            )}
 
             <div className="flex flex-col gap-2">
-              <Button variant="primary" size="lg" onClick={handleResetSession} className="w-full">
-                {t('game.playAgain')}
-              </Button>
-              <Button variant="secondary" size="md" onClick={() => setIsPlaying(false)} className="w-full">
-                {t('game.backToSetup')}
+              {!categoryUnavailableNotice && (
+                <Button variant="primary" size="lg" onClick={handleResetSession} className="w-full">
+                  {t('game.playAgain')}
+                </Button>
+              )}
+              <Button
+                variant={categoryUnavailableNotice ? 'primary' : 'secondary'}
+                size={categoryUnavailableNotice ? 'lg' : 'md'}
+                onClick={() => {
+                  setShowSummaryModal(false);
+                  setIsPlaying(false);
+                }}
+                className="w-full"
+              >
+                {categoryUnavailableNotice ? 'Choose Another Category' : t('game.backToSetup')}
               </Button>
             </div>
           </div>

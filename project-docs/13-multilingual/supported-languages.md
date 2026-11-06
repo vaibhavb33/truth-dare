@@ -110,3 +110,4 @@ Literal translations of game terms often fail in social party settings. Asteria 
 ---
 
 *Document approved by Internationalisation Architect — Asteria Platform Launch.*
+

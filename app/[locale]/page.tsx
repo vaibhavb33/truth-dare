@@ -31,3 +31,4 @@ export default async function LocalizedHomePage({ params }: LocalizedHomeProps) 
 
   return <HomeClientContent />;
 }
+

@@ -45,3 +45,4 @@ export default async function LocalizedCustomPage({ params }: LocalizedCustomPro
     </>
   );
 }
+

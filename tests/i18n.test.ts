@@ -88,3 +88,4 @@ describe('Asteria Internationalisation & Multilingual Engine', () => {
     expect(fallback).toEqual(dictionaries.en);
   });
 });
+

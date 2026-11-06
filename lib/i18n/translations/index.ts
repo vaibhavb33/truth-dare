@@ -25,3 +25,4 @@ export function getTranslations(locale: Locale): TranslationDictionary {
 }
 
 export * from './types';
+

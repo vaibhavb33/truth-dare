@@ -150,7 +150,7 @@ export function QuestionsClient() {
                     </span>
 
                     <span className="text-[11px] text-slate-400 font-medium capitalize">
-                      {q.categoryId.replace(/-/g, ' ')} • Lvl {q.intensity}
+                      {(q.categoryId || q.category || 'party').replace(/-/g, ' ')} • Lvl {q.intensity || q.difficulty || 2}
                     </span>
                   </div>
 

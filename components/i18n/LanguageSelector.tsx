@@ -215,3 +215,4 @@ export function LanguageSelector({ variant = 'header', className }: LanguageSele
     </div>
   );
 }
+

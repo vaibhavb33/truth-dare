@@ -170,3 +170,4 @@ export const de: TranslationDictionary = {
     terms: 'AGB',
   },
 };
+

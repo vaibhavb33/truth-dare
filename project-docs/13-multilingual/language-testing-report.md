@@ -162,3 +162,4 @@ Tested across viewport sizes from 360px (mobile) to 1440px (desktop):
 **QA Approved By:**  
 *Senior Full-Stack Developer + Internationalisation Architect*  
 *Asteria Gaming Platform Engineering Team*
+

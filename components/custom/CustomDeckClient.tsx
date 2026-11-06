@@ -71,13 +71,24 @@ export function CustomDeckClient() {
       // Inject into Question Engine so it's playable immediately
       const formatted: Question[] = prompts.map((p) => ({
         id: p.id,
+        game_type: 'truth-or-dare',
+        question_type: p.type,
+        language_code: 'en',
+        category: 'party',
+        difficulty: 3,
+        question_text: p.prompt,
+        content_rating: 'PG-13',
+        age_group: 'all-ages',
+        is_active: true,
+        safety_reviewed: true,
+        created_at: new Date().toISOString(),
+        tags: ['custom'],
         gameId: 'truth-or-dare',
         categoryId: 'custom',
         type: p.type,
         prompt: p.prompt,
         intensity: 3,
         isNsfw: false,
-        tags: ['custom'],
       }));
       questionEngine.addCustomQuestions(formatted);
     }

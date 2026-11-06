@@ -6,7 +6,21 @@ export type GameType =
   | 'most-likely-to' 
   | 'this-or-that';
 
-export type CategoryId = 
+export type QuestionCategory = 
+  | 'funny-truth'
+  | 'funny-dare'
+  | 'friendship'
+  | 'couples'
+  | 'romantic'
+  | 'awkward'
+  | 'embarrassing'
+  | 'personal'
+  | 'family-friendly'
+  | 'party'
+  | 'teen-friendly'
+  | 'icebreaker'
+  | 'creative-challenges'
+  // Legacy preset mappings for backward compatibility
   | 'classic-party' 
   | 'couples-flirty' 
   | 'teens-hangout' 
@@ -14,6 +28,8 @@ export type CategoryId =
   | 'spicy-18' 
   | 'deep-talk'
   | 'custom';
+
+export type CategoryId = QuestionCategory;
 
 export type QuestionType = 
   | 'truth' 
@@ -23,17 +39,34 @@ export type QuestionType =
   | 'most_likely_to' 
   | 'this_or_that';
 
+export type ContentRating = 'G' | 'PG-13' | 'R-18';
+export type AgeGroup = 'kids' | 'teens' | 'adults' | 'all-ages';
+export type SupportedLanguageCode = 'en' | 'hi' | 'es' | 'pt' | 'fr' | 'id' | 'ar' | 'de';
+
 export interface Question {
   id: string;
+  game_type?: GameType;
+  question_type?: QuestionType;
+  language_code?: SupportedLanguageCode;
+  category?: QuestionCategory;
+  difficulty?: 1 | 2 | 3 | 4 | 5;
+  question_text?: string;
+  content_rating?: ContentRating;
+  age_group?: AgeGroup;
+  is_active?: boolean;
+  safety_reviewed?: boolean;
+  created_at?: string;
+  tags?: string[];
+
+  // Backward compatibility alias getters/fields:
+  prompt: string;
   gameId: GameType;
   categoryId: CategoryId;
   type: QuestionType;
-  prompt: string;
-  optionA?: string;
-  optionB?: string;
   intensity: 1 | 2 | 3 | 4 | 5;
   isNsfw: boolean;
-  tags: string[];
+  optionA?: string;
+  optionB?: string;
 }
 
 export interface Player {
@@ -52,6 +85,7 @@ export interface GameSettings {
   allowSkips: boolean;
   drinkingMode: boolean;
   familySafeMode: boolean;
+  language?: SupportedLanguageCode;
 }
 
 export interface GameSessionState {
@@ -98,4 +132,3 @@ export interface CustomDeck {
   }>;
   createdAt: number;
 }
-
