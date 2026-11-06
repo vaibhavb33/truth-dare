@@ -102,3 +102,4 @@ All screenshots were programmatically captured at 2x device scale factor and are
 ---
 
 *Report signed by Senior QA Engineer & Senior Mobile UI/UX Lead.*
+

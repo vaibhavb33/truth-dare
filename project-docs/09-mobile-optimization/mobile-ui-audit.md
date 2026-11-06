@@ -117,3 +117,4 @@ Crucially, none of these defects required abandoning the approved **Asteria visu
 
 *Report prepared by Senior Mobile UI/UX Designer & Senior Frontend Developer.*  
 *All defects empirically reproduced and validated in headless Chromium/WebKit.*
+

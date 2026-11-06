@@ -197,3 +197,4 @@ Added instant and smooth scroll resets in `app/games/truth-or-dare/page.tsx`:
 ---
 
 *Specification verified against Next.js 15 production build with zero compiler warnings.*
+
