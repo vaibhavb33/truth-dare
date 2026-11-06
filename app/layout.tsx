@@ -126,7 +126,7 @@ export default function RootLayout({
       </head>
       <body className="min-h-screen flex flex-col bg-canvas-base text-slate-100 selection:bg-brand-500 selection:text-white">
         <AppHeader />
-        <main className="flex-1 flex flex-col pb-20 md:pb-0">{children}</main>
+        <main className="flex-1 flex flex-col pb-[calc(4.5rem+env(safe-area-inset-bottom,0px))] lg:pb-0">{children}</main>
         <AppFooter />
         <MobileDock />
       </body>

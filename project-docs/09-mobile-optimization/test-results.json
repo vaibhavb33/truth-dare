@@ -1,0 +1,90 @@
+{
+  "viewportsTested": [],
+  "faceVisibilityTest": {
+    "unflippedCorrect": true,
+    "flippedCorrect": true,
+    "frontPointerGated": true,
+    "promptRenderedCleanly": true
+  },
+  "overflowAudit": [
+    {
+      "viewport": "320px (iPhone SE 1st gen)",
+      "width": 320,
+      "hasHorizontalOverflow": false,
+      "status": "PASSED"
+    },
+    {
+      "viewport": "360px (Galaxy S8 / Android small)",
+      "width": 360,
+      "hasHorizontalOverflow": false,
+      "status": "PASSED"
+    },
+    {
+      "viewport": "375px (iPhone SE 2nd gen / iPhone 8)",
+      "width": 375,
+      "hasHorizontalOverflow": false,
+      "status": "PASSED"
+    },
+    {
+      "viewport": "390px (iPhone 12 / 13 / 14)",
+      "width": 390,
+      "hasHorizontalOverflow": false,
+      "status": "PASSED"
+    },
+    {
+      "viewport": "414px (iPhone XR / 11 / Plus)",
+      "width": 414,
+      "hasHorizontalOverflow": false,
+      "status": "PASSED"
+    },
+    {
+      "viewport": "430px (iPhone 14/15/16 Pro Max)",
+      "width": 430,
+      "hasHorizontalOverflow": false,
+      "status": "PASSED"
+    },
+    {
+      "viewport": "480px (Large Phablet)",
+      "width": 480,
+      "hasHorizontalOverflow": false,
+      "status": "PASSED"
+    },
+    {
+      "viewport": "768px (iPad Mini / Tablet)",
+      "width": 768,
+      "hasHorizontalOverflow": false,
+      "status": "PASSED"
+    },
+    {
+      "viewport": "1024px (iPad Pro / Small Laptop)",
+      "width": 1024,
+      "hasHorizontalOverflow": false,
+      "status": "PASSED"
+    },
+    {
+      "viewport": "1280px (Standard Desktop)",
+      "width": 1280,
+      "hasHorizontalOverflow": false,
+      "status": "PASSED"
+    },
+    {
+      "viewport": "1440px (Large Desktop)",
+      "width": 1440,
+      "hasHorizontalOverflow": false,
+      "status": "PASSED"
+    }
+  ],
+  "screenshotsCaptured": [
+    "01-homepage-mobile-390.png",
+    "02-games-directory-mobile-390.png",
+    "03-game-setup-mobile-390.png",
+    "04-gameplay-unflipped-mobile-390.png",
+    "05-question-card-truth-mobile-390.png",
+    "06-question-card-dare-mobile-390.png",
+    "07-bottom-navigation-mobile-390.png",
+    "08-mobile-360-small-screen.png",
+    "09-mobile-430-large-phone.png",
+    "10-tablet-768.png",
+    "11-desktop-1440.png"
+  ]
+}

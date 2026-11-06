@@ -6,16 +6,18 @@ import { HelpCircle, Flame, Sparkles, Copy, Check, ShieldCheck } from 'lucide-re
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/Button';
 import { sound } from '@/lib/audio/soundSynthesizer';
+import { DareTimerRing } from '@/components/game/DareTimerRing';
 
 interface Card3DProps {
   question: Question | null;
   isFlipped: boolean;
   onChooseType: (type: 'truth' | 'dare') => void;
+  timerSeconds?: number;
   className?: string;
   isNsfwMode?: boolean;
 }
 
-export function Card3D({ question, isFlipped, onChooseType, className }: Card3DProps) {
+export function Card3D({ question, isFlipped, onChooseType, timerSeconds = 0, className }: Card3DProps) {
   const isDare = question?.type === 'dare';
   const [copied, setCopied] = useState(false);
 
@@ -29,7 +31,12 @@ export function Card3D({ question, isFlipped, onChooseType, className }: Card3DP
   };
 
   return (
-    <div className={cn('relative w-full max-w-md h-[470px] md:h-[510px] perspective-1000 select-none', className)}>
+    <div
+      className={cn(
+        'relative w-full max-w-[360px] sm:max-w-md h-[400px] sm:h-[450px] md:h-[490px] perspective-1000 select-none mx-auto',
+        className
+      )}
+    >
       <div
         className={cn(
           'w-full h-full preserve-3d flip-spring rounded-3xl relative',
@@ -38,99 +45,123 @@ export function Card3D({ question, isFlipped, onChooseType, className }: Card3DP
       >
         {/* ========================================================
             FRONT FACE: THE CHOICE ARENA (TRUTH VS DARE)
+            Uses .card-face-front + explicit visibility fallback
            ======================================================== */}
         <div
           className={cn(
-            'absolute inset-0 w-full h-full backface-hidden rounded-3xl bg-gradient-to-b from-[#161630] via-surface-elevated to-[#0C0C1C] border border-white/15 shadow-elevation-3 flex flex-col p-6 md:p-8 items-center justify-between text-center overflow-hidden'
+            'absolute inset-0 w-full h-full card-face-front rounded-3xl bg-gradient-to-b from-[#161630] via-surface-elevated to-[#0C0C1C] border border-white/15 shadow-elevation-3 flex flex-col p-5 sm:p-6 md:p-8 items-center justify-between text-center',
+            isFlipped
+              ? 'opacity-0 pointer-events-none [visibility:hidden] transition-[opacity,visibility] duration-200'
+              : 'opacity-100 pointer-events-auto [visibility:visible] transition-[opacity] duration-300 delay-150'
           )}
         >
-          {/* Subtle Background Glow Rings */}
-          <div className="absolute -top-24 -left-24 w-52 h-52 bg-truth-500/15 rounded-full blur-3xl pointer-events-none" />
-          <div className="absolute -bottom-24 -right-24 w-52 h-52 bg-dare-500/15 rounded-full blur-3xl pointer-events-none" />
+          {/* Inner overflow container for decorative ambient blurs ONLY (preserves 3D context on parent) */}
+          <div className="absolute inset-0 rounded-3xl overflow-hidden pointer-events-none">
+            <div className="absolute -top-24 -left-24 w-48 sm:w-52 h-48 sm:h-52 bg-truth-500/15 rounded-full blur-3xl pointer-events-none" />
+            <div className="absolute -bottom-24 -right-24 w-48 sm:w-52 h-48 sm:h-52 bg-dare-500/15 rounded-full blur-3xl pointer-events-none" />
+          </div>
 
           {/* Top Pill Header */}
-          <div className="relative z-10 inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/5 border border-white/10 text-xs font-bold uppercase tracking-wider text-brand-300 shadow-glow-brand backdrop-blur-md">
-            <Sparkles className="w-3.5 h-3.5 text-brand-400" />
+          <div className="relative z-10 inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-[10px] sm:text-xs font-bold uppercase tracking-wider text-brand-300 shadow-glow-brand backdrop-blur-md">
+            <Sparkles className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-brand-400" />
             <span>PICK YOUR POISON</span>
           </div>
 
           {/* Center Emblem & Headline */}
-          <div className="relative z-10 space-y-3 my-auto">
+          <div className="relative z-10 space-y-2 sm:space-y-3 my-auto">
             {/* Visual Emblem */}
-            <div className="w-20 h-20 mx-auto rounded-2xl bg-gradient-to-tr from-brand-600/30 to-surface-highlight border border-brand-400/30 flex items-center justify-center shadow-glow-brand group animate-float">
+            <div className="w-16 h-16 sm:w-20 sm:h-20 mx-auto rounded-2xl bg-gradient-to-tr from-brand-600/30 to-surface-highlight border border-brand-400/30 flex items-center justify-center shadow-glow-brand group animate-float">
               <div className="relative flex items-center justify-center">
-                <HelpCircle className="w-8 h-8 text-truth-400 -translate-x-2 -translate-y-1 drop-shadow-[0_0_12px_rgba(6,182,212,0.8)]" />
-                <Flame className="w-9 h-9 text-dare-400 translate-x-1.5 translate-y-1 drop-shadow-[0_0_12px_rgba(255,92,119,0.8)]" />
+                <HelpCircle className="w-7 h-7 sm:w-8 sm:h-8 text-truth-400 -translate-x-1.5 -translate-y-1 drop-shadow-[0_0_12px_rgba(6,182,212,0.8)]" />
+                <Flame className="w-8 h-8 sm:w-9 sm:h-9 text-dare-400 translate-x-1 translate-y-1 drop-shadow-[0_0_12px_rgba(255,92,119,0.8)]" />
               </div>
             </div>
 
             <div className="space-y-1">
-              <h3 className="font-display font-extrabold text-2xl md:text-3xl text-white tracking-tight">
+              <h3 className="font-display font-extrabold text-xl sm:text-2xl md:text-3xl text-white tracking-tight">
                 Truth or Dare?
               </h3>
-              <p className="text-xs md:text-sm text-slate-400 max-w-xs mx-auto leading-relaxed">
+              <p className="text-[11px] sm:text-xs md:text-sm text-slate-400 max-w-[260px] sm:max-w-xs mx-auto leading-relaxed">
                 Choose wisely. Once selected, your challenge will be locked into the circle.
               </p>
             </div>
           </div>
 
           {/* Dual Decision Cards */}
-          <div className="relative z-10 w-full grid grid-cols-2 gap-3.5 pt-2">
+          <div className="relative z-10 w-full grid grid-cols-2 gap-2.5 sm:gap-3.5 pt-1 sm:pt-2">
             <Button
               variant="truth"
               size="lg"
               onClick={() => onChooseType('truth')}
-              className="w-full flex-col h-28 gap-1.5 rounded-2xl group hover:-translate-y-1"
+              className="w-full flex-col h-22 sm:h-26 md:h-28 gap-1 rounded-2xl group hover:-translate-y-1 min-h-[48px] p-2"
             >
-              <div className="w-9 h-9 rounded-xl bg-white/10 flex items-center justify-center group-hover:scale-110 transition-transform">
-                <HelpCircle className="w-5 h-5 text-white" />
+              <div className="w-7 h-7 sm:w-9 sm:h-9 rounded-xl bg-white/10 flex items-center justify-center group-hover:scale-110 transition-transform shrink-0">
+                <HelpCircle className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
               </div>
-              <span className="text-lg font-black tracking-wider">TRUTH</span>
-              <span className="text-[10px] font-medium text-truth-100/80">Confess Honestly</span>
+              <span className="text-base sm:text-lg font-black tracking-wider">TRUTH</span>
+              <span className="text-[9px] sm:text-[10px] font-medium text-truth-100/80 truncate max-w-full">
+                Confess Honestly
+              </span>
             </Button>
 
             <Button
               variant="dare"
               size="lg"
               onClick={() => onChooseType('dare')}
-              className="w-full flex-col h-28 gap-1.5 rounded-2xl group hover:-translate-y-1"
+              className="w-full flex-col h-22 sm:h-26 md:h-28 gap-1 rounded-2xl group hover:-translate-y-1 min-h-[48px] p-2"
             >
-              <div className="w-9 h-9 rounded-xl bg-white/10 flex items-center justify-center group-hover:scale-110 transition-transform">
-                <Flame className="w-5 h-5 text-white" />
+              <div className="w-7 h-7 sm:w-9 sm:h-9 rounded-xl bg-white/10 flex items-center justify-center group-hover:scale-110 transition-transform shrink-0">
+                <Flame className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
               </div>
-              <span className="text-lg font-black tracking-wider">DARE</span>
-              <span className="text-[10px] font-medium text-dare-100/80">Conquer The Risk</span>
+              <span className="text-base sm:text-lg font-black tracking-wider">DARE</span>
+              <span className="text-[9px] sm:text-[10px] font-medium text-dare-100/80 truncate max-w-full">
+                Conquer The Risk
+              </span>
             </Button>
           </div>
         </div>
 
         {/* ========================================================
             BACK FACE: PROMPT REVEALED ARENA
+            Uses .card-face-back + explicit visibility fallback
            ======================================================== */}
         <div
           className={cn(
-            'absolute inset-0 w-full h-full backface-hidden rotate-y-180 rounded-3xl border shadow-elevation-3 flex flex-col p-6 md:p-8 items-center justify-between text-center overflow-hidden',
+            'absolute inset-0 w-full h-full card-face-back rounded-3xl border shadow-elevation-3 flex flex-col p-5 sm:p-6 md:p-8 items-center justify-between text-center',
             isDare
               ? 'bg-gradient-to-b from-[#240F1D] via-[#160A13] to-[#0D050B] border-dare-400/40 shadow-glow-dare'
-              : 'bg-gradient-to-b from-[#0C1E30] via-[#081320] to-[#040A12] border-truth-400/40 shadow-glow-truth'
+              : 'bg-gradient-to-b from-[#0C1E30] via-[#081320] to-[#040A12] border-truth-400/40 shadow-glow-truth',
+            !isFlipped
+              ? 'opacity-0 pointer-events-none [visibility:hidden] transition-[opacity,visibility] duration-200'
+              : 'opacity-100 pointer-events-auto [visibility:visible] transition-[opacity] duration-300 delay-150'
           )}
         >
-          {/* Subtle Watermark Icon in Background */}
-          <div className="absolute right-0 bottom-0 pointer-events-none opacity-[0.04] translate-x-12 translate-y-12">
-            {isDare ? <Flame className="w-72 h-72 text-white" /> : <HelpCircle className="w-72 h-72 text-white" />}
+          {/* Inner overflow container for watermark */}
+          <div className="absolute inset-0 rounded-3xl overflow-hidden pointer-events-none">
+            <div className="absolute right-0 bottom-0 pointer-events-none opacity-[0.04] translate-x-12 translate-y-12">
+              {isDare ? (
+                <Flame className="w-64 sm:w-72 h-64 sm:h-72 text-white" />
+              ) : (
+                <HelpCircle className="w-64 sm:w-72 h-64 sm:h-72 text-white" />
+              )}
+            </div>
           </div>
 
           {/* Top Header Badge */}
           <div className="relative z-10 flex items-center justify-between w-full">
             <span
               className={cn(
-                'px-3.5 py-1.5 rounded-full text-xs font-black uppercase tracking-wider border shadow-sm flex items-center gap-1.5',
+                'px-3 py-1 rounded-full text-[10px] sm:text-xs font-black uppercase tracking-wider border shadow-sm flex items-center gap-1.5',
                 isDare
                   ? 'bg-dare-500/20 text-dare-300 border-dare-400/40'
                   : 'bg-truth-500/20 text-truth-300 border-truth-400/40'
               )}
             >
-              {isDare ? <Flame className="w-3.5 h-3.5 fill-dare-400 text-dare-400" /> : <HelpCircle className="w-3.5 h-3.5 text-truth-400" />}
+              {isDare ? (
+                <Flame className="w-3.5 h-3.5 fill-dare-400 text-dare-400 shrink-0" />
+              ) : (
+                <HelpCircle className="w-3.5 h-3.5 text-truth-400 shrink-0" />
+              )}
               <span>{isDare ? 'DARE' : 'TRUTH'}</span>
               <span>•</span>
               <span>LVL {question?.intensity || 2}</span>
@@ -138,7 +169,7 @@ export function Card3D({ question, isFlipped, onChooseType, className }: Card3DP
 
             <button
               onClick={handleCopyPrompt}
-              className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-white/5 hover:bg-white/10 text-[11px] font-semibold text-slate-400 hover:text-white transition-colors border border-white/10"
+              className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-white/5 hover:bg-white/10 text-[10px] sm:text-[11px] font-semibold text-slate-400 hover:text-white transition-colors border border-white/10 min-h-[32px]"
               title="Copy prompt text"
             >
               {copied ? <Check className="w-3 h-3 text-emerald-400" /> : <Copy className="w-3 h-3" />}
@@ -146,20 +177,27 @@ export function Card3D({ question, isFlipped, onChooseType, className }: Card3DP
             </button>
           </div>
 
-          {/* Central Question Prompt */}
-          <div className="relative z-10 my-auto px-2 py-4 space-y-4">
-            <p className="font-display font-extrabold text-2xl md:text-3xl text-white leading-relaxed tracking-tight drop-shadow-md">
+          {/* Central Question Prompt & Integrated Timer */}
+          <div className="relative z-10 my-auto px-1 sm:px-2 py-1 sm:py-2 w-full flex flex-col items-center justify-center gap-2.5">
+            <p className="font-display font-extrabold text-lg sm:text-xl md:text-2xl text-white leading-snug sm:leading-relaxed tracking-tight drop-shadow-md text-center break-words max-h-[160px] sm:max-h-[200px] overflow-y-auto w-full">
               {question?.prompt || 'Preparing next challenge...'}
             </p>
+
+            {/* Compact Integrated Dare Timer (Only when Dare & timer > 0) */}
+            {isDare && timerSeconds > 0 && (
+              <div className="animate-fade-in pt-0.5 shrink-0">
+                <DareTimerRing initialSeconds={timerSeconds} compact={true} />
+              </div>
+            )}
           </div>
 
           {/* Footer Safety Indicator */}
-          <div className="relative z-10 w-full pt-2 border-t border-white/10 flex items-center justify-between text-[11px] text-slate-400">
-            <span className="flex items-center gap-1.5 text-slate-300 font-medium">
-              <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
+          <div className="relative z-10 w-full pt-2 border-t border-white/10 flex items-center justify-between text-[10px] sm:text-[11px] text-slate-400">
+            <span className="flex items-center gap-1 text-slate-300 font-medium">
+              <ShieldCheck className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
               <span>Safe Veto Allowed</span>
             </span>
-            <span className="capitalize text-slate-400 font-medium">
+            <span className="capitalize text-slate-400 font-medium truncate max-w-[140px] text-right">
               {question?.categoryId ? question.categoryId.replace(/-/g, ' ') : 'Classic'}
             </span>
           </div>

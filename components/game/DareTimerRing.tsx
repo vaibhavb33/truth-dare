@@ -9,13 +9,14 @@ interface DareTimerRingProps {
   initialSeconds?: number;
   onExpire?: () => void;
   className?: string;
+  compact?: boolean;
 }
 
-export function DareTimerRing({ initialSeconds = 30, onExpire, className }: DareTimerRingProps) {
+export function DareTimerRing({ initialSeconds = 30, onExpire, className, compact = false }: DareTimerRingProps) {
   const [timeLeft, setTimeLeft] = useState(initialSeconds);
   const [isRunning, setIsRunning] = useState(true);
 
-  const radius = 38;
+  const radius = compact ? 26 : 38;
   const circumference = 2 * Math.PI * radius;
   const strokeDashoffset = circumference - (timeLeft / initialSeconds) * circumference;
 
@@ -37,7 +38,6 @@ export function DareTimerRing({ initialSeconds = 30, onExpire, className }: Dare
             if (onExpire) onExpire();
             return 0;
           }
-          // Tick sound & warning haptics
           if (prev <= 5) {
             sound.triggerHaptic(20);
           }
@@ -63,30 +63,35 @@ export function DareTimerRing({ initialSeconds = 30, onExpire, className }: Dare
     sound.triggerHaptic(15);
   };
 
-  // Color dynamics: Emerald (>10s) -> Amber (5-10s) -> Rose (<5s)
   const isUrgent = timeLeft <= 5 && timeLeft > 0;
   const strokeColor = timeLeft > 10 ? '#10B981' : timeLeft > 5 ? '#F59E0B' : '#FF5C77';
 
   return (
-    <div className={cn('flex flex-col items-center gap-2 select-none', className)}>
-      <div className="relative w-24 h-24 flex items-center justify-center">
-        <svg className="w-full h-full transform -rotate-90">
+    <div
+      className={cn(
+        'flex items-center justify-center select-none',
+        compact ? 'gap-2.5 px-3 py-1.5 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-sm' : 'flex-col gap-2',
+        className
+      )}
+    >
+      <div className={cn('relative flex items-center justify-center', compact ? 'w-14 h-14' : 'w-24 h-24')}>
+        <svg className="w-full h-full transform -rotate-90" viewBox={compact ? '0 0 64 64' : '0 0 96 96'}>
           {/* Background Track */}
           <circle
-            cx="48"
-            cy="48"
+            cx={compact ? '32' : '48'}
+            cy={compact ? '32' : '48'}
             r={radius}
-            stroke="rgba(255, 255, 255, 0.1)"
-            strokeWidth="6"
+            stroke="rgba(255, 255, 255, 0.12)"
+            strokeWidth={compact ? '4' : '6'}
             fill="transparent"
           />
           {/* Animated Progress Indicator */}
           <circle
-            cx="48"
-            cy="48"
+            cx={compact ? '32' : '48'}
+            cy={compact ? '32' : '48'}
             r={radius}
             stroke={strokeColor}
-            strokeWidth="6"
+            strokeWidth={compact ? '4' : '6'}
             strokeDasharray={circumference}
             strokeDashoffset={strokeDashoffset}
             strokeLinecap="round"
@@ -96,37 +101,41 @@ export function DareTimerRing({ initialSeconds = 30, onExpire, className }: Dare
         </svg>
 
         {/* Center Countdown Value */}
-        <div className="absolute inset-0 flex flex-col items-center justify-center">
+        <div className="absolute inset-0 flex flex-col items-center justify-center leading-none">
           <span
             className={cn(
-              'font-mono font-bold text-2xl tracking-tighter transition-colors',
+              'font-mono font-bold tracking-tight transition-colors',
+              compact ? 'text-sm' : 'text-2xl tracking-tighter',
               isUrgent ? 'text-dare-400 animate-pulse' : 'text-white'
             )}
           >
             {timeLeft}s
           </span>
-          <span className="text-[10px] text-slate-400 font-medium uppercase tracking-wider">Dare Time</span>
+          {!compact && (
+            <span className="text-[10px] text-slate-400 font-medium uppercase tracking-wider mt-0.5">Dare Time</span>
+          )}
         </div>
       </div>
 
       {/* Control Buttons */}
-      <div className="flex items-center gap-2">
+      <div className={cn('flex items-center gap-1.5', compact ? '' : '')}>
         <button
           onClick={toggleRunning}
           aria-label={isRunning ? 'Pause Timer' : 'Resume Timer'}
-          className="p-1.5 rounded-lg bg-surface-elevated hover:bg-surface-highlight border border-white/10 text-slate-300 hover:text-white"
+          className="p-1.5 rounded-lg bg-surface-elevated hover:bg-surface-highlight border border-white/10 text-slate-300 hover:text-white transition-colors"
+          title={isRunning ? 'Pause' : 'Resume'}
         >
-          {isRunning ? <Pause className="w-3.5 h-3.5" /> : <Play className="w-3.5 h-3.5 text-emerald-400" />}
+          {isRunning ? <Pause className="w-3 h-3 sm:w-3.5 sm:h-3.5" /> : <Play className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-emerald-400" />}
         </button>
         <button
           onClick={resetTimer}
           aria-label="Reset Timer"
-          className="p-1.5 rounded-lg bg-surface-elevated hover:bg-surface-highlight border border-white/10 text-slate-300 hover:text-white"
+          className="p-1.5 rounded-lg bg-surface-elevated hover:bg-surface-highlight border border-white/10 text-slate-300 hover:text-white transition-colors"
+          title="Reset Timer"
         >
-          <RotateCcw className="w-3.5 h-3.5" />
+          <RotateCcw className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
         </button>
       </div>
     </div>
   );
 }
-

@@ -45,7 +45,7 @@ export function AppHeader() {
       </Link>
 
       {/* Desktop Navigation Links with Active Indicator */}
-      <nav className="hidden md:flex items-center gap-1 text-xs font-semibold text-slate-300">
+      <nav className="hidden lg:flex items-center gap-1 text-xs font-semibold text-slate-300">
         {navLinks.map((link) => {
           const isActive = pathname === link.href || (link.href !== '/' && pathname.startsWith(link.href));
           const Icon = link.icon;
