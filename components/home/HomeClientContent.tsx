@@ -21,9 +21,11 @@ import {
 } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { sound } from '@/lib/audio/soundSynthesizer';
+import { useTranslation } from '@/lib/i18n/LanguageContext';
 
 export function HomeClientContent() {
   const router = useRouter();
+  const { t, isRTL } = useTranslation();
   const [roomCodeInput, setRoomCodeInput] = useState('');
   const [joinError, setJoinError] = useState('');
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(null);
@@ -131,32 +133,32 @@ export function HomeClientContent() {
         <div className="max-w-5xl mx-auto text-center space-y-8 relative z-10">
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/5 border border-white/10 text-xs font-semibold text-brand-300 shadow-glow-brand">
             <Sparkles className="w-4 h-4 text-brand-400" />
-            <span>THE NEXT-GEN ONLINE PARTY GAMING PLATFORM</span>
+            <span>{t('home.heroBadge')}</span>
           </div>
 
           <h1 className="font-display font-extrabold text-4xl sm:text-6xl md:text-7xl text-white tracking-tight leading-[1.08]">
-            Unleash Unfiltered <br className="hidden sm:inline" />
+            {t('home.heroTitle')} <br className="hidden sm:inline" />
             <span className="bg-gradient-to-r from-truth-400 via-brand-400 to-dare-400 bg-clip-text text-transparent">
-              Party Gaming Nights.
+              Online Party Games.
             </span>
           </h1>
 
           <p className="text-base sm:text-xl text-slate-300 max-w-2xl mx-auto leading-relaxed">
-            Play <strong>Truth or Dare</strong>, <strong>Spin the Bottle</strong>, and five other social games. Zero app downloads, zero intrusive ads, and real-time multiplayer room synchronization.
+            {t('home.heroSubtitle')}
           </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-2">
             <Link href="/games/truth-or-dare" className="w-full sm:w-auto">
               <Button variant="primary" size="xl" className="w-full sm:w-auto text-lg gap-3">
                 <Flame className="w-6 h-6 text-dare-300 fill-dare-400" />
-                Quick Play (Classic Party)
+                {t('home.quickPlay')}
               </Button>
             </Link>
 
             <Link href="/games" className="w-full sm:w-auto">
               <Button variant="secondary" size="xl" className="w-full sm:w-auto text-lg gap-2">
                 <Compass className="w-5 h-5 text-brand-400" />
-                Explore All Games
+                {t('home.exploreGames')}
               </Button>
             </Link>
           </div>
@@ -181,9 +183,9 @@ export function HomeClientContent() {
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-2">
             <div>
               <span className="text-xs font-bold uppercase tracking-widest text-brand-400">Curated Decks</span>
-              <h2 className="font-display font-bold text-2xl md:text-3xl text-white">Popular Party Categories</h2>
+              <h2 className="font-display font-bold text-2xl md:text-3xl text-white">{t('home.categoriesTitle')}</h2>
             </div>
-            <p className="text-xs text-slate-400">Tailored questions & dares for every crowd dynamic</p>
+            <p className="text-xs text-slate-400">{t('home.categoriesSubtitle')}</p>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
@@ -292,12 +294,12 @@ export function HomeClientContent() {
           </div>
 
           <div className="p-8 rounded-3xl bg-surface-highlight border border-white/10 shadow-elevation-3 space-y-6">
-            <h3 className="font-display font-bold text-xl text-white">Join an Active Party</h3>
+            <h3 className="font-display font-bold text-xl text-white">{t('home.joinRoomTitle')}</h3>
 
             <form onSubmit={handleJoinRoom} className="space-y-4">
               <div className="space-y-1.5">
                 <label htmlFor="room-code" className="text-xs font-semibold text-slate-300 uppercase tracking-wider">
-                  Enter 6-Digit Room Code:
+                  {t('home.roomCodePlaceholder')}:
                 </label>
                 <input
                   id="room-code"
@@ -315,7 +317,7 @@ export function HomeClientContent() {
               </div>
 
               <Button type="submit" variant="primary" size="lg" className="w-full text-base font-bold">
-                Join Room Now →
+                {t('home.joinButton')} →
               </Button>
             </form>
 
@@ -327,7 +329,7 @@ export function HomeClientContent() {
 
             <Link href="/games/truth-or-dare?createRoom=true">
               <Button variant="secondary" size="md" className="w-full">
-                Create a New Room as Host
+                {t('home.createRoomPrompt')}
               </Button>
             </Link>
           </div>

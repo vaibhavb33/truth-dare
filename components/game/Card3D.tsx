@@ -7,6 +7,7 @@ import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/Button';
 import { sound } from '@/lib/audio/soundSynthesizer';
 import { DareTimerRing } from '@/components/game/DareTimerRing';
+import { useTranslation } from '@/lib/i18n/LanguageContext';
 
 interface Card3DProps {
   question: Question | null;
@@ -18,6 +19,7 @@ interface Card3DProps {
 }
 
 export function Card3D({ question, isFlipped, onChooseType, timerSeconds = 0, className }: Card3DProps) {
+  const { t } = useTranslation();
   const isDare = question?.type === 'dare';
   const [copied, setCopied] = useState(false);
 
@@ -55,7 +57,7 @@ export function Card3D({ question, isFlipped, onChooseType, timerSeconds = 0, cl
               : 'opacity-100 pointer-events-auto [visibility:visible] transition-[opacity] duration-300 delay-150'
           )}
         >
-          {/* Inner overflow container for decorative ambient blurs ONLY (preserves 3D context on parent) */}
+          {/* Inner overflow container for decorative ambient blurs */}
           <div className="absolute inset-0 rounded-3xl overflow-hidden pointer-events-none">
             <div className="absolute -top-24 -left-24 w-48 sm:w-52 h-48 sm:h-52 bg-truth-500/15 rounded-full blur-3xl pointer-events-none" />
             <div className="absolute -bottom-24 -right-24 w-48 sm:w-52 h-48 sm:h-52 bg-dare-500/15 rounded-full blur-3xl pointer-events-none" />
@@ -64,7 +66,7 @@ export function Card3D({ question, isFlipped, onChooseType, timerSeconds = 0, cl
           {/* Top Pill Header */}
           <div className="relative z-10 inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-[10px] sm:text-xs font-bold uppercase tracking-wider text-brand-300 shadow-glow-brand backdrop-blur-md">
             <Sparkles className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-brand-400" />
-            <span>PICK YOUR POISON</span>
+            <span>{t('game.choosePath')}</span>
           </div>
 
           {/* Center Emblem & Headline */}
@@ -79,10 +81,10 @@ export function Card3D({ question, isFlipped, onChooseType, timerSeconds = 0, cl
 
             <div className="space-y-1">
               <h3 className="font-display font-extrabold text-xl sm:text-2xl md:text-3xl text-white tracking-tight">
-                Truth or Dare?
+                {t('home.heroTitle')}
               </h3>
               <p className="text-[11px] sm:text-xs md:text-sm text-slate-400 max-w-[260px] sm:max-w-xs mx-auto leading-relaxed">
-                Choose wisely. Once selected, your challenge will be locked into the circle.
+                {t('game.revealQuestion')}
               </p>
             </div>
           </div>
@@ -98,9 +100,9 @@ export function Card3D({ question, isFlipped, onChooseType, timerSeconds = 0, cl
               <div className="w-7 h-7 sm:w-9 sm:h-9 rounded-xl bg-white/10 flex items-center justify-center group-hover:scale-110 transition-transform shrink-0">
                 <HelpCircle className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
               </div>
-              <span className="text-base sm:text-lg font-black tracking-wider">TRUTH</span>
+              <span className="text-base sm:text-lg font-black tracking-wider">{t('game.truth')}</span>
               <span className="text-[9px] sm:text-[10px] font-medium text-truth-100/80 truncate max-w-full">
-                Confess Honestly
+                {t('game.truthSub')}
               </span>
             </Button>
 
@@ -113,9 +115,9 @@ export function Card3D({ question, isFlipped, onChooseType, timerSeconds = 0, cl
               <div className="w-7 h-7 sm:w-9 sm:h-9 rounded-xl bg-white/10 flex items-center justify-center group-hover:scale-110 transition-transform shrink-0">
                 <Flame className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
               </div>
-              <span className="text-base sm:text-lg font-black tracking-wider">DARE</span>
+              <span className="text-base sm:text-lg font-black tracking-wider">{t('game.dare')}</span>
               <span className="text-[9px] sm:text-[10px] font-medium text-dare-100/80 truncate max-w-full">
-                Conquer The Risk
+                {t('game.dareSub')}
               </span>
             </Button>
           </div>
@@ -158,48 +160,50 @@ export function Card3D({ question, isFlipped, onChooseType, timerSeconds = 0, cl
               )}
             >
               {isDare ? (
-                <Flame className="w-3.5 h-3.5 fill-dare-400 text-dare-400 shrink-0" />
+                <>
+                  <Flame className="w-3.5 h-3.5 text-dare-400" />
+                  <span>{t('game.dare')}</span>
+                </>
               ) : (
-                <HelpCircle className="w-3.5 h-3.5 text-truth-400 shrink-0" />
+                <>
+                  <HelpCircle className="w-3.5 h-3.5 text-truth-400" />
+                  <span>{t('game.truth')}</span>
+                </>
               )}
-              <span>{isDare ? 'DARE' : 'TRUTH'}</span>
-              <span>•</span>
-              <span>LVL {question?.intensity || 2}</span>
             </span>
 
+            {/* Copy Prompt Quick Action */}
             <button
               onClick={handleCopyPrompt}
-              className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-white/5 hover:bg-white/10 text-[10px] sm:text-[11px] font-semibold text-slate-400 hover:text-white transition-colors border border-white/10 min-h-[32px]"
-              title="Copy prompt text"
+              aria-label={t('common.copyLink')}
+              className="p-2 rounded-xl bg-white/5 hover:bg-white/10 text-slate-400 hover:text-white transition-colors border border-white/10 active:scale-95"
+              title="Copy challenge text"
             >
-              {copied ? <Check className="w-3 h-3 text-emerald-400" /> : <Copy className="w-3 h-3" />}
-              <span>{copied ? 'Copied!' : 'Copy'}</span>
+              {copied ? (
+                <Check className="w-3.5 h-3.5 text-emerald-400" />
+              ) : (
+                <Copy className="w-3.5 h-3.5 text-slate-400" />
+              )}
             </button>
           </div>
 
-          {/* Central Question Prompt & Integrated Timer */}
-          <div className="relative z-10 my-auto px-1 sm:px-2 py-1 sm:py-2 w-full flex flex-col items-center justify-center gap-2.5">
-            <p className="font-display font-extrabold text-lg sm:text-xl md:text-2xl text-white leading-snug sm:leading-relaxed tracking-tight drop-shadow-md text-center break-words max-h-[160px] sm:max-h-[200px] overflow-y-auto w-full">
-              {question?.prompt || 'Preparing next challenge...'}
+          {/* Center Challenge Statement */}
+          <div className="relative z-10 my-auto py-2 px-1 max-w-full">
+            <p className="font-display font-bold text-base sm:text-lg md:text-xl text-white leading-relaxed line-clamp-6 text-center select-text">
+              {question?.prompt || t('game.revealQuestion')}
             </p>
-
-            {/* Compact Integrated Dare Timer (Only when Dare & timer > 0) */}
-            {isDare && timerSeconds > 0 && (
-              <div className="animate-fade-in pt-0.5 shrink-0">
-                <DareTimerRing initialSeconds={timerSeconds} compact={true} />
-              </div>
-            )}
           </div>
 
-          {/* Footer Safety Indicator */}
-          <div className="relative z-10 w-full pt-2 border-t border-white/10 flex items-center justify-between text-[10px] sm:text-[11px] text-slate-400">
-            <span className="flex items-center gap-1 text-slate-300 font-medium">
-              <ShieldCheck className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
-              <span>Safe Veto Allowed</span>
-            </span>
-            <span className="capitalize text-slate-400 font-medium truncate max-w-[140px] text-right">
-              {question?.categoryId ? question.categoryId.replace(/-/g, ' ') : 'Classic'}
-            </span>
+          {/* Bottom Dare Timer Ring (if Dare with Timer) or Safety Pill */}
+          <div className="relative z-10 w-full flex items-center justify-center pt-1">
+            {isDare && timerSeconds > 0 ? (
+              <DareTimerRing initialSeconds={timerSeconds} />
+            ) : (
+              <div className="inline-flex items-center gap-1.5 text-[11px] text-slate-400 bg-white/5 px-3 py-1 rounded-full border border-white/10">
+                <ShieldCheck className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+                <span className="truncate">{t('game.questionSafeNotice')}</span>
+              </div>
+            )}
           </div>
         </div>
       </div>

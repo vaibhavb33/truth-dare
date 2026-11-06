@@ -6,16 +6,18 @@ import { usePathname } from 'next/navigation';
 import { Home, Compass, Flame, Disc, PlusCircle } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { sound } from '@/lib/audio/soundSynthesizer';
+import { useTranslation } from '@/lib/i18n/LanguageContext';
 
 export function MobileDock() {
   const pathname = usePathname();
+  const { t } = useTranslation();
 
   const navItems = [
-    { label: 'Home', href: '/', icon: Home },
-    { label: 'Games', href: '/games', icon: Compass },
-    { label: 'Truth/Dare', href: '/games/truth-or-dare', icon: Flame },
-    { label: 'Spinner', href: '/games/spin-the-bottle', icon: Disc },
-    { label: 'Custom', href: '/custom', icon: PlusCircle },
+    { label: t('breadcrumbs.home'), href: '/', icon: Home },
+    { label: t('breadcrumbs.games'), href: '/games', icon: Compass },
+    { label: t('nav.truthOrDare'), href: '/games/truth-or-dare', icon: Flame },
+    { label: t('nav.spinnerWheel'), href: '/games/spin-the-bottle', icon: Disc },
+    { label: t('nav.customDeck'), href: '/custom', icon: PlusCircle },
   ];
 
   return (

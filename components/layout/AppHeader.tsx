@@ -6,9 +6,12 @@ import { usePathname } from 'next/navigation';
 import { Volume2, VolumeX, Sparkles, Users, Compass, Shield } from 'lucide-react';
 import { sound } from '@/lib/audio/soundSynthesizer';
 import { cn } from '@/lib/utils';
+import { useTranslation } from '@/lib/i18n/LanguageContext';
+import { LanguageSelector } from '@/components/i18n/LanguageSelector';
 
 export function AppHeader() {
   const pathname = usePathname();
+  const { t } = useTranslation();
   const [isMuted, setIsMuted] = useState(false);
 
   useEffect(() => {
@@ -22,12 +25,12 @@ export function AppHeader() {
   };
 
   const navLinks = [
-    { label: 'All Games', href: '/games', icon: Compass },
-    { label: 'Truth or Dare', href: '/games/truth-or-dare' },
-    { label: 'Spinner Wheel', href: '/games/spin-the-bottle' },
-    { label: 'Custom Deck', href: '/custom' },
-    { label: 'Question Library', href: '/questions' },
-    { label: 'Guides', href: '/blog' },
+    { label: t('nav.allGames'), href: '/games', icon: Compass },
+    { label: t('nav.truthOrDare'), href: '/games/truth-or-dare' },
+    { label: t('nav.spinnerWheel'), href: '/games/spin-the-bottle' },
+    { label: t('nav.customDeck'), href: '/custom' },
+    { label: t('nav.questionLibrary'), href: '/questions' },
+    { label: t('nav.guides'), href: '/blog' },
   ];
 
   return (
@@ -68,21 +71,24 @@ export function AppHeader() {
       </nav>
 
       {/* Header Actions */}
-      <div className="flex items-center gap-2.5">
+      <div className="flex items-center gap-2 sm:gap-2.5">
+        {/* Language Selector Dropdown */}
+        <LanguageSelector variant="header" />
+
         {/* Join Room Quick CTA */}
         <Link
           href="/#join-room"
           className="hidden sm:inline-flex items-center gap-1.5 text-xs font-bold px-3.5 py-2 rounded-xl bg-surface-elevated hover:bg-surface-highlight border border-white/10 hover:border-brand-400/40 text-slate-200 hover:text-white transition-all shadow-sm active:scale-95"
         >
           <Users className="w-3.5 h-3.5 text-brand-400" />
-          <span>Room Code</span>
+          <span>{t('nav.roomCode')}</span>
         </Link>
 
         {/* Master Audio Mute Toggle */}
         <button
           onClick={handleToggleMute}
-          aria-label={isMuted ? 'Unmute Audio' : 'Mute Audio'}
-          title={isMuted ? 'Unmute Audio' : 'Mute Audio'}
+          aria-label={isMuted ? t('nav.unmuteAudio') : t('nav.muteAudio')}
+          title={isMuted ? t('nav.unmuteAudio') : t('nav.muteAudio')}
           className="w-10 h-10 rounded-xl bg-surface-elevated hover:bg-surface-highlight border border-white/10 hover:border-white/25 flex items-center justify-center text-slate-300 hover:text-white transition-all active:scale-95 shadow-sm"
         >
           {isMuted ? (
@@ -95,8 +101,8 @@ export function AppHeader() {
         {/* Admin Link Icon */}
         <Link
           href="/admin"
-          aria-label="Admin Portal"
-          title="Admin Portal"
+          aria-label={t('nav.adminPortal')}
+          title={t('nav.adminPortal')}
           className="w-10 h-10 rounded-xl bg-surface-elevated hover:bg-surface-highlight border border-white/10 hover:border-white/25 flex items-center justify-center text-slate-400 hover:text-white transition-all active:scale-95 shadow-sm"
         >
           <Shield className="w-4 h-4" />

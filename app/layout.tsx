@@ -4,8 +4,11 @@ import { AppHeader } from '@/components/layout/AppHeader';
 import { AppFooter } from '@/components/layout/AppFooter';
 import { MobileDock } from '@/components/layout/MobileDock';
 import { JsonLd } from '@/components/seo/JsonLd';
+import { LanguageProvider } from '@/lib/i18n/LanguageContext';
+import { getLocalizedAlternates } from '@/lib/i18n/seo';
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://truthordarequiz.com';
+const rootAlternates = getLocalizedAlternates('/');
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
@@ -25,6 +28,7 @@ export const metadata: Metadata = {
     'most likely to game',
     'free browser party games',
   ],
+  alternates: rootAlternates,
   authors: [{ name: 'Asteria Gaming Studio' }],
   creator: 'Asteria Studio',
   publisher: 'Asteria Games',
@@ -116,16 +120,18 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link
-          href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap"
+          href="https://fonts.googleapis.com/css2?family=Cairo:wght@500;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&family=Noto+Sans+Devanagari:wght@500;700;800&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap"
           rel="stylesheet"
         />
         <JsonLd data={organizationAndWebsiteSchema} />
       </head>
       <body className="min-h-screen flex flex-col bg-canvas-base text-slate-100 selection:bg-brand-500 selection:text-white">
-        <AppHeader />
-        <main className="flex-1 flex flex-col pb-[calc(4.5rem+env(safe-area-inset-bottom,0px))] lg:pb-0">{children}</main>
-        <AppFooter />
-        <MobileDock />
+        <LanguageProvider>
+          <AppHeader />
+          <main className="flex-1 flex flex-col pb-[calc(4.5rem+env(safe-area-inset-bottom,0px))] lg:pb-0">{children}</main>
+          <AppFooter />
+          <MobileDock />
+        </LanguageProvider>
       </body>
     </html>
   );

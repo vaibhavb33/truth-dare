@@ -1,8 +1,14 @@
+'use client';
+
 import React from 'react';
 import Link from 'next/link';
 import { Sparkles, Heart } from 'lucide-react';
+import { useTranslation } from '@/lib/i18n/LanguageContext';
+import { LanguageSelector } from '@/components/i18n/LanguageSelector';
 
 export function AppFooter() {
+  const { t } = useTranslation();
+
   return (
     <footer className="w-full bg-canvas-deep border-t border-white/10 pt-12 pb-16 px-4 md:px-8 text-slate-400 text-sm">
       <div className="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-8 mb-12">
@@ -15,159 +21,163 @@ export function AppFooter() {
             <span className="font-display font-bold text-lg text-white">ASTERIA</span>
           </Link>
           <p className="text-xs text-slate-400 leading-relaxed">
-            The next-generation online party gaming platform. 100% free, zero ads, zero downloads, and real-time multiplayer synchronization.
+            {t('footer.tagline')}
           </p>
           <div className="p-3 rounded-xl bg-surface-elevated/60 border border-white/5 text-[11px] text-slate-400 leading-relaxed">
-            🛡️ Safe Skipping: We believe in consent and comfort. Players always have the power to veto dares without penalty.
+            🛡️ {t('footer.safeSkipping')}
           </div>
         </div>
 
         {/* Col 2: Party Games */}
         <div className="space-y-3">
-          <h4 className="font-semibold text-white text-xs uppercase tracking-wider">Party Games</h4>
+          <h4 className="font-semibold text-white text-xs uppercase tracking-wider">{t('footer.colGames')}</h4>
           <ul className="space-y-2 text-xs">
             <li>
               <Link href="/games/truth-or-dare" className="hover:text-white transition-colors">
-                Truth or Dare Online
+                {t('gamesList.truthOrDare.playButton')}
               </Link>
             </li>
             <li>
               <Link href="/games/spin-the-bottle" className="hover:text-white transition-colors">
-                Spin the Bottle Wheel
+                {t('gamesList.spinTheBottle.playButton')}
               </Link>
             </li>
             <li>
               <Link href="/games/never-have-i-ever" className="hover:text-white transition-colors">
-                Never Have I Ever Online
+                {t('gamesList.neverHaveIEver.playButton')}
               </Link>
             </li>
             <li>
               <Link href="/games/would-you-rather" className="hover:text-white transition-colors">
-                Would You Rather Online
+                {t('gamesList.wouldYouRather.playButton')}
               </Link>
             </li>
             <li>
               <Link href="/games/most-likely-to" className="hover:text-white transition-colors">
-                Most Likely To Online
+                {t('gamesList.mostLikelyTo.playButton')}
               </Link>
             </li>
             <li>
               <Link href="/games/this-or-that" className="hover:text-white transition-colors">
-                This or That Gauntlet
+                {t('gamesList.thisOrThat.playButton')}
               </Link>
             </li>
             <li>
               <Link href="/games" className="text-brand-400 font-semibold hover:text-brand-300 transition-colors">
-                View All Games Directory →
+                {t('home.exploreGames')} →
               </Link>
             </li>
           </ul>
         </div>
 
-        {/* Col 3: Popular Decks & Categories */}
+        {/* Col 3: Categories & Studio */}
         <div className="space-y-3">
-          <h4 className="font-semibold text-white text-xs uppercase tracking-wider">Game Categories</h4>
+          <h4 className="font-semibold text-white text-xs uppercase tracking-wider">{t('footer.colCategories')}</h4>
           <ul className="space-y-2 text-xs">
             <li>
               <Link href="/games/truth-or-dare?category=classic-party" className="hover:text-white transition-colors">
-                🎉 Classic Party Deck
+                🎉 {t('categories.classicParty.name')}
               </Link>
             </li>
             <li>
               <Link href="/games/truth-or-dare?category=couples-flirty" className="hover:text-white transition-colors">
-                ❤️ Couples & Flirty Deck
+                ❤️ {t('categories.couplesFlirty.name')}
               </Link>
             </li>
             <li>
               <Link href="/games/truth-or-dare?category=teens-hangout" className="hover:text-white transition-colors">
-                🍕 Teens & Sleepovers
+                🍕 {t('categories.teensHangout.name')}
               </Link>
             </li>
             <li>
               <Link href="/games/truth-or-dare?category=spicy-18" className="hover:text-white transition-colors">
-                🌶️ Spicy 18+ (Adults)
+                🌶️ {t('categories.spicy18.name')}
               </Link>
             </li>
             <li>
               <Link href="/games/truth-or-dare?category=family-kids" className="hover:text-white transition-colors">
-                🌟 Family Clean Prompts
+                🌟 {t('categories.familyKids.name')}
               </Link>
             </li>
             <li>
-              <Link href="/custom" className="text-brand-400 font-semibold hover:text-brand-300 transition-colors">
-                Build a Custom Deck →
+              <Link href="/custom" className="text-truth-400 font-semibold hover:text-truth-300 transition-colors">
+                ⚡ {t('nav.customDeck')} →
               </Link>
             </li>
           </ul>
         </div>
 
-        {/* Col 4: Guides & Resources */}
+        {/* Col 4: Guides & Vault */}
         <div className="space-y-3">
-          <h4 className="font-semibold text-white text-xs uppercase tracking-wider">Guides & Vault</h4>
+          <h4 className="font-semibold text-white text-xs uppercase tracking-wider">{t('footer.colGuides')}</h4>
           <ul className="space-y-2 text-xs">
             <li>
               <Link href="/questions" className="hover:text-white transition-colors">
-                500+ Best Truth or Dare Questions
+                📚 {t('nav.questionLibrary')}
               </Link>
             </li>
             <li>
               <Link href="/blog/official-truth-or-dare-rules" className="hover:text-white transition-colors">
-                Official Truth or Dare Rules
+                📖 Official Truth or Dare Rules
               </Link>
             </li>
             <li>
               <Link href="/blog/50-best-dares-over-facetime" className="hover:text-white transition-colors">
-                50 Best FaceTime Dares
+                📱 50 Best FaceTime Dares
               </Link>
             </li>
             <li>
               <Link href="/blog/clean-icebreakers-for-work" className="hover:text-white transition-colors">
-                Clean Icebreakers for Work
+                💼 Clean Icebreakers for Work
               </Link>
             </li>
             <li>
               <Link href="/blog" className="text-brand-400 font-semibold hover:text-brand-300 transition-colors">
-                All Party Game Guides →
+                {t('nav.guides')} →
               </Link>
             </li>
           </ul>
         </div>
 
-        {/* Col 5: Company & Legal */}
+        {/* Col 5: Company, Legal & Language */}
         <div className="space-y-3">
-          <h4 className="font-semibold text-white text-xs uppercase tracking-wider">Company & Legal</h4>
-          <ul className="space-y-2 text-xs">
+          <h4 className="font-semibold text-white text-xs uppercase tracking-wider">{t('footer.colLegal')}</h4>
+          <ul className="space-y-2 text-xs mb-3">
             <li>
               <Link href="/about" className="hover:text-white transition-colors">
-                About Project Asteria
+                {t('breadcrumbs.about')}
               </Link>
             </li>
             <li>
               <Link href="/contact" className="hover:text-white transition-colors">
-                Contact & Suggestions
+                {t('breadcrumbs.contact')}
               </Link>
             </li>
             <li>
               <Link href="/privacy" className="hover:text-white transition-colors">
-                Privacy Policy
+                {t('breadcrumbs.privacy')}
               </Link>
             </li>
             <li>
               <Link href="/terms" className="hover:text-white transition-colors">
-                Terms of Service
+                {t('breadcrumbs.terms')}
               </Link>
             </li>
             <li>
               <Link href="/admin" className="hover:text-white transition-colors text-slate-500 hover:text-slate-400">
-                Admin Control Center
+                {t('nav.adminPortal')}
               </Link>
             </li>
           </ul>
+
+          <div className="pt-2">
+            <LanguageSelector variant="footer" />
+          </div>
         </div>
       </div>
 
       <div className="max-w-7xl mx-auto pt-6 border-t border-white/5 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs">
-        <p>© 2026 Project Asteria. All rights reserved. Crafted for unforgettable party nights.</p>
+        <p>© 2026 Project Asteria. {t('footer.allRightsReserved')}</p>
         <p className="flex items-center gap-1 text-slate-500">
           Built with <Heart className="w-3.5 h-3.5 text-rose-500 fill-rose-500" /> for parties worldwide
         </p>

@@ -24,11 +24,13 @@ import { Button } from '@/components/ui/Button';
 import { sound } from '@/lib/audio/soundSynthesizer';
 import { questionEngine } from '@/lib/questions/engine';
 import { Question, CategoryId, Player } from '@/types';
-
+import { useTranslation } from '@/lib/i18n/LanguageContext';
+import { LanguageSelector } from '@/components/i18n/LanguageSelector';
 
 function TruthOrDareInner() {
   const searchParams = useSearchParams();
   const initialCategory = (searchParams.get('category') as CategoryId) || 'classic-party';
+  const { t, locale, isRTL } = useTranslation();
 
   // Game Setup States
   const [isPlaying, setIsPlaying] = useState(false);
@@ -50,13 +52,43 @@ function TruthOrDareInner() {
   const [showSummaryModal, setShowSummaryModal] = useState(false);
   const [, startTransition] = useTransition();
 
-  // Categories Metadata
+  // Categories Metadata with Localized Names
   const categoriesList = [
-    { id: 'classic-party' as CategoryId, name: 'Classic Party', icon: '🎉', nsfw: false },
-    { id: 'couples-flirty' as CategoryId, name: 'Couples & Flirty', icon: '❤️', nsfw: false },
-    { id: 'teens-hangout' as CategoryId, name: 'Teens & Hangouts', icon: '🍕', nsfw: false },
-    { id: 'spicy-18' as CategoryId, name: 'Spicy 18+', icon: '🌶️', nsfw: true },
-    { id: 'family-kids' as CategoryId, name: 'Family Clean', icon: '🌟', nsfw: false },
+    {
+      id: 'classic-party' as CategoryId,
+      name: t('categories.classicParty.name'),
+      icon: '🎉',
+      nsfw: false,
+      count: t('categories.classicParty.count'),
+    },
+    {
+      id: 'couples-flirty' as CategoryId,
+      name: t('categories.couplesFlirty.name'),
+      icon: '❤️',
+      nsfw: false,
+      count: t('categories.couplesFlirty.count'),
+    },
+    {
+      id: 'teens-hangout' as CategoryId,
+      name: t('categories.teensHangout.name'),
+      icon: '🍕',
+      nsfw: false,
+      count: t('categories.teensHangout.count'),
+    },
+    {
+      id: 'spicy-18' as CategoryId,
+      name: t('categories.spicy18.name'),
+      icon: '🌶️',
+      nsfw: true,
+      count: t('categories.spicy18.count'),
+    },
+    {
+      id: 'family-kids' as CategoryId,
+      name: t('categories.familyKids.name'),
+      icon: '🌟',
+      nsfw: false,
+      count: t('categories.familyKids.count'),
+    },
   ];
 
   // Handle Category Choice with Age Gate
@@ -99,62 +131,62 @@ function TruthOrDareInner() {
     sound.triggerHaptic(15);
   };
 
-  // Start Game Session
+  // Start Session
   const handleStartGame = () => {
-    sound.triggerHaptic(20);
+    sound.triggerHaptic(25);
+    sound.playChime();
     setIsPlaying(true);
     setIsFlipped(false);
     setCurrentCard(null);
+    setActivePlayerIndex(0);
     setDrawnCardIds([]);
     setIsDeckExhausted(false);
-    setActivePlayerIndex(0);
     if (typeof window !== 'undefined') {
       window.scrollTo({ top: 0, behavior: 'instant' });
     }
   };
 
-  // Turn Action: Choose Truth or Dare
+  // Pick Truth or Dare
   const handleChooseType = (type: 'truth' | 'dare') => {
+    sound.triggerHaptic(20);
     sound.playWhoosh();
-    sound.triggerHaptic(25);
-
-    const result = questionEngine.drawNextCard({
-      gameId: 'truth-or-dare',
-      categoryId: selectedCategory,
-      type,
-      drawnCardIds,
-    });
-
-    if (result.isExhausted || !result.card) {
-      setIsDeckExhausted(true);
-      setShowSummaryModal(true);
-      return;
-    }
 
     startTransition(() => {
-      setCurrentCard(result.card);
+      const { card, isExhausted } = questionEngine.drawNextCard({
+        gameId: 'truth-or-dare',
+        categoryId: selectedCategory,
+        type,
+        drawnCardIds,
+      });
+
+      if (!card || isExhausted) {
+        setIsDeckExhausted(true);
+        setShowSummaryModal(true);
+        sound.playVictory();
+        triggerConfetti();
+        return;
+      }
+
+      setCurrentCard(card);
+      setDrawnCardIds((prev) => [...prev, card.id]);
       setIsFlipped(true);
-      setDrawnCardIds((prev) => [...prev, result.card!.id]);
-      sound.playChime();
     });
   };
 
-  // Turn Action: Completed Dare / Truth
+  // Complete Turn (Score Point)
   const handleCompleteTurn = () => {
-    sound.playVictory();
-    sound.triggerHaptic([20, 40, 20, 40, 60]);
-    triggerConfetti();
+    sound.triggerHaptic(20);
+    sound.playChime();
 
     // Increment player score
     setPlayers((prev) =>
-      prev.map((p, idx) => (idx === activePlayerIndex ? { ...p, score: p.score + 1 } : p))
+      prev.map((p, idx) => (idx === activePlayerIndex ? { ...p, score: p.score + 10 } : p))
     );
 
-    // Advance turn
     advanceTurn();
   };
 
-  // Turn Action: Skip / Veto
+  // Skip / Veto Turn
   const handleSkipTurn = () => {
     sound.triggerHaptic(15);
 
@@ -200,23 +232,31 @@ function TruthOrDareInner() {
           VIEW A: SETUP SCREEN (Before Game Starts)
          ========================================================= */}
       {!isPlaying ? (
-        <div className="w-full max-w-2xl space-y-8 my-auto py-6">
+        <div className="w-full max-w-2xl space-y-7 my-auto py-6">
           <div className="text-center space-y-2">
             <span className="text-xs font-bold uppercase tracking-widest text-dare-400">
               Pass & Play Setup
             </span>
             <h1 className="font-display font-extrabold text-3xl md:text-5xl text-white">
-              Truth or Dare
+              {t('home.heroTitle')}
             </h1>
             <p className="text-xs md:text-sm text-slate-400">
-              Configure your game deck and add players to pass the phone around.
+              {t('home.heroSubtitle')}
             </p>
+          </div>
+
+          {/* Phase 2: Game Setup Language Selector */}
+          <div className="space-y-2">
+            <label className="text-xs font-bold uppercase tracking-wider text-slate-300">
+              {t('common.changeLanguage')}:
+            </label>
+            <LanguageSelector variant="gameSetup" />
           </div>
 
           {/* 1. Category Selection */}
           <div className="space-y-3">
             <label className="text-xs font-bold uppercase tracking-wider text-slate-300">
-              1. Choose Game Category:
+              1. {t('game.selectCategory')}:
             </label>
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
               {categoriesList.map((cat) => (
@@ -242,7 +282,7 @@ function TruthOrDareInner() {
           {/* 2. Player Roster Management */}
           <div className="space-y-3">
             <label className="text-xs font-bold uppercase tracking-wider text-slate-300">
-              2. Player Roster ({players.length} Players):
+              2. {t('game.players')} ({players.length}):
             </label>
 
             {/* Chips List */}
@@ -269,14 +309,14 @@ function TruthOrDareInner() {
             <form onSubmit={handleAddPlayer} className="flex gap-2">
               <input
                 type="text"
-                placeholder="Enter player name..."
+                placeholder={t('game.playerNamePlaceholder')}
                 value={newPlayerName}
                 onChange={(e) => setNewPlayerName(e.target.value)}
                 maxLength={20}
                 className="flex-1 h-11 px-4 rounded-xl bg-surface-elevated border border-white/10 text-sm text-white placeholder:text-slate-500 focus:outline-none focus:border-brand-400"
               />
               <Button type="submit" variant="secondary" size="md" className="gap-1.5">
-                <Plus className="w-4 h-4" /> Add
+                <Plus className="w-4 h-4" /> {t('game.addPlayer')}
               </Button>
             </form>
           </div>
@@ -284,7 +324,7 @@ function TruthOrDareInner() {
           {/* 3. Dare Timer Settings */}
           <div className="space-y-3">
             <label className="text-xs font-bold uppercase tracking-wider text-slate-300">
-              3. Dare Timer Preset:
+              3. {t('game.timerDuration')}:
             </label>
             <div className="grid grid-cols-4 gap-2">
               {[0, 15, 30, 60].map((sec) => (
@@ -305,7 +345,7 @@ function TruthOrDareInner() {
 
           {/* Start CTA */}
           <Button variant="primary" size="xl" onClick={handleStartGame} className="w-full text-lg font-bold">
-            Start Game Now →
+            {t('game.launchGame')} →
           </Button>
         </div>
       ) : (
@@ -318,7 +358,7 @@ function TruthOrDareInner() {
             {/* Active Player Pill */}
             <div className="flex items-center gap-1.5 sm:gap-2 px-3 py-1.5 rounded-full bg-brand-500/20 border border-brand-400/40 text-brand-300 shadow-glow-brand truncate max-w-[65%]">
               <Users className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-brand-400 shrink-0" />
-              <span className="truncate">{activePlayer.name}'s Turn</span>
+              <span className="truncate">{t('game.playerTurn', { name: activePlayer.name })}</span>
             </div>
 
             {/* Score & Exit Actions */}
@@ -331,7 +371,7 @@ function TruthOrDareInner() {
                 }}
                 className="px-2.5 py-1 rounded-lg bg-surface-elevated hover:bg-surface-highlight border border-white/10 text-[11px] sm:text-xs text-slate-300 hover:text-white transition-colors min-h-[32px]"
               >
-                Setup
+                {t('game.backToSetup')}
               </button>
             </div>
           </div>
@@ -357,7 +397,7 @@ function TruthOrDareInner() {
                   className="w-full gap-1.5 sm:gap-2 text-xs sm:text-sm font-bold min-h-[48px]"
                 >
                   <SkipForward className="w-4 h-4 sm:w-5 sm:h-5 shrink-0" />
-                  <span className="truncate">Skip / Veto</span>
+                  <span className="truncate">{t('game.skipQuestion')}</span>
                 </Button>
 
                 <Button
@@ -367,12 +407,12 @@ function TruthOrDareInner() {
                   className="w-full gap-1.5 sm:gap-2 text-xs sm:text-sm font-bold min-h-[48px]"
                 >
                   <CheckCircle className="w-4 h-4 sm:w-5 sm:h-5 shrink-0 text-emerald-300" />
-                  <span className="truncate">Completed (+1)</span>
+                  <span className="truncate">{t('game.completedDare')}</span>
                 </Button>
               </div>
             ) : (
               <p className="text-center text-[11px] sm:text-xs text-slate-400 py-1">
-                Tap <strong className="text-truth-300">TRUTH</strong> or <strong className="text-dare-300">DARE</strong> on the card above to reveal your prompt.
+                {t('game.revealQuestion')}
               </p>
             )}
 
@@ -401,7 +441,7 @@ function TruthOrDareInner() {
             </div>
 
             <div className="space-y-1">
-              <h3 className="font-display font-extrabold text-2xl text-white">Deck Completed!</h3>
+              <h3 className="font-display font-extrabold text-2xl text-white">{t('game.scoresTitle')}</h3>
               <p className="text-xs text-slate-400">
                 You’ve conquered all cards in this category deck without repetition!
               </p>
@@ -427,10 +467,10 @@ function TruthOrDareInner() {
 
             <div className="flex flex-col gap-2">
               <Button variant="primary" size="lg" onClick={handleResetSession} className="w-full">
-                Reshuffle Deck & Play Again
+                {t('game.playAgain')}
               </Button>
               <Button variant="secondary" size="md" onClick={() => setIsPlaying(false)} className="w-full">
-                Back to Setup
+                {t('game.backToSetup')}
               </Button>
             </div>
           </div>
