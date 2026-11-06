@@ -28,9 +28,6 @@ export const metadata: Metadata = {
   authors: [{ name: 'Asteria Gaming Studio' }],
   creator: 'Asteria Studio',
   publisher: 'Asteria Games',
-  alternates: {
-    canonical: '/',
-  },
   openGraph: {
     type: 'website',
     locale: 'en_US',

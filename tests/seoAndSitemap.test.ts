@@ -19,6 +19,13 @@ describe('SEO Architecture & Indexability Validation', () => {
     expect(urls).toContain('https://truthordarequiz.com/games/this-or-that');
     expect(urls).toContain('https://truthordarequiz.com/questions');
     expect(urls).toContain('https://truthordarequiz.com/blog');
+    expect(urls).toContain('https://truthordarequiz.com/blog/official-truth-or-dare-rules');
+    expect(urls).toContain('https://truthordarequiz.com/blog/50-best-dares-over-facetime');
+    expect(urls).toContain('https://truthordarequiz.com/blog/clean-icebreakers-for-work');
+    expect(urls).toContain('https://truthordarequiz.com/about');
+    expect(urls).toContain('https://truthordarequiz.com/contact');
+    expect(urls).toContain('https://truthordarequiz.com/privacy');
+    expect(urls).toContain('https://truthordarequiz.com/terms');
 
     // Verify all priorities are valid between 0.0 and 1.0
     sitemapData.forEach((entry) => {

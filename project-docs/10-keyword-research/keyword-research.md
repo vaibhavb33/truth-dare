@@ -277,3 +277,4 @@ In adherence to strict methodology:
 - Search volume metrics are recorded as `Unknown` where verified Google Search Console / Ads API data has not yet collected 30 days of site-specific impressions.
 - Relative volume priority is derived from Google Trends search index ranking and Google Autocomplete position hierarchy.
 - SERP layout characteristics (PAA carousels, Featured Snippets, Knowledge Panels) are confirmed via direct live Google SERP observation.
+

@@ -195,3 +195,4 @@ Each cluster is assigned to a specific **Page Type** (Interactive Engine, Centra
    - When the user wants **detailed gameplay rules, history, or variations**, route to `/blog/official-truth-or-dare-rules`.
 3. **Query Parameter Canonicalization:**
    URL variations such as `/games/truth-or-dare?category=couples-flirty` declare canonical tags pointing cleanly to the parent canonical root or utilize unique indexable landing paths when distinct content warrants indexation.
+

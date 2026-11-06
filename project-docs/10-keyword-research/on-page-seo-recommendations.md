@@ -218,3 +218,4 @@ To maximize topical authority and pass link equity efficiently:
 
 *Specification prepared by Senior SEO Strategist and Keyword Research Specialist.*  
 *Ready for formal team review and approval.*
+

@@ -1,16 +1,83 @@
 import React from 'react';
 import Link from 'next/link';
-import { Sparkles, Shield, Heart, Zap, Play } from 'lucide-react';
+import type { Metadata } from 'next';
+import { Shield, Heart, Zap } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
+import { JsonLd } from '@/components/seo/JsonLd';
 
-export const metadata = {
-  title: 'About Project Asteria — Premium Party Gaming',
-  description: 'Learn why we built Project Asteria: an ad-free, zero-download web party game platform.',
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://truthordarequiz.com';
+
+export const metadata: Metadata = {
+  title: 'About Asteria — Premium Ad-Free Online Party Gaming',
+  description:
+    'Learn why we built Asteria: an ad-free, high-performance web party gaming platform engineered with 3D physics and real-time room synchronization.',
+  alternates: {
+    canonical: `${siteUrl}/about`,
+  },
+  openGraph: {
+    type: 'website',
+    url: `${siteUrl}/about`,
+    title: 'About Asteria — Premium Ad-Free Online Party Gaming',
+    description:
+      'Learn why we built Asteria: an ad-free, high-performance web party gaming platform engineered with 3D physics and real-time room synchronization.',
+    images: [
+      {
+        url: '/og-image.png',
+        width: 1200,
+        height: 630,
+        alt: 'About Project Asteria',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'About Asteria — Premium Ad-Free Online Party Gaming',
+    description:
+      'Learn why we built Asteria: an ad-free, high-performance web party gaming platform engineered with 3D physics and real-time room synchronization.',
+    images: ['/og-image.png'],
+  },
+};
+
+const aboutBreadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    {
+      '@type': 'ListItem',
+      position: 1,
+      name: 'Home',
+      item: siteUrl,
+    },
+    {
+      '@type': 'ListItem',
+      position: 2,
+      name: 'About Asteria',
+      item: `${siteUrl}/about`,
+    },
+  ],
+};
+
+const aboutPageSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'AboutPage',
+  name: 'About Asteria Gaming Studio',
+  description:
+    'Mission, engineering architecture, and principles behind Asteria ad-free web party games.',
+  url: `${siteUrl}/about`,
+  mainEntity: {
+    '@type': 'Organization',
+    name: 'Asteria Party Gaming',
+    url: siteUrl,
+    logo: `${siteUrl}/icon.svg`,
+  },
 };
 
 export default function AboutPage() {
   return (
     <div className="max-w-4xl mx-auto px-4 py-12 md:py-20 space-y-12 flex-1">
+      <JsonLd data={aboutBreadcrumbSchema} />
+      <JsonLd data={aboutPageSchema} />
+
       <div className="text-center space-y-4 max-w-2xl mx-auto">
         <span className="text-xs font-bold uppercase tracking-widest text-brand-400">Our Mission</span>
         <h1 className="font-display font-extrabold text-4xl md:text-5xl text-white">
@@ -61,4 +128,3 @@ export default function AboutPage() {
     </div>
   );
 }
-

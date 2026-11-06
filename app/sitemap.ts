@@ -72,19 +72,19 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.8,
     },
     {
-      url: `${baseUrl}/blog/rules-of-truth-or-dare`,
+      url: `${baseUrl}/blog/official-truth-or-dare-rules`,
       lastModified: now,
       changeFrequency: 'monthly',
       priority: 0.75,
     },
     {
-      url: `${baseUrl}/blog/100-best-truth-or-dare-questions`,
+      url: `${baseUrl}/blog/50-best-dares-over-facetime`,
       lastModified: now,
       changeFrequency: 'monthly',
       priority: 0.75,
     },
     {
-      url: `${baseUrl}/blog/truth-or-dare-questions-for-couples`,
+      url: `${baseUrl}/blog/clean-icebreakers-for-work`,
       lastModified: now,
       changeFrequency: 'monthly',
       priority: 0.75,
@@ -117,4 +117,3 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
   return routes;
 }
-
