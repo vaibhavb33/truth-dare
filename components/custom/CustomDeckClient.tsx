@@ -107,13 +107,13 @@ export function CustomDeckClient() {
   };
 
   return (
-    <div className="w-full max-w-3xl mx-auto px-4 py-8 md:py-12 space-y-8 flex-1">
-      <div className="space-y-2 text-center md:text-left">
+    <div className="w-full max-w-3xl mx-auto px-3 sm:px-4 py-6 sm:py-8 md:py-12 space-y-6 sm:space-y-8 flex-1">
+      <div className="space-y-2 text-center md:text-left px-1">
         <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-brand-500/10 border border-brand-500/20 text-xs font-bold uppercase tracking-wider text-brand-300">
           <Sparkles className="w-3.5 h-3.5 text-brand-400" />
           <span>Personal Deck Studio</span>
         </div>
-        <h1 className="font-display font-extrabold text-3xl md:text-5xl text-white tracking-tight">
+        <h1 className="font-display font-extrabold text-2xl sm:text-3xl md:text-5xl text-white tracking-tight">
           Custom Deck Studio
         </h1>
         <p className="text-xs md:text-sm text-slate-400 max-w-lg">
@@ -122,7 +122,7 @@ export function CustomDeckClient() {
       </div>
 
       {/* Deck Title Card */}
-      <div className="p-6 md:p-8 rounded-3xl bg-surface-elevated/90 border border-white/10 space-y-3 backdrop-blur-sm shadow-elevation-1">
+      <div className="p-4 sm:p-6 md:p-8 rounded-3xl bg-surface-elevated/90 border border-white/10 space-y-3 backdrop-blur-sm shadow-elevation-1">
         <label className="text-xs font-bold uppercase tracking-wider text-slate-300">
           Deck Title:
         </label>
@@ -131,12 +131,12 @@ export function CustomDeckClient() {
           value={deckName}
           onChange={(e) => setDeckName(e.target.value)}
           maxLength={40}
-          className="w-full h-12 px-4 rounded-xl bg-canvas-base border border-white/10 text-base font-bold text-white focus:outline-none focus:border-brand-400 transition-colors"
+          className="w-full h-11 sm:h-12 px-3 sm:px-4 rounded-xl bg-canvas-base border border-white/10 text-sm sm:text-base font-bold text-white focus:outline-none focus:border-brand-400 transition-colors"
         />
       </div>
 
       {/* Add New Prompt Form */}
-      <form onSubmit={handleAddPrompt} className="p-6 md:p-8 rounded-3xl bg-surface-elevated/90 border border-white/10 space-y-4 backdrop-blur-sm shadow-elevation-1">
+      <form onSubmit={handleAddPrompt} className="p-4 sm:p-6 md:p-8 rounded-3xl bg-surface-elevated/90 border border-white/10 space-y-4 backdrop-blur-sm shadow-elevation-1">
         <label className="text-xs font-bold uppercase tracking-wider text-slate-300">
           Add New Prompt:
         </label>
@@ -148,7 +148,7 @@ export function CustomDeckClient() {
               setNewPromptType('truth');
               sound.triggerHaptic(10);
             }}
-            className={`px-4 py-2 rounded-xl text-xs font-black uppercase tracking-wider border transition-all flex items-center gap-1.5 ${
+            className={`px-3 sm:px-4 py-2 rounded-xl text-xs font-black uppercase tracking-wider border transition-all flex items-center gap-1.5 ${
               newPromptType === 'truth'
                 ? 'bg-truth-500/20 border-truth-400 text-truth-300 shadow-glow-truth'
                 : 'bg-canvas-base border-white/10 text-slate-400 hover:text-white'
@@ -163,7 +163,7 @@ export function CustomDeckClient() {
               setNewPromptType('dare');
               sound.triggerHaptic(10);
             }}
-            className={`px-4 py-2 rounded-xl text-xs font-black uppercase tracking-wider border transition-all flex items-center gap-1.5 ${
+            className={`px-3 sm:px-4 py-2 rounded-xl text-xs font-black uppercase tracking-wider border transition-all flex items-center gap-1.5 ${
               newPromptType === 'dare'
                 ? 'bg-dare-500/20 border-dare-400 text-dare-300 shadow-glow-dare'
                 : 'bg-canvas-base border-white/10 text-slate-400 hover:text-white'
@@ -181,33 +181,33 @@ export function CustomDeckClient() {
             value={newPromptText}
             onChange={(e) => setNewPromptText(e.target.value)}
             maxLength={250}
-            className="flex-1 h-12 px-4 rounded-xl bg-canvas-base border border-white/10 text-xs md:text-sm text-white placeholder:text-slate-500 focus:outline-none focus:border-brand-400 transition-colors"
+            className="flex-1 min-w-0 h-11 sm:h-12 px-3 sm:px-4 rounded-xl bg-canvas-base border border-white/10 text-xs md:text-sm text-white placeholder:text-slate-500 focus:outline-none focus:border-brand-400 transition-colors"
           />
-          <Button type="submit" variant="primary" size="md" className="gap-1.5 shrink-0">
+          <Button type="submit" variant="primary" size="md" className="gap-1.5 shrink-0 h-11 sm:h-12 px-4">
             <Plus className="w-4 h-4" /> Add Card
           </Button>
         </div>
       </form>
 
       {/* Prompts List Table */}
-      <div className="p-6 md:p-8 rounded-3xl bg-surface-elevated/90 border border-white/10 space-y-4 backdrop-blur-sm shadow-elevation-1">
+      <div className="p-4 sm:p-6 md:p-8 rounded-3xl bg-surface-elevated/90 border border-white/10 space-y-4 backdrop-blur-sm shadow-elevation-1">
         <div className="flex items-center justify-between">
-          <h3 className="font-display font-bold text-sm text-white uppercase tracking-wider">
+          <h3 className="font-display font-bold text-xs sm:text-sm text-white uppercase tracking-wider">
             Deck Cards ({prompts.length})
           </h3>
-          <span className="text-xs text-slate-400">Min 3 cards to launch</span>
+          <span className="text-[11px] sm:text-xs text-slate-400">Min 3 cards to launch</span>
         </div>
 
         {prompts.length > 0 ? (
-          <div className="space-y-2.5 max-h-80 overflow-y-auto pr-1">
+          <div className="space-y-2.5 max-h-80 overflow-y-auto pr-1 custom-scrollbar">
             {prompts.map((p) => (
               <div
                 key={p.id}
-                className="p-3.5 rounded-2xl bg-surface-highlight border border-white/5 hover:border-white/15 transition-all flex items-center justify-between gap-3 text-xs"
+                className="p-3 sm:p-3.5 rounded-2xl bg-surface-highlight border border-white/5 hover:border-white/15 transition-all flex items-center justify-between gap-2.5 sm:gap-3 text-xs"
               >
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-2.5 sm:gap-3 min-w-0 flex-1">
                   <span
-                    className={`px-2.5 py-1 rounded-lg font-black text-[10px] uppercase tracking-wider border ${
+                    className={`px-2 sm:px-2.5 py-1 rounded-lg font-black text-[10px] uppercase tracking-wider border shrink-0 ${
                       p.type === 'truth'
                         ? 'bg-truth-500/15 text-truth-300 border-truth-400/30'
                         : 'bg-dare-500/15 text-dare-300 border-dare-400/30'
@@ -215,7 +215,7 @@ export function CustomDeckClient() {
                   >
                     {p.type}
                   </span>
-                  <span className="text-white font-medium text-xs md:text-sm leading-relaxed">
+                  <span className="text-white font-medium text-xs md:text-sm leading-relaxed break-words min-w-0">
                     {p.prompt}
                   </span>
                 </div>
@@ -223,6 +223,7 @@ export function CustomDeckClient() {
                   onClick={() => handleRemovePrompt(p.id)}
                   className="text-slate-400 hover:text-rose-400 shrink-0 p-1.5 transition-colors"
                   title="Delete card"
+                  aria-label="Delete card"
                 >
                   <Trash2 className="w-4 h-4" />
                 </button>
@@ -238,12 +239,12 @@ export function CustomDeckClient() {
       </div>
 
       {/* Save & Play Actions */}
-      <div className="flex flex-col sm:flex-row items-center gap-3 pt-2">
+      <div className="flex flex-col sm:flex-row items-center gap-2.5 sm:gap-3 pt-2">
         <Button
           variant="primary"
           size="lg"
           onClick={handleSaveDeck}
-          className="w-full sm:flex-1 font-bold gap-2"
+          className="w-full sm:flex-1 font-bold gap-2 min-h-[48px]"
         >
           {savedSuccess ? (
             <>
@@ -255,13 +256,13 @@ export function CustomDeckClient() {
           )}
         </Button>
 
-        <Button variant="secondary" size="lg" onClick={handleExport} className="w-full sm:w-auto gap-2">
+        <Button variant="secondary" size="lg" onClick={handleExport} className="w-full sm:w-auto gap-2 min-h-[48px]">
           <Download className="w-4 h-4" />
           <span>Export JSON</span>
         </Button>
 
         <Link href="/games/truth-or-dare?category=custom" className="w-full sm:w-auto">
-          <Button variant="dare" size="lg" disabled={prompts.length < 3} className="w-full sm:w-auto gap-2">
+          <Button variant="dare" size="lg" disabled={prompts.length < 3} className="w-full sm:w-auto gap-2 min-h-[48px]">
             <Play className="w-4 h-4 fill-white" />
             <span>Play Deck</span>
           </Button>

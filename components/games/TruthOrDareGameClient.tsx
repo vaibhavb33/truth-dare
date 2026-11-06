@@ -267,21 +267,21 @@ function TruthOrDareInner() {
             <label className="text-xs font-bold uppercase tracking-wider text-slate-300">
               1. {t('game.selectCategory')}:
             </label>
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 sm:gap-2.5">
               {categoriesList.map((cat) => (
                 <button
                   key={cat.id}
                   onClick={() => handleSelectCategory(cat.id)}
-                  className={`p-3.5 rounded-2xl border text-left flex items-center gap-3 transition-all ${
+                  className={`p-2.5 sm:p-3.5 rounded-2xl border text-left flex items-center gap-2.5 sm:gap-3 transition-all ${
                     selectedCategory === cat.id
                       ? 'bg-brand-500/20 border-brand-400 text-white shadow-glow-brand'
                       : 'bg-surface-elevated hover:bg-surface-highlight border-white/10 text-slate-300'
                   }`}
                 >
-                  <span className="text-2xl">{cat.icon}</span>
-                  <div className="overflow-hidden">
+                  <span className="text-xl sm:text-2xl shrink-0">{cat.icon}</span>
+                  <div className="overflow-hidden min-w-0">
                     <p className="font-bold text-xs truncate">{cat.name}</p>
-                    <p className="text-[10px] text-slate-400">{cat.nsfw ? '18+ Mature' : 'All Ages'}</p>
+                    <p className="text-[10px] text-slate-400 truncate">{cat.nsfw ? '18+ Mature' : 'All Ages'}</p>
                   </div>
                 </button>
               ))}
@@ -295,17 +295,18 @@ function TruthOrDareInner() {
             </label>
 
             {/* Chips List */}
-            <div className="flex flex-wrap gap-2">
+            <div className="flex flex-wrap gap-1.5 sm:gap-2">
               {players.map((p) => (
                 <div
                   key={p.id}
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-surface-highlight border border-white/10 text-xs font-semibold text-white"
+                  className="inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-xl bg-surface-highlight border border-white/10 text-xs font-semibold text-white max-w-full"
                 >
-                  <span>{p.name}</span>
+                  <span className="max-w-[110px] sm:max-w-[180px] truncate">{p.name}</span>
                   {players.length > 2 && (
                     <button
                       onClick={() => handleRemovePlayer(p.id)}
-                      className="text-slate-400 hover:text-rose-400 ml-1"
+                      className="text-slate-400 hover:text-rose-400 ml-0.5 sm:ml-1 shrink-0 p-0.5"
+                      aria-label={`Remove ${p.name}`}
                     >
                       <X className="w-3.5 h-3.5" />
                     </button>
@@ -364,22 +365,24 @@ function TruthOrDareInner() {
            ========================================================= */
         <div className="w-full flex-1 flex flex-col items-center justify-between space-y-3 sm:space-y-5 py-1 sm:py-2 max-w-md mx-auto">
           {/* Header Bar: Turn & Progress Indicator */}
-          <div className="w-full flex items-center justify-between text-xs font-semibold px-1 pt-1 gap-2">
+          <div className="w-full flex items-center justify-between text-xs font-semibold px-1 pt-1 gap-1.5 sm:gap-2">
             {/* Active Player Pill */}
-            <div className="flex items-center gap-1.5 sm:gap-2 px-3 py-1.5 rounded-full bg-brand-500/20 border border-brand-400/40 text-brand-300 shadow-glow-brand truncate max-w-[65%]">
+            <div className="flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3 py-1.5 rounded-full bg-brand-500/20 border border-brand-400/40 text-brand-300 shadow-glow-brand min-w-0 flex-1 max-w-[62%] sm:max-w-[65%]">
               <Users className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-brand-400 shrink-0" />
               <span className="truncate">{t('game.playerTurn', { name: activePlayer.name })}</span>
             </div>
 
             {/* Score & Exit Actions */}
-            <div className="flex items-center gap-2 sm:gap-3 shrink-0">
-              <span className="text-slate-400 text-[11px] sm:text-xs font-medium">Score: {activePlayer.score}</span>
+            <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
+              <span className="text-slate-400 text-[10px] sm:text-xs font-medium px-2 py-1 rounded-lg bg-surface-elevated border border-white/5">
+                Score: <strong className="text-white font-mono">{activePlayer.score}</strong>
+              </span>
               <button
                 onClick={() => {
                   setIsPlaying(false);
                   if (typeof window !== 'undefined') window.scrollTo({ top: 0, behavior: 'instant' });
                 }}
-                className="px-2.5 py-1 rounded-lg bg-surface-elevated hover:bg-surface-highlight border border-white/10 text-[11px] sm:text-xs text-slate-300 hover:text-white transition-colors min-h-[32px]"
+                className="px-2 sm:px-2.5 py-1 rounded-lg bg-surface-elevated hover:bg-surface-highlight border border-white/10 text-[10px] sm:text-xs text-slate-300 hover:text-white transition-colors min-h-[30px]"
               >
                 {t('game.backToSetup')}
               </button>
@@ -399,12 +402,12 @@ function TruthOrDareInner() {
           {/* Bottom Action Controls (Thumb Zone) */}
           <div className="w-full max-w-md space-y-2.5 pt-1">
             {isFlipped ? (
-              <div className="grid grid-cols-2 gap-2.5 sm:gap-3">
+              <div className="grid grid-cols-2 gap-2 sm:gap-3">
                 <Button
                   variant="skip"
                   size="lg"
                   onClick={handleSkipTurn}
-                  className="w-full gap-1.5 sm:gap-2 text-xs sm:text-sm font-bold min-h-[48px]"
+                  className="w-full gap-1 sm:gap-2 px-2 sm:px-4 text-xs sm:text-sm font-bold min-h-[48px]"
                 >
                   <SkipForward className="w-4 h-4 sm:w-5 sm:h-5 shrink-0" />
                   <span className="truncate">{t('game.skipQuestion')}</span>
@@ -414,7 +417,7 @@ function TruthOrDareInner() {
                   variant="primary"
                   size="lg"
                   onClick={handleCompleteTurn}
-                  className="w-full gap-1.5 sm:gap-2 text-xs sm:text-sm font-bold min-h-[48px]"
+                  className="w-full gap-1 sm:gap-2 px-2 sm:px-4 text-xs sm:text-sm font-bold min-h-[48px]"
                 >
                   <CheckCircle className="w-4 h-4 sm:w-5 sm:h-5 shrink-0 text-emerald-300" />
                   <span className="truncate">{t('game.completedDare')}</span>

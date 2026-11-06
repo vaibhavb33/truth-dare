@@ -55,7 +55,7 @@ export function ThisOrThatClient() {
   };
 
   return (
-    <div className="w-full max-w-2xl mx-auto px-4 py-8 space-y-8 flex-1 flex flex-col justify-between items-center">
+    <div className="w-full max-w-2xl mx-auto px-3 sm:px-4 py-6 sm:py-8 space-y-6 sm:space-y-8 flex-1 flex flex-col justify-between items-center">
       {/* Top Bar */}
       <div className="w-full flex items-center justify-between">
         <Link
@@ -69,26 +69,26 @@ export function ThisOrThatClient() {
         </span>
       </div>
 
-      <div className="text-center space-y-2">
-        <h1 className="font-display font-extrabold text-3xl md:text-5xl text-white">
+      <div className="text-center space-y-2 px-2">
+        <h1 className="font-display font-extrabold text-2xl sm:text-3xl md:text-5xl text-white">
           This or That
         </h1>
-        <p className="text-xs text-slate-400">
+        <p className="text-xs text-slate-400 max-w-md mx-auto">
           Rapid-fire choices! Tap your gut reaction without overthinking.
         </p>
       </div>
 
       {/* Main Dual Cards */}
-      <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
         {/* OPTION A */}
         <button
           onClick={() => handlePick(currentCard?.optionA || 'Road Trip')}
-          className="p-8 rounded-3xl bg-gradient-to-b from-brand-900/40 via-surface-elevated to-surface-highlight border border-brand-400/30 hover:border-brand-400 text-center space-y-4 hover:scale-[1.02] active:scale-95 transition-all shadow-glow-brand"
+          className="p-5 sm:p-8 rounded-3xl bg-gradient-to-b from-brand-900/40 via-surface-elevated to-surface-highlight border border-brand-400/30 hover:border-brand-400 text-center space-y-3 sm:space-y-4 hover:scale-[1.02] active:scale-95 transition-all shadow-glow-brand min-h-[120px] sm:min-h-[160px] flex flex-col justify-center"
         >
-          <span className="px-3 py-1 rounded-full bg-brand-500/20 text-brand-300 text-xs font-bold uppercase tracking-wider">
+          <span className="px-3 py-1 rounded-full bg-brand-500/20 text-brand-300 text-xs font-bold uppercase tracking-wider mx-auto">
             THIS
           </span>
-          <p className="font-display font-extrabold text-2xl text-white">
+          <p className="font-display font-extrabold text-lg sm:text-2xl text-white break-words">
             {currentCard?.optionA || 'Spontaneous Road Trip'}
           </p>
         </button>
@@ -96,23 +96,23 @@ export function ThisOrThatClient() {
         {/* OPTION B */}
         <button
           onClick={() => handlePick(currentCard?.optionB || 'Resort')}
-          className="p-8 rounded-3xl bg-gradient-to-b from-truth-700/30 via-surface-elevated to-surface-highlight border border-truth-400/30 hover:border-truth-400 text-center space-y-4 hover:scale-[1.02] active:scale-95 transition-all shadow-glow-truth"
+          className="p-5 sm:p-8 rounded-3xl bg-gradient-to-b from-truth-700/30 via-surface-elevated to-surface-highlight border border-truth-400/30 hover:border-truth-400 text-center space-y-3 sm:space-y-4 hover:scale-[1.02] active:scale-95 transition-all shadow-glow-truth min-h-[120px] sm:min-h-[160px] flex flex-col justify-center"
         >
-          <span className="px-3 py-1 rounded-full bg-truth-500/20 text-truth-300 text-xs font-bold uppercase tracking-wider">
+          <span className="px-3 py-1 rounded-full bg-truth-500/20 text-truth-300 text-xs font-bold uppercase tracking-wider mx-auto">
             THAT
           </span>
-          <p className="font-display font-extrabold text-2xl text-white">
+          <p className="font-display font-extrabold text-lg sm:text-2xl text-white break-words">
             {currentCard?.optionB || 'All-Inclusive Luxury Resort'}
           </p>
         </button>
       </div>
 
       {/* Answers Summary & Reset */}
-      <div className="w-full max-w-md flex items-center justify-between text-xs text-slate-400 px-2">
+      <div className="w-full max-w-md flex items-center justify-between text-xs text-slate-400 px-2 pt-1">
         <span>{answers.length} choices made so far</span>
         <button
           onClick={handleReset}
-          className="flex items-center gap-1 hover:text-white transition-colors"
+          className="flex items-center gap-1 hover:text-white transition-colors py-1 min-h-[30px]"
         >
           <RotateCcw className="w-3.5 h-3.5" /> Start Over
         </button>

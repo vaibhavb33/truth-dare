@@ -247,7 +247,7 @@ export function SpinnerWheelClient() {
   };
 
   return (
-    <div className="w-full max-w-4xl mx-auto px-4 py-8 space-y-8 flex-1 flex flex-col items-center">
+    <div className="w-full max-w-4xl mx-auto px-3 sm:px-4 py-6 sm:py-8 space-y-6 sm:space-y-8 flex-1 flex flex-col items-center">
       {/* Navigation Header */}
       <div className="w-full flex items-center justify-between">
         <Link
@@ -261,8 +261,8 @@ export function SpinnerWheelClient() {
         </span>
       </div>
 
-      <div className="text-center space-y-2">
-        <h1 className="font-display font-extrabold text-3xl md:text-5xl text-white tracking-tight">
+      <div className="text-center space-y-2 px-2">
+        <h1 className="font-display font-extrabold text-2xl sm:text-3xl md:text-5xl text-white tracking-tight">
           Spinner Wheel
         </h1>
         <p className="text-xs md:text-sm text-slate-400 max-w-md mx-auto">
@@ -271,13 +271,13 @@ export function SpinnerWheelClient() {
       </div>
 
       {/* Preset Quick Switcher */}
-      <div className="flex flex-wrap items-center justify-center gap-2">
+      <div className="flex flex-wrap items-center justify-center gap-1.5 sm:gap-2">
         {(Object.keys(PRESETS) as Array<keyof typeof PRESETS>).map((key) => (
           <button
             key={key}
             onClick={() => handleApplyPreset(key)}
             disabled={isSpinning}
-            className="px-3.5 py-1.5 rounded-full text-xs font-semibold bg-surface-elevated hover:bg-surface-highlight border border-white/10 hover:border-brand-400/40 text-slate-300 hover:text-white transition-all disabled:opacity-50"
+            className="px-3 py-1.5 rounded-full text-[11px] sm:text-xs font-semibold bg-surface-elevated hover:bg-surface-highlight border border-white/10 hover:border-brand-400/40 text-slate-300 hover:text-white transition-all disabled:opacity-50"
           >
             {PRESETS[key].name}
           </button>
@@ -285,7 +285,7 @@ export function SpinnerWheelClient() {
       </div>
 
       {/* Wheel Area */}
-      <div className="relative flex flex-col items-center justify-center py-4">
+      <div className="relative flex flex-col items-center justify-center py-2 sm:py-4 w-full max-w-full overflow-hidden">
         {/* Top Indicator Arrow with Neon Drop Glow */}
         <div className="relative z-20 -mb-4 flex flex-col items-center">
           <div className="w-0 h-0 border-l-[16px] border-l-transparent border-r-[16px] border-r-transparent border-t-[26px] border-t-dare-400 drop-shadow-[0_0_15px_rgba(255,92,119,0.9)] animate-pulse" />
@@ -297,19 +297,19 @@ export function SpinnerWheelClient() {
           width={380}
           height={380}
           onClick={spinWheel}
-          className="cursor-pointer active:scale-95 transition-transform drop-shadow-[0_0_50px_rgba(139,92,246,0.35)]"
+          className="w-full max-w-[280px] xs:max-w-[340px] sm:max-w-[380px] h-auto aspect-square cursor-pointer active:scale-95 transition-transform drop-shadow-[0_0_50px_rgba(139,92,246,0.35)]"
         />
 
         {/* Spin Trigger Button */}
-        <div className="pt-6 w-full max-w-xs">
+        <div className="pt-5 sm:pt-6 w-full max-w-xs px-2">
           <Button
             variant="primary"
             size="xl"
             disabled={isSpinning || segments.length < 2}
             onClick={spinWheel}
-            className="w-full text-lg font-black gap-2 shadow-[0_0_35px_rgba(139,92,246,0.5)]"
+            className="w-full text-base sm:text-lg font-black gap-2 shadow-[0_0_35px_rgba(139,92,246,0.5)] min-h-[48px]"
           >
-            <Disc className={`w-6 h-6 ${isSpinning ? 'animate-spin' : ''}`} />
+            <Disc className={`w-5 h-5 sm:w-6 sm:h-6 ${isSpinning ? 'animate-spin' : ''}`} />
             <span>{isSpinning ? 'SPINNING...' : 'SPIN THE WHEEL'}</span>
           </Button>
         </div>
@@ -317,38 +317,38 @@ export function SpinnerWheelClient() {
 
       {/* Winner Announcement Banner */}
       {winner && (
-        <div className="w-full max-w-md p-6 rounded-3xl bg-gradient-to-r from-surface-elevated via-surface-highlight to-surface-elevated border border-brand-400/50 shadow-glow-brand text-center space-y-1.5 animate-float">
+        <div className="w-full max-w-md p-4 sm:p-6 rounded-3xl bg-gradient-to-r from-surface-elevated via-surface-highlight to-surface-elevated border border-brand-400/50 shadow-glow-brand text-center space-y-1.5 animate-float mx-2">
           <div className="flex items-center justify-center gap-1.5 text-brand-400 font-bold text-xs uppercase tracking-wider">
             <Trophy className="w-4 h-4 text-amber-400" />
             <span>THE WHEEL HAS SPOKEN!</span>
           </div>
-          <p className="font-display font-extrabold text-3xl md:text-4xl text-white">
+          <p className="font-display font-extrabold text-2xl sm:text-3xl md:text-4xl text-white truncate px-2">
             {winner}
           </p>
         </div>
       )}
 
       {/* Customizable Segments Manager */}
-      <div className="w-full max-w-md p-6 md:p-8 rounded-3xl bg-surface-elevated border border-white/10 space-y-5 backdrop-blur-md">
+      <div className="w-full max-w-md p-4 sm:p-6 md:p-8 rounded-3xl bg-surface-elevated border border-white/10 space-y-4 sm:space-y-5 backdrop-blur-md">
         <div className="flex items-center justify-between">
-          <h3 className="font-display font-bold text-sm text-white uppercase tracking-wider">
+          <h3 className="font-display font-bold text-xs sm:text-sm text-white uppercase tracking-wider">
             Wheel Slices ({segments.length})
           </h3>
-          <span className="text-[11px] text-slate-400">Min 2 Slices</span>
+          <span className="text-[10px] sm:text-[11px] text-slate-400">Min 2 Slices</span>
         </div>
 
         {/* Chips */}
-        <div className="flex flex-wrap gap-2 max-h-40 overflow-y-auto pr-1">
+        <div className="flex flex-wrap gap-1.5 sm:gap-2 max-h-40 overflow-y-auto pr-1 custom-scrollbar">
           {segments.map((seg, idx) => (
             <div
               key={idx}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-surface-highlight border border-white/10 text-xs font-semibold text-white shadow-sm"
+              className="inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-xl bg-surface-highlight border border-white/10 text-xs font-semibold text-white shadow-sm max-w-full"
             >
-              <span>{seg}</span>
+              <span className="max-w-[110px] sm:max-w-[180px] truncate">{seg}</span>
               {segments.length > 2 && (
                 <button
                   onClick={() => handleRemoveSegment(idx)}
-                  className="text-slate-400 hover:text-rose-400 ml-1 transition-colors"
+                  className="text-slate-400 hover:text-rose-400 ml-0.5 sm:ml-1 transition-colors shrink-0 p-0.5"
                   title="Remove slice"
                 >
                   <X className="w-3.5 h-3.5" />
@@ -366,9 +366,9 @@ export function SpinnerWheelClient() {
             value={newSegmentInput}
             onChange={(e) => setNewSegmentInput(e.target.value)}
             maxLength={25}
-            className="flex-1 h-11 px-4 rounded-xl bg-canvas-base border border-white/10 text-xs text-white placeholder:text-slate-500 focus:outline-none focus:border-brand-400 transition-colors"
+            className="flex-1 min-w-0 h-10 sm:h-11 px-3 sm:px-4 rounded-xl bg-canvas-base border border-white/10 text-xs text-white placeholder:text-slate-500 focus:outline-none focus:border-brand-400 transition-colors"
           />
-          <Button type="submit" variant="secondary" size="md">
+          <Button type="submit" variant="secondary" size="md" className="shrink-0 h-10 sm:h-11 px-3 sm:px-4">
             <Plus className="w-4 h-4" /> Add
           </Button>
         </form>

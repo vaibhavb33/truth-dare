@@ -209,3 +209,4 @@ export function LanguageModal({ isOpen, onClose }: LanguageModalProps) {
 
   return createPortal(modalContent, document.body);
 }
+

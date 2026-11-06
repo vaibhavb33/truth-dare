@@ -62,7 +62,7 @@ export function WouldYouRatherClient() {
   };
 
   return (
-    <div className="w-full max-w-2xl mx-auto px-4 py-8 space-y-8 flex-1 flex flex-col justify-between items-center">
+    <div className="w-full max-w-2xl mx-auto px-3 sm:px-4 py-6 sm:py-8 space-y-6 sm:space-y-8 flex-1 flex flex-col justify-between items-center">
       {/* Top Bar */}
       <div className="w-full flex items-center justify-between">
         <Link
@@ -76,22 +76,22 @@ export function WouldYouRatherClient() {
         </span>
       </div>
 
-      <div className="text-center space-y-2">
-        <h1 className="font-display font-extrabold text-3xl md:text-5xl text-white">
+      <div className="text-center space-y-2 px-2">
+        <h1 className="font-display font-extrabold text-2xl sm:text-3xl md:text-5xl text-white">
           Would You Rather?
         </h1>
-        <p className="text-xs text-slate-400">
+        <p className="text-xs text-slate-400 max-w-md mx-auto">
           Choose Option A or Option B to see what percentage of players agree with you!
         </p>
       </div>
 
       {/* The Two Choice Cards */}
-      <div className="w-full space-y-4">
+      <div className="w-full space-y-3 sm:space-y-4">
         {/* OPTION A */}
         <button
           onClick={() => handleVote('A')}
           disabled={selectedOption !== null}
-          className={`w-full p-6 md:p-8 rounded-3xl border text-left transition-all relative overflow-hidden group ${
+          className={`w-full p-4 sm:p-6 md:p-8 rounded-3xl border text-left transition-all relative overflow-hidden group ${
             selectedOption === 'A'
               ? 'bg-truth-500/20 border-truth-400 shadow-glow-truth'
               : 'bg-surface-elevated hover:bg-surface-highlight border-white/10'
@@ -104,18 +104,18 @@ export function WouldYouRatherClient() {
             />
           )}
 
-          <div className="relative z-10 flex items-center justify-between gap-4">
-            <div className="space-y-1">
-              <span className="text-[11px] font-bold text-truth-400 uppercase tracking-widest">
+          <div className="relative z-10 flex items-center justify-between gap-3 sm:gap-4">
+            <div className="space-y-1 min-w-0 flex-1">
+              <span className="text-[10px] sm:text-[11px] font-bold text-truth-400 uppercase tracking-widest">
                 OPTION A
               </span>
-              <p className="font-display font-bold text-lg md:text-xl text-white">
+              <p className="font-display font-bold text-base sm:text-lg md:text-xl text-white break-words">
                 {currentCard?.optionA || 'Always sing your thoughts out loud'}
               </p>
             </div>
 
             {stats && (
-              <span className="text-2xl font-mono font-extrabold text-truth-300 shrink-0">
+              <span className="text-xl sm:text-2xl font-mono font-extrabold text-truth-300 shrink-0 ml-2">
                 {stats.aPercent}%
               </span>
             )}
@@ -130,7 +130,7 @@ export function WouldYouRatherClient() {
         <button
           onClick={() => handleVote('B')}
           disabled={selectedOption !== null}
-          className={`w-full p-6 md:p-8 rounded-3xl border text-left transition-all relative overflow-hidden group ${
+          className={`w-full p-4 sm:p-6 md:p-8 rounded-3xl border text-left transition-all relative overflow-hidden group ${
             selectedOption === 'B'
               ? 'bg-brand-500/20 border-brand-400 shadow-glow-brand'
               : 'bg-surface-elevated hover:bg-surface-highlight border-white/10'
@@ -143,18 +143,18 @@ export function WouldYouRatherClient() {
             />
           )}
 
-          <div className="relative z-10 flex items-center justify-between gap-4">
-            <div className="space-y-1">
-              <span className="text-[11px] font-bold text-brand-400 uppercase tracking-widest">
+          <div className="relative z-10 flex items-center justify-between gap-3 sm:gap-4">
+            <div className="space-y-1 min-w-0 flex-1">
+              <span className="text-[10px] sm:text-[11px] font-bold text-brand-400 uppercase tracking-widest">
                 OPTION B
               </span>
-              <p className="font-display font-bold text-lg md:text-xl text-white">
+              <p className="font-display font-bold text-base sm:text-lg md:text-xl text-white break-words">
                 {currentCard?.optionB || 'Broadcast your web search history to the room'}
               </p>
             </div>
 
             {stats && (
-              <span className="text-2xl font-mono font-extrabold text-brand-300 shrink-0">
+              <span className="text-xl sm:text-2xl font-mono font-extrabold text-brand-300 shrink-0 ml-2">
                 {stats.bPercent}%
               </span>
             )}
@@ -169,7 +169,7 @@ export function WouldYouRatherClient() {
             variant="primary"
             size="xl"
             onClick={handleNextDilemma}
-            className="w-full text-base font-bold gap-2 animate-fade-in"
+            className="w-full text-base font-bold gap-2 animate-fade-in min-h-[48px]"
           >
             <span>Next Dilemma</span>
             <ArrowRight className="w-5 h-5" />

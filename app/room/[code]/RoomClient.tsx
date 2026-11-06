@@ -154,63 +154,64 @@ export function RoomClient({ roomCode }: RoomClientProps) {
   }
 
   return (
-    <div className="w-full max-w-4xl mx-auto px-4 py-6 md:py-8 space-y-6 flex-1 flex flex-col justify-between">
+    <div className="w-full max-w-4xl mx-auto px-3 sm:px-4 py-4 sm:py-6 md:py-8 space-y-4 sm:space-y-6 flex-1 flex flex-col justify-between">
       {/* QR Code Modal */}
       {showQrModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-canvas-deep/85 backdrop-blur-md animate-fade-in">
-          <div className="w-full max-w-xs p-6 rounded-3xl bg-surface-elevated border border-white/10 text-center space-y-4 relative">
+          <div className="w-full max-w-xs p-5 sm:p-6 rounded-3xl bg-surface-elevated border border-white/10 text-center space-y-4 relative">
             <button
               onClick={() => setShowQrModal(false)}
-              className="absolute top-4 right-4 text-slate-400 hover:text-white"
+              className="absolute top-4 right-4 text-slate-400 hover:text-white p-1"
+              aria-label="Close QR Modal"
             >
               <X className="w-5 h-5" />
             </button>
-            <h3 className="font-display font-bold text-lg text-white">Scan to Join Room</h3>
+            <h3 className="font-display font-bold text-base sm:text-lg text-white">Scan to Join Room</h3>
             <p className="text-xs text-slate-400">Point phone camera to join instantly</p>
             {qrDataUrl && (
               <img
                 src={qrDataUrl}
                 alt="Room QR Code"
-                className="w-56 h-56 mx-auto rounded-2xl border border-white/10"
+                className="w-48 h-48 sm:w-56 sm:h-56 mx-auto rounded-2xl border border-white/10"
               />
             )}
-            <p className="font-mono font-bold text-xl text-brand-400 tracking-widest">{roomCode}</p>
+            <p className="font-mono font-bold text-lg sm:text-xl text-brand-400 tracking-widest">{roomCode}</p>
           </div>
         </div>
       )}
 
       {/* Top Header Bar */}
-      <div className="w-full flex items-center justify-between">
+      <div className="w-full flex items-center justify-between gap-2">
         <Link
           href="/"
-          className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-400 hover:text-white"
+          className="inline-flex items-center gap-1 sm:gap-1.5 text-xs font-semibold text-slate-400 hover:text-white shrink-0"
         >
           <ArrowLeft className="w-4 h-4" /> Exit Room
         </Link>
 
         {/* Room Code Badge */}
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
           <button
             onClick={() => setShowQrModal(true)}
             aria-label="Show QR Code"
-            className="p-2 rounded-xl bg-surface-elevated hover:bg-surface-highlight border border-white/10 text-slate-300"
+            className="p-2 rounded-xl bg-surface-elevated hover:bg-surface-highlight border border-white/10 text-slate-300 min-h-[36px] min-w-[36px] flex items-center justify-center"
           >
             <QrCode className="w-4 h-4" />
           </button>
 
           <button
             onClick={handleCopyLink}
-            className="flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-surface-elevated hover:bg-surface-highlight border border-brand-500/30 text-xs font-bold text-brand-300 font-mono"
+            className="flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3.5 py-1.5 rounded-xl bg-surface-elevated hover:bg-surface-highlight border border-brand-500/30 text-xs font-bold text-brand-300 font-mono min-h-[36px]"
           >
             <span>ROOM: {roomCode}</span>
-            <Copy className="w-3.5 h-3.5" />
+            <Copy className="w-3.5 h-3.5 shrink-0" />
           </button>
         </div>
       </div>
 
       {/* VIEW A: NAME PROMPT (If not joined yet) */}
       {!isJoined ? (
-        <div className="w-full max-w-md mx-auto my-auto p-8 rounded-3xl bg-surface-elevated border border-white/10 space-y-6 text-center">
+        <div className="w-full max-w-md mx-auto my-auto p-5 sm:p-8 rounded-3xl bg-surface-elevated border border-white/10 space-y-5 sm:space-y-6 text-center">
           <div className="space-y-1">
             <span className="text-xs font-bold uppercase tracking-widest text-brand-400">
               Multiplayer Room
@@ -231,41 +232,41 @@ export function RoomClient({ roomCode }: RoomClientProps) {
               onChange={(e) => setJoinInputName(e.target.value)}
               maxLength={20}
               required
-              className="w-full h-12 px-4 rounded-xl bg-canvas-base border border-white/10 text-center font-bold text-white placeholder:text-slate-500 focus:outline-none focus:border-brand-400"
+              className="w-full h-11 sm:h-12 px-4 rounded-xl bg-canvas-base border border-white/10 text-center font-bold text-white placeholder:text-slate-500 focus:outline-none focus:border-brand-400"
             />
-            <Button type="submit" variant="primary" size="lg" className="w-full font-bold">
+            <Button type="submit" variant="primary" size="lg" className="w-full font-bold min-h-[48px]">
               Join Party Room →
             </Button>
           </form>
         </div>
       ) : (
         /* VIEW B: ACTIVE MULTIPLAYER ROOM (Lobby or Game) */
-        <div className="w-full flex-1 flex flex-col justify-between space-y-6">
+        <div className="w-full flex-1 flex flex-col justify-between space-y-4 sm:space-y-6">
           {/* Room Players Presence Bar */}
-          <div className="w-full p-3 rounded-2xl bg-surface-elevated/80 border border-white/10 space-y-2">
+          <div className="w-full p-2.5 sm:p-3 rounded-2xl bg-surface-elevated/80 border border-white/10 space-y-2">
             <div className="flex items-center justify-between text-xs font-semibold px-1 text-slate-400">
               <span className="flex items-center gap-1.5">
                 <Users className="w-3.5 h-3.5 text-brand-400" />
                 Players ({room?.players.length})
               </span>
-              <span>{isHost ? '👑 You are Room Host' : 'Guest Player'}</span>
+              <span className="text-[11px]">{isHost ? '👑 You are Room Host' : 'Guest Player'}</span>
             </div>
 
-            <div className="flex flex-wrap gap-2">
+            <div className="flex flex-wrap gap-1.5 sm:gap-2">
               {room?.players.map((p) => {
                 const isActive = p.id === room?.activePlayerId;
                 return (
                   <div
                     key={p.id}
-                    className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-xl text-xs font-bold border transition-all ${
+                    className={`inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1 rounded-xl text-xs font-bold border transition-all max-w-full ${
                       isActive
                         ? 'bg-brand-500/20 border-brand-400 text-white shadow-glow-brand'
                         : 'bg-surface-highlight border-white/5 text-slate-300'
                     }`}
                   >
-                    {p.isHost && <Crown className="w-3 h-3 text-amber-400" />}
-                    <span>{p.name}</span>
-                    <span className="text-[10px] text-brand-400 font-mono">({p.score}pts)</span>
+                    {p.isHost && <Crown className="w-3 h-3 text-amber-400 shrink-0" />}
+                    <span className="max-w-[100px] sm:max-w-[140px] truncate">{p.name}</span>
+                    <span className="text-[10px] text-brand-400 font-mono shrink-0">({p.score}pts)</span>
                   </div>
                 );
               })}
@@ -274,13 +275,13 @@ export function RoomClient({ roomCode }: RoomClientProps) {
 
           {/* LOBBY VIEW (Waiting for Host to Start) */}
           {room?.status === 'lobby' ? (
-            <div className="w-full max-w-md mx-auto my-auto p-8 rounded-3xl bg-surface-elevated border border-white/10 text-center space-y-6">
-              <div className="w-16 h-16 mx-auto rounded-2xl bg-brand-500/10 border border-brand-400/30 flex items-center justify-center text-brand-400 font-bold text-2xl">
+            <div className="w-full max-w-md mx-auto my-auto p-5 sm:p-8 rounded-3xl bg-surface-elevated border border-white/10 text-center space-y-5 sm:space-y-6">
+              <div className="w-14 h-14 sm:w-16 sm:h-16 mx-auto rounded-2xl bg-brand-500/10 border border-brand-400/30 flex items-center justify-center text-brand-400 font-bold text-2xl">
                 ⏳
               </div>
 
               <div className="space-y-1">
-                <h3 className="font-display font-bold text-2xl text-white">Party Lobby</h3>
+                <h3 className="font-display font-bold text-xl sm:text-2xl text-white">Party Lobby</h3>
                 <p className="text-xs text-slate-400">
                   {isHost
                     ? 'Wait for friends to join, then tap Start Game below!'
@@ -293,7 +294,7 @@ export function RoomClient({ roomCode }: RoomClientProps) {
                   variant="primary"
                   size="xl"
                   onClick={() => dispatch('START_GAME')}
-                  className="w-full font-bold"
+                  className="w-full font-bold min-h-[48px]"
                 >
                   Start Game for Everyone →
                 </Button>
@@ -305,11 +306,11 @@ export function RoomClient({ roomCode }: RoomClientProps) {
             </div>
           ) : (
             /* ACTIVE IN-GAME ARENA */
-            <div className="w-full flex-1 flex flex-col items-center justify-between space-y-6">
+            <div className="w-full flex-1 flex flex-col items-center justify-between space-y-4 sm:space-y-6">
               {/* Turn Pill */}
-              <div className="px-4 py-1.5 rounded-full bg-brand-500/20 border border-brand-400/30 text-xs font-bold text-brand-300 shadow-glow-brand flex items-center gap-2">
-                <span>Current Turn: {activePlayer?.name}</span>
-                {isMyTurn && <span className="text-emerald-400">(Your Turn!)</span>}
+              <div className="px-3 sm:px-4 py-1.5 rounded-full bg-brand-500/20 border border-brand-400/30 text-xs font-bold text-brand-300 shadow-glow-brand flex items-center gap-1.5 sm:gap-2 max-w-full">
+                <span className="truncate">Current Turn: {activePlayer?.name}</span>
+                {isMyTurn && <span className="text-emerald-400 shrink-0">(Your Turn!)</span>}
               </div>
 
               {/* Synchronized 3D Card */}
@@ -326,16 +327,17 @@ export function RoomClient({ roomCode }: RoomClientProps) {
               </div>
 
               {/* Host & Active Player Controls */}
-              <div className="w-full max-w-md space-y-3">
+              <div className="w-full max-w-md space-y-2.5 sm:space-y-3">
                 {room?.isCardFlipped && (isHost || isMyTurn) ? (
-                  <div className="grid grid-cols-2 gap-3">
+                  <div className="grid grid-cols-2 gap-2 sm:gap-3">
                     <Button
                       variant="skip"
                       size="lg"
                       onClick={() => dispatch('SKIP_TURN')}
-                      className="w-full gap-1.5"
+                      className="w-full gap-1 sm:gap-1.5 px-2 sm:px-4 text-xs sm:text-sm font-bold min-h-[48px]"
                     >
-                      <SkipForward className="w-4 h-4" /> Skip / Veto
+                      <SkipForward className="w-4 h-4 shrink-0" />
+                      <span className="truncate">Skip / Veto</span>
                     </Button>
                     <Button
                       variant="primary"
@@ -345,9 +347,10 @@ export function RoomClient({ roomCode }: RoomClientProps) {
                         sound.playVictory();
                         dispatch('COMPLETE_DARE');
                       }}
-                      className="w-full gap-1.5 font-bold"
+                      className="w-full gap-1 sm:gap-1.5 px-2 sm:px-4 text-xs sm:text-sm font-bold min-h-[48px]"
                     >
-                      <CheckCircle className="w-4 h-4 text-emerald-300" /> Completed (+1)
+                      <CheckCircle className="w-4 h-4 text-emerald-300 shrink-0" />
+                      <span className="truncate">Completed (+1)</span>
                     </Button>
                   </div>
                 ) : (
@@ -359,7 +362,7 @@ export function RoomClient({ roomCode }: RoomClientProps) {
                 )}
 
                 {/* Floating Emoji Reactions Stream */}
-                <div className="flex items-center justify-center gap-3 pt-2">
+                <div className="flex items-center justify-center gap-1.5 sm:gap-3 pt-1">
                   {['🔥', '😂', '😱', '👏', '❤️'].map((emoji) => (
                     <button
                       key={emoji}
@@ -367,7 +370,7 @@ export function RoomClient({ roomCode }: RoomClientProps) {
                         sound.triggerHaptic(15);
                         dispatch('SEND_EMOJI', { emoji });
                       }}
-                      className="w-11 h-11 rounded-2xl bg-surface-elevated hover:bg-surface-highlight border border-white/10 flex items-center justify-center text-xl hover:scale-110 active:scale-95 transition-all shadow-elevation-1"
+                      className="w-9 h-9 sm:w-11 sm:h-11 rounded-xl sm:rounded-2xl bg-surface-elevated hover:bg-surface-highlight border border-white/10 flex items-center justify-center text-lg sm:text-xl hover:scale-110 active:scale-95 transition-all shadow-elevation-1"
                     >
                       {emoji}
                     </button>

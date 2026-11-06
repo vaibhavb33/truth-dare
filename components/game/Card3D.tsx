@@ -35,7 +35,7 @@ export function Card3D({ question, isFlipped, onChooseType, timerSeconds = 0, cl
   return (
     <div
       className={cn(
-        'relative w-full max-w-[360px] sm:max-w-md h-[400px] sm:h-[450px] md:h-[490px] perspective-1000 select-none mx-auto',
+        'relative w-full max-w-[360px] sm:max-w-md min-h-[380px] sm:min-h-[440px] md:min-h-[480px] h-[380px] sm:h-[440px] md:h-[480px] perspective-1000 select-none mx-auto',
         className
       )}
     >
@@ -51,7 +51,7 @@ export function Card3D({ question, isFlipped, onChooseType, timerSeconds = 0, cl
            ======================================================== */}
         <div
           className={cn(
-            'absolute inset-0 w-full h-full card-face-front rounded-3xl bg-gradient-to-b from-[#161630] via-surface-elevated to-[#0C0C1C] border border-white/15 shadow-elevation-3 flex flex-col p-5 sm:p-6 md:p-8 items-center justify-between text-center',
+            'absolute inset-0 w-full h-full card-face-front rounded-3xl bg-gradient-to-b from-[#161630] via-surface-elevated to-[#0C0C1C] border border-white/15 shadow-elevation-3 flex flex-col p-4 sm:p-6 md:p-8 items-center justify-between text-center',
             isFlipped
               ? 'opacity-0 pointer-events-none [visibility:hidden] transition-[opacity,visibility] duration-200'
               : 'opacity-100 pointer-events-auto [visibility:visible] transition-[opacity] duration-300 delay-150'
@@ -70,17 +70,17 @@ export function Card3D({ question, isFlipped, onChooseType, timerSeconds = 0, cl
           </div>
 
           {/* Center Emblem & Headline */}
-          <div className="relative z-10 space-y-2 sm:space-y-3 my-auto">
+          <div className="relative z-10 space-y-2 sm:space-y-3 my-auto py-1">
             {/* Visual Emblem */}
-            <div className="w-16 h-16 sm:w-20 sm:h-20 mx-auto rounded-2xl bg-gradient-to-tr from-brand-600/30 to-surface-highlight border border-brand-400/30 flex items-center justify-center shadow-glow-brand group animate-float">
+            <div className="w-14 h-14 sm:w-20 sm:h-20 mx-auto rounded-2xl bg-gradient-to-tr from-brand-600/30 to-surface-highlight border border-brand-400/30 flex items-center justify-center shadow-glow-brand group animate-float">
               <div className="relative flex items-center justify-center">
-                <HelpCircle className="w-7 h-7 sm:w-8 sm:h-8 text-truth-400 -translate-x-1.5 -translate-y-1 drop-shadow-[0_0_12px_rgba(6,182,212,0.8)]" />
-                <Flame className="w-8 h-8 sm:w-9 sm:h-9 text-dare-400 translate-x-1 translate-y-1 drop-shadow-[0_0_12px_rgba(255,92,119,0.8)]" />
+                <HelpCircle className="w-6 h-6 sm:w-8 sm:h-8 text-truth-400 -translate-x-1.5 -translate-y-1 drop-shadow-[0_0_12px_rgba(6,182,212,0.8)]" />
+                <Flame className="w-7 h-7 sm:w-9 sm:h-9 text-dare-400 translate-x-1 translate-y-1 drop-shadow-[0_0_12px_rgba(255,92,119,0.8)]" />
               </div>
             </div>
 
-            <div className="space-y-1">
-              <h3 className="font-display font-extrabold text-xl sm:text-2xl md:text-3xl text-white tracking-tight">
+            <div className="space-y-1 px-2">
+              <h3 className="font-display font-extrabold text-lg sm:text-2xl md:text-3xl text-white tracking-tight">
                 {t('home.heroTitle')}
               </h3>
               <p className="text-[11px] sm:text-xs md:text-sm text-slate-400 max-w-[260px] sm:max-w-xs mx-auto leading-relaxed">
@@ -90,18 +90,18 @@ export function Card3D({ question, isFlipped, onChooseType, timerSeconds = 0, cl
           </div>
 
           {/* Dual Decision Cards */}
-          <div className="relative z-10 w-full grid grid-cols-2 gap-2.5 sm:gap-3.5 pt-1 sm:pt-2">
+          <div className="relative z-10 w-full grid grid-cols-2 gap-2 sm:gap-3.5 pt-1">
             <Button
               variant="truth"
               size="lg"
               onClick={() => onChooseType('truth')}
-              className="w-full flex-col h-22 sm:h-26 md:h-28 gap-1 rounded-2xl group hover:-translate-y-1 min-h-[48px] p-2"
+              className="w-full flex-col min-h-[76px] sm:min-h-[92px] py-2 sm:py-3 px-2 gap-1 rounded-2xl group hover:-translate-y-0.5 active:scale-95"
             >
               <div className="w-7 h-7 sm:w-9 sm:h-9 rounded-xl bg-white/10 flex items-center justify-center group-hover:scale-110 transition-transform shrink-0">
                 <HelpCircle className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
               </div>
-              <span className="text-base sm:text-lg font-black tracking-wider">{t('game.truth')}</span>
-              <span className="text-[9px] sm:text-[10px] font-medium text-truth-100/80 truncate max-w-full">
+              <span className="text-base sm:text-lg font-black tracking-wider leading-none">{t('game.truth')}</span>
+              <span className="text-[9px] sm:text-[10px] font-medium text-truth-100/90 truncate max-w-full leading-tight">
                 {t('game.truthSub')}
               </span>
             </Button>
@@ -110,13 +110,13 @@ export function Card3D({ question, isFlipped, onChooseType, timerSeconds = 0, cl
               variant="dare"
               size="lg"
               onClick={() => onChooseType('dare')}
-              className="w-full flex-col h-22 sm:h-26 md:h-28 gap-1 rounded-2xl group hover:-translate-y-1 min-h-[48px] p-2"
+              className="w-full flex-col min-h-[76px] sm:min-h-[92px] py-2 sm:py-3 px-2 gap-1 rounded-2xl group hover:-translate-y-0.5 active:scale-95"
             >
               <div className="w-7 h-7 sm:w-9 sm:h-9 rounded-xl bg-white/10 flex items-center justify-center group-hover:scale-110 transition-transform shrink-0">
                 <Flame className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
               </div>
-              <span className="text-base sm:text-lg font-black tracking-wider">{t('game.dare')}</span>
-              <span className="text-[9px] sm:text-[10px] font-medium text-dare-100/80 truncate max-w-full">
+              <span className="text-base sm:text-lg font-black tracking-wider leading-none">{t('game.dare')}</span>
+              <span className="text-[9px] sm:text-[10px] font-medium text-dare-100/90 truncate max-w-full leading-tight">
                 {t('game.dareSub')}
               </span>
             </Button>
@@ -129,7 +129,7 @@ export function Card3D({ question, isFlipped, onChooseType, timerSeconds = 0, cl
            ======================================================== */}
         <div
           className={cn(
-            'absolute inset-0 w-full h-full card-face-back rounded-3xl border shadow-elevation-3 flex flex-col p-5 sm:p-6 md:p-8 items-center justify-between text-center',
+            'absolute inset-0 w-full h-full card-face-back rounded-3xl border shadow-elevation-3 flex flex-col p-4 sm:p-6 md:p-8 items-center justify-between text-center',
             isDare
               ? 'bg-gradient-to-b from-[#240F1D] via-[#160A13] to-[#0D050B] border-dare-400/40 shadow-glow-dare'
               : 'bg-gradient-to-b from-[#0C1E30] via-[#081320] to-[#040A12] border-truth-400/40 shadow-glow-truth',
@@ -187,9 +187,9 @@ export function Card3D({ question, isFlipped, onChooseType, timerSeconds = 0, cl
             </button>
           </div>
 
-          {/* Center Challenge Statement */}
-          <div className="relative z-10 my-auto py-2 px-1 max-w-full">
-            <p className="font-display font-bold text-base sm:text-lg md:text-xl text-white leading-relaxed line-clamp-6 text-center select-text">
+          {/* Center Challenge Statement with auto-scroll if long */}
+          <div className="relative z-10 my-auto py-2 px-1 max-w-full max-h-[220px] sm:max-h-[260px] overflow-y-auto custom-scrollbar flex items-center justify-center">
+            <p className="font-display font-bold text-base sm:text-lg md:text-xl text-white leading-relaxed text-center select-text break-words">
               {question?.prompt || t('game.revealQuestion')}
             </p>
           </div>
@@ -199,7 +199,7 @@ export function Card3D({ question, isFlipped, onChooseType, timerSeconds = 0, cl
             {isDare && timerSeconds > 0 ? (
               <DareTimerRing initialSeconds={timerSeconds} />
             ) : (
-              <div className="inline-flex items-center gap-1.5 text-[11px] text-slate-400 bg-white/5 px-3 py-1 rounded-full border border-white/10">
+              <div className="inline-flex items-center gap-1.5 text-[10px] sm:text-[11px] text-slate-400 bg-white/5 px-2.5 sm:px-3 py-1 rounded-full border border-white/10 max-w-full">
                 <ShieldCheck className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
                 <span className="truncate">{t('game.questionSafeNotice')}</span>
               </div>
