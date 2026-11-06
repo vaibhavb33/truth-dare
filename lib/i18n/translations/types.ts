@@ -49,6 +49,7 @@ export interface TranslationDictionary {
     active: string;
     changeLanguage: string;
     currentLanguage: string;
+    languageSubtitle: string;
   };
   game: {
     setupTitle: string;

@@ -9,6 +9,9 @@ module.exports = {
   ],
   theme: {
     extend: {
+      screens: {
+        'xs': '360px',
+      },
       colors: {
         canvas: {
           deep: '#07070F',

@@ -53,6 +53,7 @@ export const en: TranslationDictionary = {
     active: 'Active',
     changeLanguage: 'Change Language',
     currentLanguage: 'Current Language',
+    languageSubtitle: 'Select your preferred interface and question language',
   },
   game: {
     setupTitle: 'Game Setup',

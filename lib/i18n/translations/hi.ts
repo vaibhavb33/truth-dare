@@ -53,6 +53,7 @@ export const hi: TranslationDictionary = {
     active: 'सक्रिय',
     changeLanguage: 'भाषा बदलें',
     currentLanguage: 'वर्तमान भाषा',
+    languageSubtitle: 'अपनी पसंदीदा भाषा और गेम प्रश्न चुनें',
   },
   game: {
     setupTitle: 'गेम सेटअप',

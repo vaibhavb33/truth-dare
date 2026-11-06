@@ -53,6 +53,7 @@ export const id: TranslationDictionary = {
     active: 'Aktif',
     changeLanguage: 'Ubah Bahasa',
     currentLanguage: 'Bahasa Saat Ini',
+    languageSubtitle: 'Pilih bahasa antarmuka dan pertanyaan permainan Anda',
   },
   game: {
     setupTitle: 'Pengaturan Game',

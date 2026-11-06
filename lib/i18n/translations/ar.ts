@@ -53,6 +53,7 @@ export const ar: TranslationDictionary = {
     active: 'نشط',
     changeLanguage: 'تغيير اللغة',
     currentLanguage: 'اللغة الحالية',
+    languageSubtitle: 'اختر لغتك المفضلة للواجهة وأسئلة اللعبة',
   },
   game: {
     setupTitle: 'إعداد اللعبة',
