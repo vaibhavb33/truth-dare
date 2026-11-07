@@ -78,3 +78,4 @@ const cleanEmoji = emoji.slice(0, 4);
 ## 5. Security Audit Verdict
 
 Asteria's real-time multiplayer implementation adheres to the principle of least privilege, rejects untrusted input, prevents session forgery, and safeguards user privacy with **zero database service-role exposure**.
+

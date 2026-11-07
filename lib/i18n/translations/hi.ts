@@ -227,7 +227,6 @@ export const hi: TranslationDictionary = {
     saveDeck: 'डेक सहेजें',
     deckSaved: 'डेक सुरक्षित सहेजा गया!',
     playWithDeck: 'इस डेक से खेलें',
-    exportDeck: 'डेक निर्यात करें (JSON)',
     deleteCard: 'कार्ड हटाएं',
   },
   multiplayer: {

@@ -227,7 +227,6 @@ export const ar: TranslationDictionary = {
     saveDeck: 'حفظ المجموعة',
     deckSaved: 'تم حفظ المجموعة في جهازك بنجاح!',
     playWithDeck: 'اللعب بهذه المجموعة',
-    exportDeck: 'تصدير المجموعة (JSON)',
     deleteCard: 'حذف البطاقة',
   },
   multiplayer: {

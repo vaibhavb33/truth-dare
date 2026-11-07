@@ -178,7 +178,6 @@ export interface TranslationDictionary {
     saveDeck: string;
     deckSaved: string;
     playWithDeck: string;
-    exportDeck: string;
     deleteCard: string;
   };
   multiplayer: {

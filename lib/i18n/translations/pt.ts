@@ -227,7 +227,6 @@ export const pt: TranslationDictionary = {
     saveDeck: 'Salvar Baralho',
     deckSaved: 'Baralho salvo localmente!',
     playWithDeck: 'Jogar com este Baralho',
-    exportDeck: 'Exportar Baralho JSON',
     deleteCard: 'Remover Carta',
   },
   multiplayer: {

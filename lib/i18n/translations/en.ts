@@ -227,7 +227,6 @@ export const en: TranslationDictionary = {
     saveDeck: 'Save Deck',
     deckSaved: 'Deck saved locally!',
     playWithDeck: 'Play With This Deck',
-    exportDeck: 'Export Deck JSON',
     deleteCard: 'Remove Card',
   },
   multiplayer: {

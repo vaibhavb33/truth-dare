@@ -239,7 +239,7 @@ export function QuestionsClient() {
             <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
           </div>
           <h4 className="font-bold text-sm text-white">Create Custom Party Deck</h4>
-          <p className="text-xs text-slate-400">Write personalized inside jokes and export JSON packs.</p>
+          <p className="text-xs text-slate-400">Write personalized inside jokes and play in party rooms.</p>
         </Link>
 
         <Link

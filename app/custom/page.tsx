@@ -9,7 +9,7 @@ const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://truthordarequiz.com
 export const metadata: Metadata = {
   title: 'Custom Deck Studio — Build Your Own Party Game Pack',
   description:
-    'Create your own custom Truth or Dare card pack! Add custom truths, dares, timers, and export or share decks with your party circle.',
+    'Create your own custom Truth or Dare card pack! Add custom truths, dares, timers, and play locally or in multiplayer party rooms with your friends.',
   alternates: {
     canonical: `${siteUrl}/custom`,
   },
@@ -18,7 +18,7 @@ export const metadata: Metadata = {
     url: `${siteUrl}/custom`,
     title: 'Custom Deck Studio — Build Your Own Party Game Pack',
     description:
-      'Create your own custom Truth or Dare card pack! Add custom truths, dares, timers, and export or share decks with your party circle.',
+      'Create your own custom Truth or Dare card pack! Add custom truths, dares, timers, and play locally or in multiplayer party rooms with your friends.',
     images: [
       {
         url: '/og-image.png',
@@ -32,7 +32,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'Custom Deck Studio — Build Your Own Party Game Pack',
     description:
-      'Create your own custom Truth or Dare card pack! Add custom truths, dares, timers, and export or share decks with your party circle.',
+      'Create your own custom Truth or Dare card pack! Add custom truths, dares, timers, and play locally or in multiplayer party rooms with your friends.',
     images: ['/og-image.png'],
   },
 };

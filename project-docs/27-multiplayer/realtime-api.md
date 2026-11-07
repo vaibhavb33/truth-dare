@@ -232,3 +232,4 @@ Retrieves latest sanitized room state. Private player `sessionToken` properties 
   }
 }
 ```
+

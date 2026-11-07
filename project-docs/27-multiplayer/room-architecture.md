@@ -168,3 +168,4 @@ If the player whose turn is currently active abruptly leaves mid-turn:
 Asteria maintains a decoupled language model:
 - **Shared Question Language (`room.language`)**: Selected by the host in the lobby (e.g., `hi` for Hindi). All drawn cards are queried and drawn strictly from that language's authenticated question database.
 - **Client UI Language (`useTranslation().language`)**: Each player retains independent choice of interface language (labels, buttons, tooltips, dialogs). For instance, in an English-question party room, a Spanish-speaking player sees the Spanish UI chrome while reading the English question drawn for the room.
+

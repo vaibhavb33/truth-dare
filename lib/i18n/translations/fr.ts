@@ -227,7 +227,6 @@ export const fr: TranslationDictionary = {
     saveDeck: 'Enregistrer le Paquet',
     deckSaved: 'Paquet sauvegardé avec succès !',
     playWithDeck: 'Jouer avec ce Paquet',
-    exportDeck: 'Exporter le Paquet (JSON)',
     deleteCard: 'Supprimer la Carte',
   },
   multiplayer: {

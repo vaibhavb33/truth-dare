@@ -4,7 +4,7 @@
  * concurrency locks, duplicate prevention, host migration, and session restoration.
  */
 
-import { MultiplayerRoom, Player, GameType, CategoryId, QuestionType, SupportedLanguageCode } from '@/types';
+import { MultiplayerRoom, Player, GameType, CategoryId, QuestionType, SupportedLanguageCode, Question } from '@/types';
 import { generateRoomCode } from '@/lib/utils';
 import { questionEngine } from '@/lib/questions/engine';
 
@@ -43,12 +43,22 @@ export class RoomEngine {
     timerSeconds?: 0 | 15 | 30 | 60;
     language?: SupportedLanguageCode;
     maxPlayers?: number;
+    customDeckSnapshot?: MultiplayerRoom['customDeckSnapshot'];
   }): { room: MultiplayerRoom; hostPlayerId: string; sessionToken: string } {
     const roomCode = generateRoomCode();
     const hostPlayerId = 'p-' + Math.random().toString(36).substring(2, 9);
     const sessionToken = generateSessionToken();
     const cleanHostName = sanitizeName(params.hostName) || 'Host';
     const maxPlayers = Math.max(2, Math.min(20, params.maxPlayers ?? 20));
+    const language = params.customDeckSnapshot?.language || params.language || 'en';
+    const customDeckSnapshot = params.customDeckSnapshot
+      ? {
+          id: params.customDeckSnapshot.id,
+          name: params.customDeckSnapshot.name,
+          language: params.customDeckSnapshot.language,
+          questions: params.customDeckSnapshot.questions.map((q) => ({ ...q })),
+        }
+      : null;
 
     const hostPlayer: Player = {
       id: hostPlayerId,
@@ -78,7 +88,8 @@ export class RoomEngine {
       maxPlayers,
       votes: {},
       recentEmojis: [],
-      language: params.language || 'en',
+      language,
+      customDeckSnapshot,
       createdAt: Date.now(),
       expiresAt: Date.now() + 2 * 60 * 60 * 1000, // 2-hour TTL
     };
@@ -302,6 +313,20 @@ export class RoomEngine {
         if (params.payload?.maxPlayers !== undefined) {
           room.maxPlayers = Math.max(2, Math.min(20, Number(params.payload.maxPlayers)));
         }
+        if (params.payload?.customDeckSnapshot !== undefined) {
+          const snapshot = params.payload.customDeckSnapshot as MultiplayerRoom['customDeckSnapshot'];
+          room.customDeckSnapshot = snapshot
+            ? {
+                id: snapshot.id,
+                name: snapshot.name,
+                language: snapshot.language,
+                questions: snapshot.questions.map((q) => ({ ...q })),
+              }
+            : null;
+          if (snapshot?.language) {
+            room.language = snapshot.language;
+          }
+        }
         break;
       }
 
@@ -314,13 +339,45 @@ export class RoomEngine {
         }
 
         const type = (params.payload?.type as QuestionType) || 'truth';
-        const { card } = questionEngine.drawNextCard({
-          gameId: room.gameId,
-          categoryId: room.categoryId,
-          type,
-          language: room.language || 'en',
-          drawnCardIds: [],
-        });
+        let card: Question | null = null;
+
+        // Custom Deck Snapshot Support (Phase 5)
+        if (room.customDeckSnapshot && room.customDeckSnapshot.questions && room.customDeckSnapshot.questions.length > 0) {
+          const matching = room.customDeckSnapshot.questions.filter((q) => q.type === type);
+          const pool = matching.length > 0 ? matching : room.customDeckSnapshot.questions;
+          const chosen = pool[Math.floor(Math.random() * pool.length)];
+
+          card = {
+            id: chosen.id,
+            game_type: 'truth-or-dare',
+            question_type: chosen.type,
+            language_code: room.language || 'en',
+            category: 'custom',
+            difficulty: (Math.max(1, Math.min(5, chosen.intensity || 3)) as 1 | 2 | 3 | 4 | 5),
+            question_text: chosen.prompt,
+            content_rating: 'PG-13',
+            age_group: 'all-ages',
+            is_active: true,
+            safety_reviewed: true,
+            created_at: new Date().toISOString(),
+            tags: ['custom'],
+            gameId: 'truth-or-dare',
+            categoryId: 'custom',
+            type: chosen.type,
+            prompt: chosen.prompt,
+            intensity: (Math.max(1, Math.min(5, chosen.intensity || 3)) as 1 | 2 | 3 | 4 | 5),
+            isNsfw: false,
+          };
+        } else {
+          const result = questionEngine.drawNextCard({
+            gameId: room.gameId,
+            categoryId: room.categoryId,
+            type,
+            language: room.language || 'en',
+            drawnCardIds: [],
+          });
+          card = result.card;
+        }
 
         room.currentCard = card;
         room.isCardFlipped = true;

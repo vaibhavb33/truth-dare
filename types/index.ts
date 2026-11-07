@@ -122,18 +122,32 @@ export interface MultiplayerRoom {
   votes: Record<string, string>; // playerId -> vote ('pass' | 'fail' | 'optionA' | 'optionB')
   recentEmojis: Array<{ id: string; emoji: string; timestamp: number; playerName: string }>;
   language: SupportedLanguageCode; // Room question language selected by the host
+  customDeckSnapshot?: {
+    id: string;
+    name: string;
+    language: SupportedLanguageCode;
+    questions: CustomQuestion[];
+  } | null;
   createdAt: number;
   expiresAt: number;
+}
+
+export interface CustomQuestion {
+  id: string;
+  type: 'truth' | 'dare';
+  prompt: string;
+  intensity?: number;
 }
 
 export interface CustomDeck {
   id: string;
   name: string;
   description?: string;
-  questions: Array<{
-    id: string;
-    type: 'truth' | 'dare';
-    prompt: string;
-  }>;
+  language: SupportedLanguageCode;
+  category: CategoryId;
+  visibility: 'private' | 'unlisted' | 'public';
+  creatorId: string;
+  questions: CustomQuestion[];
   createdAt: number;
+  updatedAt: number;
 }

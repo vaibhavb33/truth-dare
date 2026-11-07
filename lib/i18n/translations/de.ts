@@ -227,7 +227,6 @@ export const de: TranslationDictionary = {
     saveDeck: 'Deck Speichern',
     deckSaved: 'Deck erfolgreich auf dem Gerät gespeichert!',
     playWithDeck: 'Mit Diesem Deck Spielen',
-    exportDeck: 'Deck Exportieren (JSON)',
     deleteCard: 'Karte Entfernen',
   },
   multiplayer: {

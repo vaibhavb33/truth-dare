@@ -227,7 +227,6 @@ export const id: TranslationDictionary = {
     saveDeck: 'Simpan Dek',
     deckSaved: 'Dek berhasil disimpan di perangkat!',
     playWithDeck: 'Mainkan dengan Dek Ini',
-    exportDeck: 'Ekspor Dek (JSON)',
     deleteCard: 'Hapus Kartu',
   },
   multiplayer: {

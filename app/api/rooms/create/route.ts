@@ -23,6 +23,7 @@ export async function POST(request: NextRequest) {
       timerSeconds = 30,
       language = 'en',
       maxPlayers = 12,
+      customDeckSnapshot = null,
     } = body;
 
     const { room, hostPlayerId, sessionToken } = roomEngine.createRoom({
@@ -32,6 +33,7 @@ export async function POST(request: NextRequest) {
       timerSeconds,
       language,
       maxPlayers: Number(maxPlayers),
+      customDeckSnapshot,
     });
 
     return NextResponse.json({
