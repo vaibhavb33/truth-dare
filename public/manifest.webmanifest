@@ -1,0 +1,69 @@
+{
+  "name": "Asteria - Truth or Dare",
+  "short_name": "Asteria",
+  "description": "Play Truth or Dare, Spinner Wheel, Never Have I Ever, and Would You Rather with friends online or locally.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "theme_color": "#0A0A16",
+  "background_color": "#0A0A16",
+  "categories": ["games", "entertainment"],
+  "icons": [
+    {
+      "src": "/icons/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-maskable-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Truth or Dare",
+      "short_name": "Truth/Dare",
+      "description": "Launch 3D Truth or Dare Card Arena",
+      "url": "/games/truth-or-dare",
+      "icons": [{ "src": "/icons/icon-192x192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Spinner Wheel",
+      "short_name": "Spinner",
+      "description": "Spin the Bottle Physics Wheel",
+      "url": "/games/spin-the-bottle",
+      "icons": [{ "src": "/icons/icon-192x192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Never Have I Ever",
+      "short_name": "Never Have I",
+      "description": "Play 10-Lives Confession Game",
+      "url": "/games/never-have-i-ever",
+      "icons": [{ "src": "/icons/icon-192x192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Would You Rather",
+      "short_name": "WYR",
+      "description": "Vote on Dilemmas with Live %",
+      "url": "/games/would-you-rather",
+      "icons": [{ "src": "/icons/icon-192x192.png", "sizes": "192x192" }]
+    }
+  ]
+}
+

@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="maskBgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0A0A16" />
+      <stop offset="100%" stop-color="#07070F" />
+    </linearGradient>
+
+    <linearGradient id="maskBrandGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#A78BFA" />
+      <stop offset="45%" stop-color="#8B5CF6" />
+      <stop offset="100%" stop-color="#6366F1" />
+    </linearGradient>
+
+    <linearGradient id="maskStarGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF" />
+      <stop offset="100%" stop-color="#F1F5F9" />
+    </linearGradient>
+  </defs>
+
+  <!-- Full Bleed Background for Safe-Zone Masking -->
+  <rect width="512" height="512" fill="url(#maskBgGrad)" />
+
+  <!-- Center Brand Emblem (Within 80% Safe Area: 51.2px to 460.8px) -->
+  <rect x="96" y="96" width="320" height="320" rx="72" fill="url(#maskBrandGrad)" />
+  <rect x="98" y="98" width="316" height="316" rx="70" fill="none" stroke="rgba(255, 255, 255, 0.25)" stroke-width="2" />
+
+  <!-- Center Primary Sparkle Star -->
+  <path
+    d="M256 160
+       C256 208 281 234 329 234
+       C281 234 256 259 256 307
+       C256 259 231 234 183 234
+       C231 234 256 208 256 160 Z"
+    fill="url(#maskStarGrad)"
+  />
+
+  <!-- Top-Right Cyan Sparkle -->
+  <path
+    d="M336 184
+       C336 201 345 210 362 210
+       C345 210 336 219 336 236
+       C336 219 327 210 310 210
+       C327 210 336 201 336 184 Z"
+    fill="#22D3EE"
+  />
+
+  <!-- Bottom-Left Coral Sparkle -->
+  <path
+    d="M184 296
+       C184 312 192 320 208 320
+       C192 320 184 328 184 344
+       C184 328 176 320 160 320
+       C176 320 184 312 184 296 Z"
+    fill="#FB7185"
+  />
+
+  <!-- Ambient Stars -->
+  <circle cx="216" cy="196" r="4.5" fill="#FFFFFF" opacity="0.8" />
+  <circle cx="296" cy="276" r="5" fill="#C4B5FD" opacity="0.9" />
+</svg>
+

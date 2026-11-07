@@ -198,3 +198,4 @@ Captured at 390px (Mobile), 768px (Tablet), and 1280px (Desktop HD) stored in `/
 ---
 
 *Certified by Senior Responsive Web Architect & UI/UX Engineer — Project Asteria*
+

@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { Sparkles, Heart } from 'lucide-react';
 import { useTranslation } from '@/lib/i18n/LanguageContext';
 import { LanguageSelector } from '@/components/i18n/LanguageSelector';
+import { PWAInstallButton } from '@/components/pwa/PWAInstallButton';
 
 export function AppFooter() {
   const { t } = useTranslation();
@@ -167,6 +168,9 @@ export function AppFooter() {
               <Link href="/admin" className="hover:text-white transition-colors text-slate-500 hover:text-slate-400">
                 {t('nav.adminPortal')}
               </Link>
+            </li>
+            <li className="pt-1">
+              <PWAInstallButton variant="footer" />
             </li>
           </ul>
 

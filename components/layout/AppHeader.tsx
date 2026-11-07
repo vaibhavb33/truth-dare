@@ -28,6 +28,7 @@ import { sound } from '@/lib/audio/soundSynthesizer';
 import { cn } from '@/lib/utils';
 import { useTranslation } from '@/lib/i18n/LanguageContext';
 import { LanguageSelector } from '@/components/i18n/LanguageSelector';
+import { PWAInstallButton } from '@/components/pwa/PWAInstallButton';
 
 export function AppHeader() {
   const pathname = usePathname();
@@ -143,6 +144,9 @@ export function AppHeader() {
           {/* Language Selector Dropdown */}
           <LanguageSelector variant="header" />
 
+          {/* PWA Install Button (Desktop/Tablet) */}
+          <PWAInstallButton variant="header" />
+
           {/* Join Room Quick CTA */}
           <Link
             href="/#join-room"
@@ -224,6 +228,9 @@ export function AppHeader() {
 
             {/* Drawer Scrollable Content */}
             <div className="flex-1 overflow-y-auto custom-scrollbar p-4 space-y-6 pb-[calc(6rem+env(safe-area-inset-bottom,0px))]">
+              {/* PWA Install Action in Mobile Drawer */}
+              <PWAInstallButton variant="drawer" />
+
               {/* Quick Actions Bar */}
               <div className="grid grid-cols-2 gap-2.5">
                 <Link

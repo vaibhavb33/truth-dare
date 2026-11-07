@@ -1,0 +1,11 @@
+{
+  "manifest": true,
+  "icons": true,
+  "htmlMeta": true,
+  "serviceWorkerRegistration": true,
+  "cacheStoragePrecache": true,
+  "securityBypass": true,
+  "offlineFallbackScreen": true,
+  "offlineNetworkSimulation": true,
+  "iosSupportModal": true
+}

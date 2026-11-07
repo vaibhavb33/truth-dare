@@ -6,6 +6,7 @@ import { MobileDock } from '@/components/layout/MobileDock';
 import { JsonLd } from '@/components/seo/JsonLd';
 import { LanguageProvider } from '@/lib/i18n/LanguageContext';
 import { getLocalizedAlternates } from '@/lib/i18n/seo';
+import { PWARegistration } from '@/components/pwa/PWARegistration';
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://truthordarequiz.com';
 const rootAlternates = getLocalizedAlternates('/');
@@ -68,6 +69,21 @@ export const metadata: Metadata = {
       'max-snippet': -1,
     },
   },
+  manifest: '/manifest.webmanifest',
+  icons: {
+    icon: [
+      { url: '/favicon.png', sizes: '32x32', type: 'image/png' },
+      { url: '/icon.svg', type: 'image/svg+xml' },
+    ],
+    apple: [
+      { url: '/icons/apple-touch-icon.png', sizes: '180x180', type: 'image/png' },
+    ],
+  },
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: 'black-translucent',
+    title: 'Asteria',
+  },
 };
 
 export const viewport: Viewport = {
@@ -123,6 +139,9 @@ export default function RootLayout({
           href="https://fonts.googleapis.com/css2?family=Cairo:wght@500;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&family=Noto+Sans+Devanagari:wght@500;700;800&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap"
           rel="stylesheet"
         />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+        <meta name="apple-mobile-web-app-title" content="Asteria" />
         <JsonLd data={organizationAndWebsiteSchema} />
       </head>
       <body className="min-h-screen flex flex-col bg-canvas-base text-slate-100 selection:bg-brand-500 selection:text-white">
@@ -131,6 +150,7 @@ export default function RootLayout({
           <main className="flex-1 flex flex-col pb-[calc(4.5rem+env(safe-area-inset-bottom,0px))] lg:pb-0">{children}</main>
           <AppFooter />
           <MobileDock />
+          <PWARegistration />
         </LanguageProvider>
       </body>
     </html>
