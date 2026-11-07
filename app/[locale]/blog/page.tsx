@@ -47,3 +47,4 @@ export default async function LocalizedBlogPage({ params }: LocalizedBlogProps) 
     </>
   );
 }
+

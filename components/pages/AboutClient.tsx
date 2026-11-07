@@ -78,3 +78,4 @@ export function AboutClient() {
     </div>
   );
 }
+

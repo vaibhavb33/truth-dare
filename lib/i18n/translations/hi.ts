@@ -347,4 +347,18 @@ export const hi: TranslationDictionary = {
     privacy: 'गोपनीयता',
     terms: 'शर्तें',
   },
+  voice: {
+    listenTruth: 'सच (Truth) सुनें',
+    listenDare: 'हिम्मत (Dare) सुनें',
+    listenQuestion: 'सवाल सुनें',
+    play: 'आवाज़ शुरू करें',
+    pause: 'रोकें (Pause)',
+    resume: 'फिर से शुरू करें (Resume)',
+    stop: 'बंद करें (Stop)',
+    speed: 'बोलने की गति',
+    selectVoice: 'आवाज़ चुनें',
+    defaultVoice: 'डिफ़ॉल्ट आवाज़',
+    voiceUnavailable: 'आवाज़ उपलब्ध नहीं है',
+    voiceUnavailableDesc: 'आपके ब्राउज़र या डिवाइस पर हिन्दी टेक्स्ट-टू-स्पीच आवाज़ उपलब्ध नहीं है।',
+  },
 };

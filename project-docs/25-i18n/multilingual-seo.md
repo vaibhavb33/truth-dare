@@ -88,3 +88,4 @@ export default function robots(): MetadataRoute.Robots {
 ## 5. Automated Validation & Test Coverage
 - Verified in `tests/seoAndSitemap.test.ts` (18 canonical routes, priority bounds, RFC robots.txt directives).
 - Verified in `tests/multilingualGlobal.test.ts` (100% reciprocal alternates across all 8 languages for every canonical subpath).
+

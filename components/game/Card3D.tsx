@@ -2,23 +2,32 @@
 
 import React, { useState } from 'react';
 import { Question } from '@/types';
-import { HelpCircle, Flame, Sparkles, Copy, Check, ShieldCheck } from 'lucide-react';
+import { HelpCircle, Flame, Sparkles, Copy, Check, ShieldCheck, Volume2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/Button';
 import { sound } from '@/lib/audio/soundSynthesizer';
 import { DareTimerRing } from '@/components/game/DareTimerRing';
 import { useTranslation } from '@/lib/i18n/LanguageContext';
+import { QuestionVoiceControls } from '@/components/voice/QuestionVoiceControls';
 
 interface Card3DProps {
   question: Question | null;
   isFlipped: boolean;
   onChooseType: (type: 'truth' | 'dare') => void;
+  onListenType?: (type: 'truth' | 'dare') => void;
   timerSeconds?: number;
   className?: string;
   isNsfwMode?: boolean;
 }
 
-export function Card3D({ question, isFlipped, onChooseType, timerSeconds = 0, className }: Card3DProps) {
+export function Card3D({
+  question,
+  isFlipped,
+  onChooseType,
+  onListenType,
+  timerSeconds = 0,
+  className,
+}: Card3DProps) {
   const { t } = useTranslation();
   const isDare = question?.type === 'dare';
   const [copied, setCopied] = useState(false);
@@ -91,35 +100,67 @@ export function Card3D({ question, isFlipped, onChooseType, timerSeconds = 0, cl
 
           {/* Dual Decision Cards */}
           <div className="relative z-10 w-full grid grid-cols-2 gap-2 sm:gap-3.5 pt-1">
-            <Button
-              variant="truth"
-              size="lg"
-              onClick={() => onChooseType('truth')}
-              className="w-full flex-col min-h-[66px] sm:min-h-[84px] py-1.5 sm:py-2.5 px-2 gap-1 rounded-2xl group hover:-translate-y-0.5 active:scale-95"
-            >
-              <div className="w-6 h-6 sm:w-8 sm:h-8 rounded-xl bg-white/10 flex items-center justify-center group-hover:scale-110 transition-transform shrink-0">
-                <HelpCircle className="w-3.5 h-3.5 sm:w-5 sm:h-5 text-white" />
-              </div>
-              <span className="text-sm sm:text-lg font-black tracking-wider leading-none">{t('game.truth')}</span>
-              <span className="text-[8px] sm:text-[10px] font-medium text-truth-100/90 truncate max-w-full leading-tight">
-                {t('game.truthSub')}
-              </span>
-            </Button>
+            <div className="flex flex-col gap-1 w-full">
+              <Button
+                variant="truth"
+                size="lg"
+                onClick={() => onChooseType('truth')}
+                className="w-full flex-col min-h-[66px] sm:min-h-[84px] py-1.5 sm:py-2.5 px-2 gap-1 rounded-2xl group hover:-translate-y-0.5 active:scale-95"
+              >
+                <div className="w-6 h-6 sm:w-8 sm:h-8 rounded-xl bg-white/10 flex items-center justify-center group-hover:scale-110 transition-transform shrink-0">
+                  <HelpCircle className="w-3.5 h-3.5 sm:w-5 sm:h-5 text-white" />
+                </div>
+                <span className="text-sm sm:text-lg font-black tracking-wider leading-none">{t('game.truth')}</span>
+                <span className="text-[8px] sm:text-[10px] font-medium text-truth-100/90 truncate max-w-full leading-tight">
+                  {t('game.truthSub')}
+                </span>
+              </Button>
+              {onListenType && (
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onListenType('truth');
+                  }}
+                  className="inline-flex items-center justify-center gap-1 py-1 px-1.5 rounded-xl bg-truth-500/10 hover:bg-truth-500/20 text-truth-300 border border-truth-400/25 text-[10px] sm:text-[11px] font-bold transition-colors active:scale-95"
+                  title={t('voice.listenTruth')}
+                >
+                  <Volume2 className="w-3 h-3 text-truth-400 shrink-0" />
+                  <span className="truncate">{t('voice.listenTruth')}</span>
+                </button>
+              )}
+            </div>
 
-            <Button
-              variant="dare"
-              size="lg"
-              onClick={() => onChooseType('dare')}
-              className="w-full flex-col min-h-[66px] sm:min-h-[84px] py-1.5 sm:py-2.5 px-2 gap-1 rounded-2xl group hover:-translate-y-0.5 active:scale-95"
-            >
-              <div className="w-6 h-6 sm:w-8 sm:h-8 rounded-xl bg-white/10 flex items-center justify-center group-hover:scale-110 transition-transform shrink-0">
-                <Flame className="w-3.5 h-3.5 sm:w-5 sm:h-5 text-white" />
-              </div>
-              <span className="text-sm sm:text-lg font-black tracking-wider leading-none">{t('game.dare')}</span>
-              <span className="text-[8px] sm:text-[10px] font-medium text-dare-100/90 truncate max-w-full leading-tight">
-                {t('game.dareSub')}
-              </span>
-            </Button>
+            <div className="flex flex-col gap-1 w-full">
+              <Button
+                variant="dare"
+                size="lg"
+                onClick={() => onChooseType('dare')}
+                className="w-full flex-col min-h-[66px] sm:min-h-[84px] py-1.5 sm:py-2.5 px-2 gap-1 rounded-2xl group hover:-translate-y-0.5 active:scale-95"
+              >
+                <div className="w-6 h-6 sm:w-8 sm:h-8 rounded-xl bg-white/10 flex items-center justify-center group-hover:scale-110 transition-transform shrink-0">
+                  <Flame className="w-3.5 h-3.5 sm:w-5 sm:h-5 text-white" />
+                </div>
+                <span className="text-sm sm:text-lg font-black tracking-wider leading-none">{t('game.dare')}</span>
+                <span className="text-[8px] sm:text-[10px] font-medium text-dare-100/90 truncate max-w-full leading-tight">
+                  {t('game.dareSub')}
+                </span>
+              </Button>
+              {onListenType && (
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onListenType('dare');
+                  }}
+                  className="inline-flex items-center justify-center gap-1 py-1 px-1.5 rounded-xl bg-dare-500/10 hover:bg-dare-500/20 text-dare-300 border border-dare-400/25 text-[10px] sm:text-[11px] font-bold transition-colors active:scale-95"
+                  title={t('voice.listenDare')}
+                >
+                  <Volume2 className="w-3 h-3 text-dare-400 shrink-0" />
+                  <span className="truncate">{t('voice.listenDare')}</span>
+                </button>
+              )}
+            </div>
           </div>
         </div>
 
@@ -172,19 +213,29 @@ export function Card3D({ question, isFlipped, onChooseType, timerSeconds = 0, cl
               )}
             </span>
 
-            {/* Copy Prompt Quick Action */}
-            <button
-              onClick={handleCopyPrompt}
-              aria-label={t('common.copyLink')}
-              className="p-1.5 sm:p-2 rounded-xl bg-white/5 hover:bg-white/10 text-slate-400 hover:text-white transition-colors border border-white/10 active:scale-95"
-              title="Copy challenge text"
-            >
-              {copied ? (
-                <Check className="w-3.5 h-3.5 text-emerald-400" />
-              ) : (
-                <Copy className="w-3.5 h-3.5 text-slate-400" />
+            {/* Quick Actions: Voice Player + Copy */}
+            <div className="flex items-center gap-1.5">
+              {question?.prompt && (
+                <QuestionVoiceControls
+                  text={question.prompt}
+                  language={question.language_code}
+                  type={isDare ? 'dare' : 'truth'}
+                  variant="card"
+                />
               )}
-            </button>
+              <button
+                onClick={handleCopyPrompt}
+                aria-label={t('common.copyLink')}
+                className="p-1.5 sm:p-2 rounded-xl bg-white/5 hover:bg-white/10 text-slate-400 hover:text-white transition-colors border border-white/10 active:scale-95"
+                title="Copy challenge text"
+              >
+                {copied ? (
+                  <Check className="w-3.5 h-3.5 text-emerald-400" />
+                ) : (
+                  <Copy className="w-3.5 h-3.5 text-slate-400" />
+                )}
+              </button>
+            </div>
           </div>
 
           {/* Center Challenge Statement with auto-scroll if long */}

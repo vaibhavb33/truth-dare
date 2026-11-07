@@ -120,3 +120,4 @@ Selects Target Language (e.g. 'ar' or 'hi')
      └────────────────────────┘                     └────────────────────────┘
 ```
 This guarantees synchronized social gameplay while keeping the interface completely native and understandable for participants across multiple regions.
+

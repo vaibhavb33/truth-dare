@@ -187,3 +187,4 @@ export default async function LocalizedArticlePage({ params }: LocalizedArticleP
     </article>
   );
 }
+

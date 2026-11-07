@@ -347,4 +347,18 @@ export const fr: TranslationDictionary = {
     privacy: 'Confidentialité',
     terms: 'Conditions',
   },
+  voice: {
+    listenTruth: 'Écouter Vérité',
+    listenDare: 'Écouter Action',
+    listenQuestion: 'Écouter la question',
+    play: 'Lire à voix haute',
+    pause: 'Mettre en pause',
+    resume: 'Reprendre la lecture',
+    stop: 'Arrêter la lecture',
+    speed: 'Vitesse de diction',
+    selectVoice: 'Choisir la voix',
+    defaultVoice: 'Voix par défaut',
+    voiceUnavailable: 'Voix non disponible',
+    voiceUnavailableDesc: 'Aucune synthèse vocale native pour cette langue n’est installée sur votre navigateur ou appareil.',
+  },
 };

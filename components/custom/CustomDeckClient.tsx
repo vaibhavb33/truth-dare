@@ -9,6 +9,7 @@ import { questionEngine } from '@/lib/questions/engine';
 import { EmptyState } from '@/components/ui/States';
 import { Question } from '@/types';
 import { useTranslation } from '@/lib/i18n/LanguageContext';
+import { QuestionVoiceControls } from '@/components/voice/QuestionVoiceControls';
 
 export function CustomDeckClient() {
   const { t, dict, locale } = useTranslation();
@@ -222,14 +223,22 @@ export function CustomDeckClient() {
                     {p.prompt}
                   </span>
                 </div>
-                <button
-                  onClick={() => handleRemovePrompt(p.id)}
-                  className="text-slate-400 hover:text-rose-400 shrink-0 p-1.5 transition-colors"
-                  title={dict.customDeck.deleteCard}
-                  aria-label={dict.customDeck.deleteCard}
-                >
-                  <Trash2 className="w-4 h-4" />
-                </button>
+                <div className="flex items-center gap-1 shrink-0">
+                  <QuestionVoiceControls
+                    text={p.prompt}
+                    language={locale}
+                    type={p.type}
+                    variant="compact"
+                  />
+                  <button
+                    onClick={() => handleRemovePrompt(p.id)}
+                    className="text-slate-400 hover:text-rose-400 shrink-0 p-1.5 transition-colors rounded-xl hover:bg-white/5"
+                    title={dict.customDeck.deleteCard}
+                    aria-label={dict.customDeck.deleteCard}
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </button>
+                </div>
               </div>
             ))}
           </div>

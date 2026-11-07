@@ -347,4 +347,18 @@ export const ar: TranslationDictionary = {
     privacy: 'الخصوصية',
     terms: 'الشروط',
   },
+  voice: {
+    listenTruth: 'استمع إلى الحقيقة',
+    listenDare: 'استمع إلى الجرأة',
+    listenQuestion: 'استمع إلى السؤال',
+    play: 'تشغيل الصوت',
+    pause: 'إيقاف مؤقت',
+    resume: 'استئناف الصوت',
+    stop: 'إيقاف الصوت',
+    speed: 'سرعة القراءة',
+    selectVoice: 'اختيار الصوت',
+    defaultVoice: 'الصوت التلقائي',
+    voiceUnavailable: 'الصوت غير متوفر',
+    voiceUnavailableDesc: 'لا يتوفر صوت ناطق أصلي لهذه اللغة في متصفحك أو جهازك الحالي.',
+  },
 };

@@ -57,3 +57,4 @@ export async function generateStaticParams() {
 }
 ```
 This guarantees 100% pre-rendered SSG across the entire site matrix (180 static HTML pages).
+

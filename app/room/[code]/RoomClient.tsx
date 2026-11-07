@@ -18,6 +18,7 @@ import { Button } from '@/components/ui/Button';
 import { Card3D } from '@/components/game/Card3D';
 import { triggerConfetti } from '@/components/game/ConfettiCelebration';
 import { sound } from '@/lib/audio/soundSynthesizer';
+import { speechService } from '@/lib/voice/speechService';
 import { MultiplayerRoom } from '@/types';
 import { useTranslation } from '@/lib/i18n/LanguageContext';
 import { SUPPORTED_LOCALES, Locale } from '@/lib/i18n/config';
@@ -61,6 +62,7 @@ export function RoomClient({ roomCode }: RoomClientProps) {
     return () => {
       isSubscribed = false;
       clearInterval(interval);
+      speechService.stop();
     };
   }, [roomCode]);
 
@@ -107,6 +109,9 @@ export function RoomClient({ roomCode }: RoomClientProps) {
   // Dispatch Action
   const dispatch = async (action: string, payload?: Record<string, unknown>) => {
     sound.triggerHaptic(15);
+    if (action === 'SKIP_TURN' || action === 'COMPLETE_DARE') {
+      speechService.stop();
+    }
     try {
       const res = await fetch('/api/rooms/action', {
         method: 'POST',

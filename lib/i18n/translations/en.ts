@@ -347,4 +347,18 @@ export const en: TranslationDictionary = {
     privacy: 'Privacy',
     terms: 'Terms',
   },
+  voice: {
+    listenTruth: 'Listen to Truth',
+    listenDare: 'Listen to Dare',
+    listenQuestion: 'Listen to Question',
+    play: 'Play Speech',
+    pause: 'Pause Speech',
+    resume: 'Resume Speech',
+    stop: 'Stop Speech',
+    speed: 'Speaking Speed',
+    selectVoice: 'Select Voice',
+    defaultVoice: 'Default Browser Voice',
+    voiceUnavailable: 'Voice Unavailable',
+    voiceUnavailableDesc: 'Native text-to-speech voice for this language is not available on your browser or device.',
+  },
 };

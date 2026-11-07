@@ -96,3 +96,4 @@ RTL directionality and text orientation are covered by:
 - `tests/i18n.test.ts`: Asserts `SUPPORTED_LOCALES.ar.dir === 'rtl'` and all others are `'ltr'`.
 - `tests/multilingualGlobal.test.ts`: Asserts script integrity for Arabic range `[\u0600-\u06FF]`, dictionary coverage, and room host language synchronization.
 - Build verification: Next.js static page generator built all 8 `/ar/*` pages without hydration mismatches.
+

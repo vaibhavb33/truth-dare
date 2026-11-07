@@ -347,4 +347,18 @@ export const id: TranslationDictionary = {
     privacy: 'Privasi',
     terms: 'Ketentuan',
   },
+  voice: {
+    listenTruth: 'Dengarkan Jujur',
+    listenDare: 'Dengarkan Tantangan',
+    listenQuestion: 'Dengarkan Pertanyaan',
+    play: 'Putar Suara',
+    pause: 'Jeda Suara',
+    resume: 'Lanjutkan Suara',
+    stop: 'Hentikan Suara',
+    speed: 'Kecepatan Bicara',
+    selectVoice: 'Pilih Suara',
+    defaultVoice: 'Suara Default',
+    voiceUnavailable: 'Suara Tidak Tersedia',
+    voiceUnavailableDesc: 'Suara sintesis ucapan asli untuk bahasa ini tidak tersedia di peramban atau perangkat Anda.',
+  },
 };

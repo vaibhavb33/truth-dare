@@ -347,4 +347,18 @@ export const de: TranslationDictionary = {
     privacy: 'Datenschutz',
     terms: 'Bedingungen',
   },
+  voice: {
+    listenTruth: 'Wahrheit vorlesen',
+    listenDare: 'Pflicht vorlesen',
+    listenQuestion: 'Frage vorlesen',
+    play: 'Vorlesen abspielen',
+    pause: 'Vorlesen anhalten',
+    resume: 'Vorlesen fortsetzen',
+    stop: 'Vorlesen stoppen',
+    speed: 'Sprechgeschwindigkeit',
+    selectVoice: 'Stimme auswählen',
+    defaultVoice: 'Standardstimme',
+    voiceUnavailable: 'Stimme nicht verfügbar',
+    voiceUnavailableDesc: 'Für diese Sprache ist in Ihrem Browser oder Gerät keine passende Sprachausgabe installiert.',
+  },
 };

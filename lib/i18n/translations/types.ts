@@ -298,4 +298,18 @@ export interface TranslationDictionary {
     privacy: string;
     terms: string;
   };
+  voice: {
+    listenTruth: string;
+    listenDare: string;
+    listenQuestion: string;
+    play: string;
+    pause: string;
+    resume: string;
+    stop: string;
+    speed: string;
+    selectVoice: string;
+    defaultVoice: string;
+    voiceUnavailable: string;
+    voiceUnavailableDesc: string;
+  };
 }

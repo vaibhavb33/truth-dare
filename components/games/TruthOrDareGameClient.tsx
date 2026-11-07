@@ -22,6 +22,7 @@ import { AgeGateModal } from '@/components/game/AgeGateModal';
 import { triggerConfetti } from '@/components/game/ConfettiCelebration';
 import { Button } from '@/components/ui/Button';
 import { sound } from '@/lib/audio/soundSynthesizer';
+import { speechService } from '@/lib/voice/speechService';
 import { questionEngine } from '@/lib/questions/engine';
 import { Question, CategoryId, Player } from '@/types';
 import { useTranslation } from '@/lib/i18n/LanguageContext';
@@ -169,7 +170,7 @@ function TruthOrDareInner() {
   };
 
   // Pick Truth or Dare
-  const handleChooseType = (type: 'truth' | 'dare') => {
+  const handleChooseType = (type: 'truth' | 'dare', autoSpeak = false) => {
     sound.triggerHaptic(20);
     sound.playWhoosh();
 
@@ -199,6 +200,14 @@ function TruthOrDareInner() {
       setCurrentCard(card);
       setDrawnCardIds((prev) => [...prev, card.id]);
       setIsFlipped(true);
+
+      if (autoSpeak && card.prompt) {
+        // Deliberate user action triggered via "Listen to Truth" or "Listen to Dare"
+        speechService.speak({
+          text: card.prompt,
+          language: card.language_code || locale,
+        });
+      }
     });
   };
 
@@ -228,6 +237,7 @@ function TruthOrDareInner() {
   };
 
   const advanceTurn = () => {
+    speechService.stop();
     setIsFlipped(false);
     setCurrentCard(null);
     setActivePlayerIndex((prev) => (prev + 1) % players.length);
@@ -413,6 +423,7 @@ function TruthOrDareInner() {
               question={currentCard}
               isFlipped={isFlipped}
               onChooseType={handleChooseType}
+              onListenType={(type) => handleChooseType(type, true)}
               timerSeconds={timerSeconds}
             />
           </div>

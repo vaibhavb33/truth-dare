@@ -74,3 +74,4 @@ Every translation dictionary was audited programmatically using automated TypeSc
 ### 3.2 Anti-Repetition & Language Isolation
 - The `questionEngine.getEligibleQuestions` strictly verifies `q.language_code === targetLang`.
 - No mixing of languages occurs within an active game session or room.
+

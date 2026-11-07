@@ -58,3 +58,4 @@ export default async function LocalizedNeverPage({ params }: LocalizedNeverPageP
     </>
   );
 }
+

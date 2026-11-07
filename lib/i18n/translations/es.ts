@@ -347,4 +347,18 @@ export const es: TranslationDictionary = {
     privacy: 'Privacidad',
     terms: 'Términos',
   },
+  voice: {
+    listenTruth: 'Escuchar Verdad',
+    listenDare: 'Escuchar Reto',
+    listenQuestion: 'Escuchar Pregunta',
+    play: 'Reproducir voz',
+    pause: 'Pausar voz',
+    resume: 'Reanudar voz',
+    stop: 'Detener voz',
+    speed: 'Velocidad de voz',
+    selectVoice: 'Seleccionar voz',
+    defaultVoice: 'Voz predeterminada',
+    voiceUnavailable: 'Voz no disponible',
+    voiceUnavailableDesc: 'No hay una voz nativa de texto a voz disponible para este idioma en tu navegador o dispositivo.',
+  },
 };

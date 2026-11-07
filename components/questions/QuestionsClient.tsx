@@ -18,6 +18,7 @@ import {
 import { INITIAL_QUESTIONS } from '@/lib/questions/database';
 import { sound } from '@/lib/audio/soundSynthesizer';
 import { EmptyState } from '@/components/ui/States';
+import { QuestionVoiceControls } from '@/components/voice/QuestionVoiceControls';
 
 export function QuestionsClient() {
   const [searchQuery, setSearchQuery] = useState('');
@@ -164,23 +165,32 @@ export function QuestionsClient() {
                   </p>
                 </div>
 
-                <div className="pt-3 border-t border-white/5 flex items-center justify-between">
-                  <button
-                    onClick={() => handleCopy(q.id, q.prompt)}
-                    className="inline-flex items-center gap-1.5 text-xs text-slate-400 hover:text-white transition-colors"
-                  >
-                    {copiedId === q.id ? (
-                      <>
-                        <Check className="w-3.5 h-3.5 text-emerald-400" />
-                        <span className="text-emerald-400 font-semibold">Copied!</span>
-                      </>
-                    ) : (
-                      <>
-                        <Copy className="w-3.5 h-3.5" />
-                        <span>Copy Prompt</span>
-                      </>
-                    )}
-                  </button>
+                <div className="pt-3 border-t border-white/5 flex flex-wrap items-center justify-between gap-2">
+                  <div className="flex items-center gap-3">
+                    <QuestionVoiceControls
+                      text={q.prompt}
+                      language={q.language_code || 'en'}
+                      type={isTruth ? 'truth' : 'dare'}
+                      variant="compact"
+                    />
+
+                    <button
+                      onClick={() => handleCopy(q.id, q.prompt)}
+                      className="inline-flex items-center gap-1.5 text-xs text-slate-400 hover:text-white transition-colors"
+                    >
+                      {copiedId === q.id ? (
+                        <>
+                          <Check className="w-3.5 h-3.5 text-emerald-400" />
+                          <span className="text-emerald-400 font-semibold">Copied!</span>
+                        </>
+                      ) : (
+                        <>
+                          <Copy className="w-3.5 h-3.5" />
+                          <span>Copy</span>
+                        </>
+                      )}
+                    </button>
+                  </div>
 
                   <Link
                     href={`/games/${q.gameId}?category=${q.categoryId}`}

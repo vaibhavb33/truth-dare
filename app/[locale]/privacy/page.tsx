@@ -47,3 +47,4 @@ export default async function LocalizedPrivacyPage({ params }: LocalizedPrivacyP
     </>
   );
 }
+
