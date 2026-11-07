@@ -292,3 +292,4 @@ runResponsiveVisualAudit().catch((err) => {
   console.error('Fatal error running responsive audit:', err);
   process.exit(1);
 });
+

@@ -87,3 +87,4 @@ This audit documents the complete mobile responsive overhaul of Asteria, resolvi
 - **Complete Turn Button:** `min-h-[46px] sm:min-h-[48px]`, glowing emerald highlight with clear confirmation feedback.
 - **Mobile Navigation Dock:** 5 navigation items each with `min-h-[48px]`, `py-1`, and active purple glowing indicator pills.
 - **Safe Area Insets:** Handled across header (`pt-[env(safe-area-inset-top)]`), bottom dock (`pb-[env(safe-area-inset-bottom)]`), and modal dialogs (`pt-[max(0.75rem,env(safe-area-inset-top))] pb-[max(0.75rem,env(safe-area-inset-bottom))]`).
+

@@ -74,3 +74,4 @@ This audit documents the comprehensive desktop layout inspection and optimizatio
 1. **Dynamic Container Expansion:** Replaced rigid `max-w-2xl` on setup and custom deck hubs with `max-w-2xl lg:max-w-3xl xl:max-w-4xl`.
 2. **Conditional Footer Unmounting:** On desktop active gameplay sessions (`TruthOrDareGameClient`), `AppFooter` is conditionally unmounted via `subscribeGameplayActive`, removing bottom page clutter and keeping the focus 100% on the game board.
 3. **Fluid Typography on Display Headings:** Replaced fixed `text-5xl` with `heading-fluid-hero` (`clamp(1.75rem, 5vw + 0.5rem, 3.25rem)`), ensuring crisp proportions regardless of window resize.
+

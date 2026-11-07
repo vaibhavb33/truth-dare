@@ -98,3 +98,4 @@ Arabic script requires connected cursive glyphs and vertical diacritics (*haraka
 | `Card3D.tsx` (Back) | Prompt Statement | Plus Jakarta Sans / Inter | `clamp(0.95rem, 1.35rem)` | 1.55 (`leading-relaxed`) | `break-words` with `max-h-[170px]` custom scrollbar |
 | `DareTimerRing.tsx` | Seconds Counter | JetBrains Mono | 16px / 20px | 1.0 (`leading-none`) | Centered SVG radial counter |
 | `MobileDock.tsx` | Nav Tab Labels | Inter | 10px / 11px | 1.1 | `truncate max-w-full px-0.5` |
+

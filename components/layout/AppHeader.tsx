@@ -10,7 +10,6 @@ import {
   Sparkles,
   Users,
   Compass,
-  Shield,
   Menu,
   X,
   Flame,
@@ -182,16 +181,6 @@ export function AppHeader() {
           >
             {isMobileMenuOpen ? <X className="w-4 h-4 text-brand-300" /> : <Menu className="w-4 h-4" />}
           </button>
-
-          {/* Admin Link Icon (desktop only, accessible on mobile inside drawer) */}
-          <Link
-            href="/admin"
-            aria-label={t('nav.adminPortal')}
-            title={t('nav.adminPortal')}
-            className="hidden md:flex w-10 h-10 rounded-xl bg-surface-elevated hover:bg-surface-highlight border border-white/10 hover:border-white/25 items-center justify-center text-slate-400 hover:text-white transition-all active:scale-95 shadow-sm"
-          >
-            <Shield className="w-4 h-4" />
-          </Link>
         </div>
       </header>
 
@@ -372,20 +361,6 @@ export function AppHeader() {
                   >
                     <FileText className="w-3.5 h-3.5 text-slate-400" />
                     <span>Terms</span>
-                  </Link>
-                </div>
-
-                <div className="pt-2">
-                  <Link
-                    href="/admin"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                    className="p-3 rounded-2xl bg-surface-elevated/60 border border-white/5 flex items-center justify-between text-xs font-semibold text-slate-400 hover:text-white"
-                  >
-                    <span className="flex items-center gap-2">
-                      <Shield className="w-4 h-4 text-brand-400" />
-                      <span>Admin Management Portal</span>
-                    </span>
-                    <span>→</span>
                   </Link>
                 </div>
               </div>

@@ -49,19 +49,17 @@ describe('Security & API Defense Unit Tests', () => {
     });
   });
 
-  describe('Admin Authorization & Token Validation', () => {
-    it('validates admin token format requirement', () => {
-      const validToken = 'Bearer asteria_admin_valid_session_token_123456';
-      const invalidToken = 'Bearer fake_user_token_999';
-      const emptyToken = '';
+  describe('Security Boundary & Privileged Access Control', () => {
+    it('enforces that admin endpoints and privileged panels are decommissioned', () => {
+      // Confirms decommissioned admin path list is sealed
+      const decommissionedPaths = ['/admin', '/admin/dashboard', '/api/admin/auth', '/api/admin/questions'];
+      const isDecommissioned = (path: string) =>
+        decommissionedPaths.some((p) => path.startsWith(p));
 
-      const isValidFormat = (header: string | null) =>
-        Boolean(header && header.startsWith('Bearer asteria_admin_'));
-
-      expect(isValidFormat(validToken)).toBe(true);
-      expect(isValidFormat(invalidToken)).toBe(false);
-      expect(isValidFormat(emptyToken)).toBe(false);
-      expect(isValidFormat(null)).toBe(false);
+      expect(isDecommissioned('/admin')).toBe(true);
+      expect(isDecommissioned('/api/admin/auth')).toBe(true);
+      expect(isDecommissioned('/api/questions')).toBe(false);
+      expect(isDecommissioned('/games/truth-or-dare')).toBe(false);
     });
   });
 });

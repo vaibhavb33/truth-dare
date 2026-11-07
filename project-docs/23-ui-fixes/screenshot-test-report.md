@@ -52,3 +52,4 @@
 2. **Top Turn Indicator Clearance:** On mobile viewports under 667px height (320x568, 375x667), the top turn indicator bar ("Player 1's Turn") remained 100% visible with zero displacement behind the sticky `AppHeader`.
 3. **No Footer Peeking:** On mobile game screens, `AppFooter` is conditionally unmounted, eliminating the visual bug where the footer logo peeked out behind the fixed `MobileDock`.
 4. **Devanagari & Arabic Text Clarity:** Inside `LanguageModal.tsx`, Hindi ("हिन्दी") and Arabic ("العربية") display with line-height 1.6 and separate column cards on mobile, with zero text overlapping or clipping.
+

@@ -186,11 +186,6 @@ export function AppFooter() {
                 {t('breadcrumbs.terms')}
               </Link>
             </li>
-            <li>
-              <Link href="/admin" className="hover:text-white transition-colors text-slate-500 hover:text-slate-400">
-                {t('nav.adminPortal')}
-              </Link>
-            </li>
             <li className="pt-1">
               <PWAInstallButton variant="footer" />
             </li>
