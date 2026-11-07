@@ -10,9 +10,11 @@ import { PWAInstallButton } from '@/components/pwa/PWAInstallButton';
 import { isGameplayActive, subscribeGameplayActive } from '@/lib/gameplay/gameplayState';
 
 export function AppFooter() {
-  const { t } = useTranslation();
+  const { t, locale } = useTranslation();
   const pathname = usePathname() || '';
   const [gameplayActive, setGameplayActiveState] = useState(false);
+
+  const loc = (subpath: string) => (locale === 'en' ? subpath : `/${locale}${subpath === '/' ? '' : subpath}`);
 
   useEffect(() => {
     setGameplayActiveState(isGameplayActive());
@@ -37,7 +39,7 @@ export function AppFooter() {
       <div className="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-8 mb-12">
         {/* Col 1: Brand Info */}
         <div className="space-y-4 sm:col-span-2 md:col-span-1">
-          <Link href="/" className="flex items-center gap-2 group">
+          <Link href={loc('/')} className="flex items-center gap-2 group">
             <div className="w-7 h-7 rounded-lg bg-brand-600 flex items-center justify-center shadow-glow-brand">
               <Sparkles className="w-4 h-4 text-white" />
             </div>
@@ -56,37 +58,37 @@ export function AppFooter() {
           <h4 className="font-semibold text-white text-xs uppercase tracking-wider">{t('footer.colGames')}</h4>
           <ul className="space-y-2 text-xs">
             <li>
-              <Link href="/games/truth-or-dare" className="hover:text-white transition-colors">
+              <Link href={loc('/games/truth-or-dare')} className="hover:text-white transition-colors">
                 {t('gamesList.truthOrDare.playButton')}
               </Link>
             </li>
             <li>
-              <Link href="/games/spin-the-bottle" className="hover:text-white transition-colors">
+              <Link href={loc('/games/spin-the-bottle')} className="hover:text-white transition-colors">
                 {t('gamesList.spinTheBottle.playButton')}
               </Link>
             </li>
             <li>
-              <Link href="/games/never-have-i-ever" className="hover:text-white transition-colors">
+              <Link href={loc('/games/never-have-i-ever')} className="hover:text-white transition-colors">
                 {t('gamesList.neverHaveIEver.playButton')}
               </Link>
             </li>
             <li>
-              <Link href="/games/would-you-rather" className="hover:text-white transition-colors">
+              <Link href={loc('/games/would-you-rather')} className="hover:text-white transition-colors">
                 {t('gamesList.wouldYouRather.playButton')}
               </Link>
             </li>
             <li>
-              <Link href="/games/most-likely-to" className="hover:text-white transition-colors">
+              <Link href={loc('/games/most-likely-to')} className="hover:text-white transition-colors">
                 {t('gamesList.mostLikelyTo.playButton')}
               </Link>
             </li>
             <li>
-              <Link href="/games/this-or-that" className="hover:text-white transition-colors">
+              <Link href={loc('/games/this-or-that')} className="hover:text-white transition-colors">
                 {t('gamesList.thisOrThat.playButton')}
               </Link>
             </li>
             <li>
-              <Link href="/games" className="text-brand-400 font-semibold hover:text-brand-300 transition-colors">
+              <Link href={loc('/games')} className="text-brand-400 font-semibold hover:text-brand-300 transition-colors">
                 {t('home.exploreGames')} →
               </Link>
             </li>
@@ -98,32 +100,32 @@ export function AppFooter() {
           <h4 className="font-semibold text-white text-xs uppercase tracking-wider">{t('footer.colCategories')}</h4>
           <ul className="space-y-2 text-xs">
             <li>
-              <Link href="/games/truth-or-dare?category=classic-party" className="hover:text-white transition-colors">
+              <Link href={loc('/games/truth-or-dare?category=classic-party')} className="hover:text-white transition-colors">
                 🎉 {t('categories.classicParty.name')}
               </Link>
             </li>
             <li>
-              <Link href="/games/truth-or-dare?category=couples-flirty" className="hover:text-white transition-colors">
+              <Link href={loc('/games/truth-or-dare?category=couples-flirty')} className="hover:text-white transition-colors">
                 ❤️ {t('categories.couplesFlirty.name')}
               </Link>
             </li>
             <li>
-              <Link href="/games/truth-or-dare?category=teens-hangout" className="hover:text-white transition-colors">
+              <Link href={loc('/games/truth-or-dare?category=teens-hangout')} className="hover:text-white transition-colors">
                 🍕 {t('categories.teensHangout.name')}
               </Link>
             </li>
             <li>
-              <Link href="/games/truth-or-dare?category=spicy-18" className="hover:text-white transition-colors">
+              <Link href={loc('/games/truth-or-dare?category=spicy-18')} className="hover:text-white transition-colors">
                 🌶️ {t('categories.spicy18.name')}
               </Link>
             </li>
             <li>
-              <Link href="/games/truth-or-dare?category=family-kids" className="hover:text-white transition-colors">
+              <Link href={loc('/games/truth-or-dare?category=family-kids')} className="hover:text-white transition-colors">
                 🌟 {t('categories.familyKids.name')}
               </Link>
             </li>
             <li>
-              <Link href="/custom" className="text-truth-400 font-semibold hover:text-truth-300 transition-colors">
+              <Link href={loc('/custom')} className="text-truth-400 font-semibold hover:text-truth-300 transition-colors">
                 ⚡ {t('nav.customDeck')} →
               </Link>
             </li>
@@ -135,27 +137,27 @@ export function AppFooter() {
           <h4 className="font-semibold text-white text-xs uppercase tracking-wider">{t('footer.colGuides')}</h4>
           <ul className="space-y-2 text-xs">
             <li>
-              <Link href="/questions" className="hover:text-white transition-colors">
+              <Link href={loc('/questions')} className="hover:text-white transition-colors">
                 📚 {t('nav.questionLibrary')}
               </Link>
             </li>
             <li>
-              <Link href="/blog/official-truth-or-dare-rules" className="hover:text-white transition-colors">
+              <Link href={loc('/blog/official-truth-or-dare-rules')} className="hover:text-white transition-colors">
                 📖 Official Truth or Dare Rules
               </Link>
             </li>
             <li>
-              <Link href="/blog/50-best-dares-over-facetime" className="hover:text-white transition-colors">
+              <Link href={loc('/blog/50-best-dares-over-facetime')} className="hover:text-white transition-colors">
                 📱 50 Best FaceTime Dares
               </Link>
             </li>
             <li>
-              <Link href="/blog/clean-icebreakers-for-work" className="hover:text-white transition-colors">
+              <Link href={loc('/blog/clean-icebreakers-for-work')} className="hover:text-white transition-colors">
                 💼 Clean Icebreakers for Work
               </Link>
             </li>
             <li>
-              <Link href="/blog" className="text-brand-400 font-semibold hover:text-brand-300 transition-colors">
+              <Link href={loc('/blog')} className="text-brand-400 font-semibold hover:text-brand-300 transition-colors">
                 {t('nav.guides')} →
               </Link>
             </li>
@@ -167,22 +169,22 @@ export function AppFooter() {
           <h4 className="font-semibold text-white text-xs uppercase tracking-wider">{t('footer.colLegal')}</h4>
           <ul className="space-y-2 text-xs mb-3">
             <li>
-              <Link href="/about" className="hover:text-white transition-colors">
+              <Link href={loc('/about')} className="hover:text-white transition-colors">
                 {t('breadcrumbs.about')}
               </Link>
             </li>
             <li>
-              <Link href="/contact" className="hover:text-white transition-colors">
+              <Link href={loc('/contact')} className="hover:text-white transition-colors">
                 {t('breadcrumbs.contact')}
               </Link>
             </li>
             <li>
-              <Link href="/privacy" className="hover:text-white transition-colors">
+              <Link href={loc('/privacy')} className="hover:text-white transition-colors">
                 {t('breadcrumbs.privacy')}
               </Link>
             </li>
             <li>
-              <Link href="/terms" className="hover:text-white transition-colors">
+              <Link href={loc('/terms')} className="hover:text-white transition-colors">
                 {t('breadcrumbs.terms')}
               </Link>
             </li>

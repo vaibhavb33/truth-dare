@@ -57,3 +57,4 @@ $ curl -s -o /dev/null -w "%{http_code}" http://localhost:3000/games/truth-or-da
    - User-created custom decks (`CustomDeckClient`) remain strictly isolated within the visitor's local browser `localStorage` (`asteria_custom_deck`), with zero exposure to external network endpoints or third-party servers.
 4. **Content Security Policy & XSS Defenses:**
    - Input sanitization (`replace(/<[^>]*>?/gm, '')`) remains enforced across all player names and custom challenge inputs.
+

@@ -1,4 +1,4 @@
-import { MultiplayerRoom, Player, GameType, CategoryId, QuestionType } from '@/types';
+import { MultiplayerRoom, Player, GameType, CategoryId, QuestionType, SupportedLanguageCode } from '@/types';
 import { generateRoomCode } from '@/lib/utils';
 import { questionEngine } from '@/lib/questions/engine';
 
@@ -20,6 +20,7 @@ class RoomEngine {
     categoryId: CategoryId;
     hostName: string;
     timerSeconds?: 0 | 15 | 30 | 60;
+    language?: SupportedLanguageCode;
   }): { room: MultiplayerRoom; hostPlayerId: string } {
     const roomCode = generateRoomCode();
     const hostPlayerId = 'p-' + Math.random().toString(36).substring(2, 9);
@@ -49,6 +50,7 @@ class RoomEngine {
       isTimerRunning: false,
       votes: {},
       recentEmojis: [],
+      language: params.language || 'en',
       createdAt: Date.now(),
       expiresAt: Date.now() + 2 * 60 * 60 * 1000, // 2 hours TTL
     };
@@ -156,6 +158,7 @@ class RoomEngine {
           gameId: room.gameId,
           categoryId: room.categoryId,
           type,
+          language: room.language || 'en',
           drawnCardIds: [],
         });
         room.currentCard = card;

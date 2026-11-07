@@ -3,6 +3,7 @@ import type { Metadata } from 'next';
 import { JsonLd } from '@/components/seo/JsonLd';
 import { Breadcrumbs } from '@/components/seo/Breadcrumbs';
 import { ContactFormClient } from '@/components/contact/ContactFormClient';
+import { getLocalizedAlternates } from '@/lib/i18n/seo';
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://truthordarequiz.com';
 
@@ -10,9 +11,7 @@ export const metadata: Metadata = {
   title: 'Contact Asteria | Support, Suggestions & Submissions',
   description:
     'Have a game idea, question pack suggestion, or bug report? Contact the Asteria team. We review community prompt submissions daily.',
-  alternates: {
-    canonical: `${siteUrl}/contact`,
-  },
+  alternates: getLocalizedAlternates('/contact', 'en'),
   openGraph: {
     type: 'website',
     url: `${siteUrl}/contact`,

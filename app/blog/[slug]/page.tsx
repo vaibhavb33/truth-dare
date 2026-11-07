@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/Button';
 import { JsonLd } from '@/components/seo/JsonLd';
 import { Breadcrumbs } from '@/components/seo/Breadcrumbs';
 
-interface ArticleData {
+export interface ArticleData {
   slug: string;
   title: string;
   metaTitle: string;
@@ -32,7 +32,7 @@ interface ArticleData {
   relatedSlugs: string[];
 }
 
-const ARTICLES: Record<string, ArticleData> = {
+export const ARTICLES: Record<string, ArticleData> = {
   'official-truth-or-dare-rules': {
     slug: 'official-truth-or-dare-rules',
     title: 'The Official Rules of Truth or Dare: How to Play & House Variations',

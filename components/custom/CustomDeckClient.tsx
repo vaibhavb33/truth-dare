@@ -8,8 +8,10 @@ import { sound } from '@/lib/audio/soundSynthesizer';
 import { questionEngine } from '@/lib/questions/engine';
 import { EmptyState } from '@/components/ui/States';
 import { Question } from '@/types';
+import { useTranslation } from '@/lib/i18n/LanguageContext';
 
 export function CustomDeckClient() {
+  const { t, dict, locale } = useTranslation();
   const [deckName, setDeckName] = useState('My Inside Jokes Deck');
   const [prompts, setPrompts] = useState<Array<{ id: string; type: 'truth' | 'dare'; prompt: string }>>([
     { id: '1', type: 'truth', prompt: 'Who in our group has the most questionable dating history?' },
@@ -68,12 +70,12 @@ export function CustomDeckClient() {
       sound.playVictory();
       setTimeout(() => setSavedSuccess(false), 2500);
 
-      // Inject into Question Engine so it's playable immediately
+      // Inject into Question Engine with current locale
       const formatted: Question[] = prompts.map((p) => ({
         id: p.id,
         game_type: 'truth-or-dare',
         question_type: p.type,
-        language_code: 'en',
+        language_code: locale,
         category: 'party',
         difficulty: 3,
         question_text: p.prompt,
@@ -111,26 +113,27 @@ export function CustomDeckClient() {
       <div className="space-y-2 text-center md:text-left px-1">
         <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-brand-500/10 border border-brand-500/20 text-xs font-bold uppercase tracking-wider text-brand-300">
           <Sparkles className="w-3.5 h-3.5 text-brand-400" />
-          <span>Personal Deck Studio</span>
+          <span>{dict.customDeck.badge}</span>
         </div>
         <h1 className="font-display font-extrabold text-2xl sm:text-3xl md:text-5xl text-white tracking-tight">
-          Custom Deck Studio
+          {dict.customDeck.title}
         </h1>
         <p className="text-xs md:text-sm text-slate-400 max-w-lg">
-          Craft personal inside jokes, group secrets, and wild challenges. Saved safely in your local browser and playable in live party rounds.
+          {dict.customDeck.subtitle}
         </p>
       </div>
 
       {/* Deck Title Card */}
       <div className="p-4 sm:p-6 md:p-8 rounded-3xl bg-surface-elevated/90 border border-white/10 space-y-3 backdrop-blur-sm shadow-elevation-1">
         <label className="text-xs font-bold uppercase tracking-wider text-slate-300">
-          Deck Title:
+          {dict.customDeck.deckNameLabel}
         </label>
         <input
           type="text"
           value={deckName}
           onChange={(e) => setDeckName(e.target.value)}
           maxLength={40}
+          placeholder={dict.customDeck.deckNamePlaceholder}
           className="w-full h-11 sm:h-12 px-3 sm:px-4 rounded-xl bg-canvas-base border border-white/10 text-sm sm:text-base font-bold text-white focus:outline-none focus:border-brand-400 transition-colors"
         />
       </div>
@@ -138,7 +141,7 @@ export function CustomDeckClient() {
       {/* Add New Prompt Form */}
       <form onSubmit={handleAddPrompt} className="p-4 sm:p-6 md:p-8 rounded-3xl bg-surface-elevated/90 border border-white/10 space-y-4 backdrop-blur-sm shadow-elevation-1">
         <label className="text-xs font-bold uppercase tracking-wider text-slate-300">
-          Add New Prompt:
+          {dict.customDeck.addCardTitle}:
         </label>
 
         <div className="flex gap-2">
@@ -155,7 +158,7 @@ export function CustomDeckClient() {
             }`}
           >
             <HelpCircle className="w-3.5 h-3.5" />
-            <span>Truth</span>
+            <span>{dict.customDeck.cardTypeTruth}</span>
           </button>
           <button
             type="button"
@@ -170,21 +173,21 @@ export function CustomDeckClient() {
             }`}
           >
             <Flame className="w-3.5 h-3.5 fill-current" />
-            <span>Dare</span>
+            <span>{dict.customDeck.cardTypeDare}</span>
           </button>
         </div>
 
         <div className="flex flex-col sm:flex-row gap-2.5">
           <input
             type="text"
-            placeholder="Type your custom question or dare challenge..."
+            placeholder={dict.customDeck.promptPlaceholder}
             value={newPromptText}
             onChange={(e) => setNewPromptText(e.target.value)}
             maxLength={250}
             className="flex-1 min-w-0 h-11 sm:h-12 px-3 sm:px-4 rounded-xl bg-canvas-base border border-white/10 text-xs md:text-sm text-white placeholder:text-slate-500 focus:outline-none focus:border-brand-400 transition-colors"
           />
           <Button type="submit" variant="primary" size="md" className="gap-1.5 shrink-0 h-11 sm:h-12 px-4">
-            <Plus className="w-4 h-4" /> Add Card
+            <Plus className="w-4 h-4" /> {dict.customDeck.addCardButton}
           </Button>
         </div>
       </form>
@@ -193,9 +196,9 @@ export function CustomDeckClient() {
       <div className="p-4 sm:p-6 md:p-8 rounded-3xl bg-surface-elevated/90 border border-white/10 space-y-4 backdrop-blur-sm shadow-elevation-1">
         <div className="flex items-center justify-between">
           <h3 className="font-display font-bold text-xs sm:text-sm text-white uppercase tracking-wider">
-            Deck Cards ({prompts.length})
+            {t('customDeck.cardsInDeck', { count: prompts.length })}
           </h3>
-          <span className="text-[11px] sm:text-xs text-slate-400">Min 3 cards to launch</span>
+          <span className="text-[11px] sm:text-xs text-slate-400">Min 3 cards</span>
         </div>
 
         {prompts.length > 0 ? (
@@ -213,7 +216,7 @@ export function CustomDeckClient() {
                         : 'bg-dare-500/15 text-dare-300 border-dare-400/30'
                     }`}
                   >
-                    {p.type}
+                    {p.type === 'truth' ? dict.customDeck.cardTypeTruth : dict.customDeck.cardTypeDare}
                   </span>
                   <span className="text-white font-medium text-xs md:text-sm leading-relaxed break-words min-w-0">
                     {p.prompt}
@@ -222,8 +225,8 @@ export function CustomDeckClient() {
                 <button
                   onClick={() => handleRemovePrompt(p.id)}
                   className="text-slate-400 hover:text-rose-400 shrink-0 p-1.5 transition-colors"
-                  title="Delete card"
-                  aria-label="Delete card"
+                  title={dict.customDeck.deleteCard}
+                  aria-label={dict.customDeck.deleteCard}
                 >
                   <Trash2 className="w-4 h-4" />
                 </button>
@@ -232,8 +235,8 @@ export function CustomDeckClient() {
           </div>
         ) : (
           <EmptyState
-            title="Your Custom Deck is Empty"
-            description="Add your first custom Truth or Dare prompt using the input form above to begin building your personal pack."
+            title={dict.customDeck.emptyDeckTitle}
+            description={dict.customDeck.emptyDeckDesc}
           />
         )}
       </div>
@@ -249,26 +252,25 @@ export function CustomDeckClient() {
           {savedSuccess ? (
             <>
               <Check className="w-4 h-4 text-emerald-300" />
-              <span>Deck Saved to Browser!</span>
+              <span>{dict.customDeck.deckSaved}</span>
             </>
           ) : (
-            <span>Save Deck to Browser</span>
+            <span>{dict.customDeck.saveDeck}</span>
           )}
         </Button>
 
         <Button variant="secondary" size="lg" onClick={handleExport} className="w-full sm:w-auto gap-2 min-h-[48px]">
           <Download className="w-4 h-4" />
-          <span>Export JSON</span>
+          <span>{dict.customDeck.exportDeck}</span>
         </Button>
 
-        <Link href="/games/truth-or-dare?category=custom" className="w-full sm:w-auto">
+        <Link href={`/${locale}/games/truth-or-dare?category=custom`} className="w-full sm:w-auto">
           <Button variant="dare" size="lg" disabled={prompts.length < 3} className="w-full sm:w-auto gap-2 min-h-[48px]">
             <Play className="w-4 h-4 fill-white" />
-            <span>Play Deck</span>
+            <span>{dict.customDeck.playWithDeck}</span>
           </Button>
         </Link>
       </div>
     </div>
   );
 }
-

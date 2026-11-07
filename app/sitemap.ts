@@ -11,137 +11,43 @@ export default function sitemap(): MetadataRoute.Sitemap {
     ALL_LOCALES.forEach((loc) => {
       languages[loc] = `${baseUrl}/${loc}${clean}`;
     });
+    languages['x-default'] = `${baseUrl}${clean || '/'}`;
     return { languages };
   }
 
-  const routes: MetadataRoute.Sitemap = [
-    {
-      url: baseUrl,
-      lastModified: now,
-      changeFrequency: 'daily',
-      priority: 1.0,
-      alternates: makeAlternates('/'),
-    },
-    {
-      url: `${baseUrl}/games`,
-      lastModified: now,
-      changeFrequency: 'daily',
-      priority: 0.9,
-      alternates: makeAlternates('/games'),
-    },
-    {
-      url: `${baseUrl}/games/truth-or-dare`,
-      lastModified: now,
-      changeFrequency: 'daily',
-      priority: 0.95,
-      alternates: makeAlternates('/games/truth-or-dare'),
-    },
-    {
-      url: `${baseUrl}/games/spin-the-bottle`,
-      lastModified: now,
-      changeFrequency: 'weekly',
-      priority: 0.9,
-      alternates: makeAlternates('/games/spin-the-bottle'),
-    },
-    {
-      url: `${baseUrl}/games/never-have-i-ever`,
-      lastModified: now,
-      changeFrequency: 'weekly',
-      priority: 0.9,
-      alternates: makeAlternates('/games/never-have-i-ever'),
-    },
-    {
-      url: `${baseUrl}/games/would-you-rather`,
-      lastModified: now,
-      changeFrequency: 'weekly',
-      priority: 0.9,
-      alternates: makeAlternates('/games/would-you-rather'),
-    },
-    {
-      url: `${baseUrl}/games/most-likely-to`,
-      lastModified: now,
-      changeFrequency: 'weekly',
-      priority: 0.85,
-      alternates: makeAlternates('/games/most-likely-to'),
-    },
-    {
-      url: `${baseUrl}/games/this-or-that`,
-      lastModified: now,
-      changeFrequency: 'weekly',
-      priority: 0.85,
-      alternates: makeAlternates('/games/this-or-that'),
-    },
-    {
-      url: `${baseUrl}/questions`,
-      lastModified: now,
-      changeFrequency: 'weekly',
-      priority: 0.85,
-      alternates: makeAlternates('/questions'),
-    },
-    {
-      url: `${baseUrl}/custom`,
-      lastModified: now,
-      changeFrequency: 'monthly',
-      priority: 0.8,
-      alternates: makeAlternates('/custom'),
-    },
-    {
-      url: `${baseUrl}/blog`,
-      lastModified: now,
-      changeFrequency: 'weekly',
-      priority: 0.8,
-      alternates: makeAlternates('/blog'),
-    },
-    {
-      url: `${baseUrl}/blog/official-truth-or-dare-rules`,
-      lastModified: now,
-      changeFrequency: 'monthly',
-      priority: 0.75,
-      alternates: makeAlternates('/blog/official-truth-or-dare-rules'),
-    },
-    {
-      url: `${baseUrl}/blog/50-best-dares-over-facetime`,
-      lastModified: now,
-      changeFrequency: 'monthly',
-      priority: 0.75,
-      alternates: makeAlternates('/blog/50-best-dares-over-facetime'),
-    },
-    {
-      url: `${baseUrl}/blog/clean-icebreakers-for-work`,
-      lastModified: now,
-      changeFrequency: 'monthly',
-      priority: 0.75,
-      alternates: makeAlternates('/blog/clean-icebreakers-for-work'),
-    },
-    {
-      url: `${baseUrl}/about`,
-      lastModified: now,
-      changeFrequency: 'monthly',
-      priority: 0.5,
-      alternates: makeAlternates('/about'),
-    },
-    {
-      url: `${baseUrl}/contact`,
-      lastModified: now,
-      changeFrequency: 'monthly',
-      priority: 0.5,
-      alternates: makeAlternates('/contact'),
-    },
-    {
-      url: `${baseUrl}/privacy`,
-      lastModified: now,
-      changeFrequency: 'yearly',
-      priority: 0.3,
-      alternates: makeAlternates('/privacy'),
-    },
-    {
-      url: `${baseUrl}/terms`,
-      lastModified: now,
-      changeFrequency: 'yearly',
-      priority: 0.3,
-      alternates: makeAlternates('/terms'),
-    },
+  const baseSubpaths = [
+    { path: '/', priority: 1.0, freq: 'daily' as const },
+    { path: '/games', priority: 0.9, freq: 'daily' as const },
+    { path: '/games/truth-or-dare', priority: 0.95, freq: 'daily' as const },
+    { path: '/games/spin-the-bottle', priority: 0.9, freq: 'weekly' as const },
+    { path: '/games/never-have-i-ever', priority: 0.9, freq: 'weekly' as const },
+    { path: '/games/would-you-rather', priority: 0.9, freq: 'weekly' as const },
+    { path: '/games/most-likely-to', priority: 0.85, freq: 'weekly' as const },
+    { path: '/games/this-or-that', priority: 0.85, freq: 'weekly' as const },
+    { path: '/questions', priority: 0.85, freq: 'weekly' as const },
+    { path: '/custom', priority: 0.8, freq: 'monthly' as const },
+    { path: '/blog', priority: 0.8, freq: 'weekly' as const },
+    { path: '/blog/official-truth-or-dare-rules', priority: 0.75, freq: 'monthly' as const },
+    { path: '/blog/50-best-dares-over-facetime', priority: 0.75, freq: 'monthly' as const },
+    { path: '/blog/clean-icebreakers-for-work', priority: 0.75, freq: 'monthly' as const },
+    { path: '/about', priority: 0.5, freq: 'monthly' as const },
+    { path: '/contact', priority: 0.5, freq: 'monthly' as const },
+    { path: '/privacy', priority: 0.3, freq: 'yearly' as const },
+    { path: '/terms', priority: 0.3, freq: 'yearly' as const },
   ];
+
+  const routes: MetadataRoute.Sitemap = [];
+
+  // Canonical routes with full hreflang alternates for all 8 supported languages + x-default
+  baseSubpaths.forEach(({ path, priority, freq }) => {
+    routes.push({
+      url: `${baseUrl}${path === '/' ? '' : path}`,
+      lastModified: now,
+      changeFrequency: freq,
+      priority,
+      alternates: makeAlternates(path),
+    });
+  });
 
   return routes;
 }

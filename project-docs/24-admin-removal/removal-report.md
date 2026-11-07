@@ -85,3 +85,4 @@ Following the removal:
 - `http://localhost:3000/api/admin/auth` returns HTTP status **404 Not Found**.
 - `http://localhost:3000/api/admin/questions` returns HTTP status **404 Not Found**.
 - Zero UI elements in headers, drawers, or footers link to administrative functionality.
+

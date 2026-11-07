@@ -31,7 +31,7 @@ import { PWAInstallButton } from '@/components/pwa/PWAInstallButton';
 
 export function AppHeader() {
   const pathname = usePathname();
-  const { t } = useTranslation();
+  const { t, dict, locale } = useTranslation();
   const [isMuted, setIsMuted] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
@@ -82,29 +82,31 @@ export function AppHeader() {
     return raw;
   }, [pathname]);
 
+  const loc = (subpath: string) => (locale === 'en' ? subpath : `/${locale}${subpath === '/' ? '' : subpath}`);
+
   const navLinks = [
-    { label: t('nav.allGames'), href: '/games', icon: Compass },
-    { label: t('nav.truthOrDare'), href: '/games/truth-or-dare' },
-    { label: t('nav.spinnerWheel'), href: '/games/spin-the-bottle' },
-    { label: t('nav.customDeck'), href: '/custom' },
-    { label: t('nav.questionLibrary'), href: '/questions' },
-    { label: t('nav.guides'), href: '/blog' },
+    { label: t('nav.allGames'), path: '/games', icon: Compass },
+    { label: t('nav.truthOrDare'), path: '/games/truth-or-dare' },
+    { label: t('nav.spinnerWheel'), path: '/games/spin-the-bottle' },
+    { label: t('nav.customDeck'), path: '/custom' },
+    { label: t('nav.questionLibrary'), path: '/questions' },
+    { label: t('nav.guides'), path: '/blog' },
   ];
 
   const drawerGameLinks = [
-    { label: 'Truth or Dare', href: '/games/truth-or-dare', icon: Flame, badge: 'Popular' },
-    { label: 'Spinner Wheel', href: '/games/spin-the-bottle', icon: Disc, badge: 'Physics' },
-    { label: 'Never Have I Ever', href: '/games/never-have-i-ever', icon: HelpCircle, badge: '10 Lives' },
-    { label: 'Would You Rather', href: '/games/would-you-rather', icon: Sparkles, badge: 'Live %' },
-    { label: 'Most Likely To', href: '/games/most-likely-to', icon: Users, badge: 'Votes' },
-    { label: 'This or That', href: '/games/this-or-that', icon: Zap, badge: '60s' },
+    { label: dict.gamesList.truthOrDare.name, href: loc('/games/truth-or-dare'), icon: Flame, badge: 'Popular' },
+    { label: dict.gamesList.spinTheBottle.name, href: loc('/games/spin-the-bottle'), icon: Disc, badge: 'Physics' },
+    { label: dict.gamesList.neverHaveIEver.name, href: loc('/games/never-have-i-ever'), icon: HelpCircle, badge: '10 Lives' },
+    { label: dict.gamesList.wouldYouRather.name, href: loc('/games/would-you-rather'), icon: Sparkles, badge: 'Live %' },
+    { label: dict.gamesList.mostLikelyTo.name, href: loc('/games/most-likely-to'), icon: Users, badge: 'Votes' },
+    { label: dict.gamesList.thisOrThat.name, href: loc('/games/this-or-that'), icon: Zap, badge: '60s' },
   ];
 
   return (
     <>
       <header className="sticky top-0 z-40 w-full h-16 bg-[#0A0A16]/85 backdrop-blur-xl border-b border-white/10 px-3 sm:px-4 md:px-8 flex items-center justify-between transition-colors">
         {/* Brand Logo */}
-        <Link href="/" className="flex items-center gap-2 sm:gap-2.5 group select-none shrink-0">
+        <Link href={loc('/')} className="flex items-center gap-2 sm:gap-2.5 group select-none shrink-0">
           <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-gradient-to-tr from-brand-500 via-brand-600 to-indigo-500 flex items-center justify-center shadow-glow-brand group-hover:scale-105 group-hover:shadow-[0_0_25px_rgba(139,92,246,0.6)] transition-all">
             <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
           </div>
@@ -118,12 +120,12 @@ export function AppHeader() {
         {/* Desktop Navigation Links with Active Indicator */}
         <nav className="hidden lg:flex items-center gap-1 text-xs font-semibold text-slate-300">
           {navLinks.map((link) => {
-            const isActive = normalizedPathname === link.href || (link.href !== '/' && normalizedPathname.startsWith(link.href));
+            const isActive = normalizedPathname === link.path || (link.path !== '/' && normalizedPathname.startsWith(link.path));
             const Icon = link.icon;
             return (
               <Link
-                key={link.href}
-                href={link.href}
+                key={link.path}
+                href={loc(link.path)}
                 className={cn(
                   'px-3.5 py-1.5 rounded-xl transition-all flex items-center gap-1.5',
                   isActive

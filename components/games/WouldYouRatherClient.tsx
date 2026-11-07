@@ -1,17 +1,20 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { ArrowLeft, Sparkles, RotateCcw, CheckCircle, ArrowRight } from 'lucide-react';
+import { ArrowLeft, ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { sound } from '@/lib/audio/soundSynthesizer';
 import { questionEngine } from '@/lib/questions/engine';
 import { Question } from '@/types';
+import { useTranslation } from '@/lib/i18n/LanguageContext';
 
 export function WouldYouRatherClient() {
+  const { t, dict, locale } = useTranslation();
   const [currentCard, setCurrentCard] = useState<Question | null>(() => {
     const result = questionEngine.drawNextCard({
       gameId: 'would-you-rather',
+      language: locale,
       drawnCardIds: [],
     });
     return result.card;
@@ -20,6 +23,21 @@ export function WouldYouRatherClient() {
   const [selectedOption, setSelectedOption] = useState<'A' | 'B' | null>(null);
   const [stats, setStats] = useState<{ aPercent: number; bPercent: number } | null>(null);
   const [drawnIds, setDrawnIds] = useState<string[]>([]);
+
+  // Re-draw if locale changes to keep language in sync
+  useEffect(() => {
+    const result = questionEngine.drawNextCard({
+      gameId: 'would-you-rather',
+      language: locale,
+      drawnCardIds: [],
+    });
+    if (result.card) {
+      setCurrentCard(result.card);
+      setSelectedOption(null);
+      setStats(null);
+      setDrawnIds([]);
+    }
+  }, [locale]);
 
   const handleVote = (option: 'A' | 'B') => {
     if (selectedOption !== null) return;
@@ -45,6 +63,7 @@ export function WouldYouRatherClient() {
 
     const result = questionEngine.drawNextCard({
       gameId: 'would-you-rather',
+      language: locale,
       drawnCardIds: nextIds,
     });
 
@@ -55,6 +74,7 @@ export function WouldYouRatherClient() {
       setDrawnIds([]);
       const restart = questionEngine.drawNextCard({
         gameId: 'would-you-rather',
+        language: locale,
         drawnCardIds: [],
       });
       setCurrentCard(restart.card);
@@ -66,22 +86,22 @@ export function WouldYouRatherClient() {
       {/* Top Bar */}
       <div className="w-full flex items-center justify-between">
         <Link
-          href="/games"
+          href={`/${locale}/games`}
           className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-400 hover:text-white"
         >
-          <ArrowLeft className="w-4 h-4" /> All Games
+          <ArrowLeft className="w-4 h-4" /> {dict.nav.allGames}
         </Link>
         <span className="text-xs font-bold uppercase tracking-widest text-emerald-400">
-          Community Percentages
+          {dict.wouldYouRather.badge}
         </span>
       </div>
 
       <div className="text-center space-y-2 px-2">
         <h1 className="font-display font-extrabold text-2xl sm:text-3xl md:text-5xl text-white">
-          Would You Rather?
+          {dict.wouldYouRather.title}
         </h1>
         <p className="text-xs text-slate-400 max-w-md mx-auto">
-          Choose Option A or Option B to see what percentage of players agree with you!
+          {dict.wouldYouRather.subtitle}
         </p>
       </div>
 
@@ -123,7 +143,7 @@ export function WouldYouRatherClient() {
         </button>
 
         <div className="text-center font-bold text-xs uppercase tracking-widest text-slate-500">
-          — OR —
+          — {dict.wouldYouRather.orDivider} —
         </div>
 
         {/* OPTION B */}
@@ -171,16 +191,15 @@ export function WouldYouRatherClient() {
             onClick={handleNextDilemma}
             className="w-full text-base font-bold gap-2 animate-fade-in min-h-[48px]"
           >
-            <span>Next Dilemma</span>
+            <span>{dict.wouldYouRather.nextDilemma}</span>
             <ArrowRight className="w-5 h-5" />
           </Button>
         ) : (
           <p className="text-center text-xs text-slate-500">
-            Tap either choice above to register your vote and reveal the global stats.
+            {dict.wouldYouRather.subtitle}
           </p>
         )}
       </div>
     </div>
   );
 }
-

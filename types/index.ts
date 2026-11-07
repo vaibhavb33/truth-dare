@@ -117,6 +117,7 @@ export interface MultiplayerRoom {
   isTimerRunning: boolean;
   votes: Record<string, string>; // playerId -> vote ('pass' | 'fail' | 'optionA' | 'optionB')
   recentEmojis: Array<{ id: string; emoji: string; timestamp: number; playerName: string }>;
+  language?: SupportedLanguageCode; // Room question language selected by the host
   createdAt: number;
   expiresAt: number;
 }

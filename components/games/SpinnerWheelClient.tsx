@@ -2,36 +2,41 @@
 
 import React, { useRef, useState, useEffect } from 'react';
 import Link from 'next/link';
-import { ArrowLeft, Disc, Plus, X, Trophy, Sparkles, RefreshCw } from 'lucide-react';
+import { ArrowLeft, Disc, Plus, X, Trophy, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { sound } from '@/lib/audio/soundSynthesizer';
 import { triggerConfetti } from '@/components/game/ConfettiCelebration';
 import { setGameplayActive } from '@/lib/gameplay/gameplayState';
-
-const PRESETS = {
-  classic: {
-    name: '🎉 Classic Party',
-    segments: ['Alex', 'Truth', 'Maya', 'Dare', 'Jordan', 'Take 2 Sips', 'Sarah', 'Wild Card'],
-  },
-  couples: {
-    name: '❤️ Couples Night',
-    segments: ['Kiss Cheek', 'Deep Secret', 'Hug 30s', 'Flirty Truth', 'Slow Dance', 'Whisper Confession'],
-  },
-  chaos: {
-    name: '🌶️ Party Chaos',
-    segments: ['Take 1 Sip', 'Spicy Truth', 'Give 2 Sips', 'Wild Dare', 'Switch Seats', 'Veto Pass'],
-  },
-  family: {
-    name: '🌟 Clean Family',
-    segments: ['Tell a Joke', 'Sing Chorus', 'Wholesome Truth', '10 Jumping Jacks', 'Trivia Prompt', 'Silly Dance'],
-  },
-};
+import { useTranslation } from '@/lib/i18n/LanguageContext';
 
 export function SpinnerWheelClient() {
+  const { t, dict, locale } = useTranslation();
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
+  // Localized presets map
+  const getPresets = () => ({
+    classic: {
+      name: dict.spinner.presetClassic,
+      segments: ['Alex', dict.game.truth, 'Maya', dict.game.dare, 'Jordan', '2 Sips', 'Sarah', 'Wild Card'],
+    },
+    couples: {
+      name: dict.spinner.presetCouples,
+      segments: ['Kiss Cheek', 'Deep Secret', 'Hug 30s', dict.game.truth, 'Slow Dance', 'Confession'],
+    },
+    chaos: {
+      name: dict.spinner.presetParty,
+      segments: ['Take 1 Sip', dict.game.truth, 'Give 2 Sips', dict.game.dare, 'Switch Seats', 'Pass'],
+    },
+    family: {
+      name: dict.spinner.presetFamily,
+      segments: ['Tell a Joke', 'Sing Chorus', dict.game.truth, '10 Jumping Jacks', 'Trivia', 'Silly Dance'],
+    },
+  });
+
+  const presets = getPresets();
+
   // Wheel Segments
-  const [segments, setSegments] = useState<string[]>(PRESETS.classic.segments);
+  const [segments, setSegments] = useState<string[]>(presets.classic.segments);
   const [newSegmentInput, setNewSegmentInput] = useState('');
 
   // Spinning State
@@ -247,9 +252,9 @@ export function SpinnerWheelClient() {
     sound.triggerHaptic(15);
   };
 
-  const handleApplyPreset = (key: keyof typeof PRESETS) => {
+  const handleApplyPreset = (key: keyof ReturnType<typeof getPresets>) => {
     if (isSpinning) return;
-    setSegments(PRESETS[key].segments);
+    setSegments(presets[key].segments);
     setWinner(null);
     sound.triggerHaptic(20);
   };
@@ -259,35 +264,35 @@ export function SpinnerWheelClient() {
       {/* Navigation Header */}
       <div className="w-full flex items-center justify-between">
         <Link
-          href="/games"
+          href={`/${locale}/games`}
           className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-400 hover:text-white transition-colors"
         >
-          <ArrowLeft className="w-4 h-4" /> All Games
+          <ArrowLeft className="w-4 h-4" /> {dict.nav.allGames}
         </Link>
         <span className="text-xs font-bold uppercase tracking-widest text-brand-400 flex items-center gap-1.5">
-          <Sparkles className="w-3.5 h-3.5" /> Physics Spinner
+          <Sparkles className="w-3.5 h-3.5" /> {dict.spinner.badge}
         </span>
       </div>
 
       <div className="text-center space-y-2 px-2">
         <h1 className="font-display font-extrabold text-2xl sm:text-3xl md:text-5xl text-white tracking-tight">
-          Spinner Wheel
+          {dict.spinner.title}
         </h1>
         <p className="text-xs md:text-sm text-slate-400 max-w-md mx-auto">
-          Spin the physics wheel to assign dare targets, decide forfeits, or settle who goes next!
+          {dict.spinner.subtitle}
         </p>
       </div>
 
       {/* Preset Quick Switcher */}
       <div className="flex flex-wrap items-center justify-center gap-1.5 sm:gap-2">
-        {(Object.keys(PRESETS) as Array<keyof typeof PRESETS>).map((key) => (
+        {(Object.keys(presets) as Array<keyof typeof presets>).map((key) => (
           <button
             key={key}
             onClick={() => handleApplyPreset(key)}
             disabled={isSpinning}
             className="px-3 py-1.5 rounded-full text-[11px] sm:text-xs font-semibold bg-surface-elevated hover:bg-surface-highlight border border-white/10 hover:border-brand-400/40 text-slate-300 hover:text-white transition-all disabled:opacity-50"
           >
-            {PRESETS[key].name}
+            {presets[key].name}
           </button>
         ))}
       </div>
@@ -318,7 +323,7 @@ export function SpinnerWheelClient() {
             className="w-full text-base sm:text-lg font-black gap-2 shadow-[0_0_35px_rgba(139,92,246,0.5)] min-h-[48px]"
           >
             <Disc className={`w-5 h-5 sm:w-6 sm:h-6 ${isSpinning ? 'animate-spin' : ''}`} />
-            <span>{isSpinning ? 'SPINNING...' : 'SPIN THE WHEEL'}</span>
+            <span>{isSpinning ? dict.spinner.spinning : dict.spinner.spinButton}</span>
           </Button>
         </div>
       </div>
@@ -328,7 +333,7 @@ export function SpinnerWheelClient() {
         <div className="w-full max-w-md p-4 sm:p-6 rounded-3xl bg-gradient-to-r from-surface-elevated via-surface-highlight to-surface-elevated border border-brand-400/50 shadow-glow-brand text-center space-y-1.5 animate-float mx-2">
           <div className="flex items-center justify-center gap-1.5 text-brand-400 font-bold text-xs uppercase tracking-wider">
             <Trophy className="w-4 h-4 text-amber-400" />
-            <span>THE WHEEL HAS SPOKEN!</span>
+            <span>{dict.spinner.winnerHeading}</span>
           </div>
           <p className="font-display font-extrabold text-2xl sm:text-3xl md:text-4xl text-white truncate px-2">
             {winner}
@@ -340,9 +345,9 @@ export function SpinnerWheelClient() {
       <div className="w-full max-w-md p-4 sm:p-6 md:p-8 rounded-3xl bg-surface-elevated border border-white/10 space-y-4 sm:space-y-5 backdrop-blur-md">
         <div className="flex items-center justify-between">
           <h3 className="font-display font-bold text-xs sm:text-sm text-white uppercase tracking-wider">
-            Wheel Slices ({segments.length})
+            {t('spinner.slicesCount', { count: segments.length })}
           </h3>
-          <span className="text-[10px] sm:text-[11px] text-slate-400">Min 2 Slices</span>
+          <span className="text-[10px] sm:text-[11px] text-slate-400">{dict.spinner.minSlices}</span>
         </div>
 
         {/* Chips */}
@@ -370,14 +375,14 @@ export function SpinnerWheelClient() {
         <form onSubmit={handleAddSegment} className="flex gap-2">
           <input
             type="text"
-            placeholder="Add player name or dare..."
+            placeholder={dict.spinner.addSlicePlaceholder}
             value={newSegmentInput}
             onChange={(e) => setNewSegmentInput(e.target.value)}
             maxLength={25}
             className="flex-1 min-w-0 h-10 sm:h-11 px-3 sm:px-4 rounded-xl bg-canvas-base border border-white/10 text-xs text-white placeholder:text-slate-500 focus:outline-none focus:border-brand-400 transition-colors"
           />
           <Button type="submit" variant="secondary" size="md" className="shrink-0 h-10 sm:h-11 px-3 sm:px-4">
-            <Plus className="w-4 h-4" /> Add
+            <Plus className="w-4 h-4" /> {dict.spinner.addSliceButton}
           </Button>
         </form>
       </div>

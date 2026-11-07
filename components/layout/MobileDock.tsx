@@ -10,7 +10,7 @@ import { useTranslation } from '@/lib/i18n/LanguageContext';
 
 export function MobileDock() {
   const pathname = usePathname();
-  const { t } = useTranslation();
+  const { t, locale } = useTranslation();
 
   // Normalize pathname to strip leading locale prefix so active state highlights correctly across all languages
   const normalizedPathname = React.useMemo(() => {
@@ -23,12 +23,14 @@ export function MobileDock() {
     return raw;
   }, [pathname]);
 
+  const loc = (subpath: string) => (locale === 'en' ? subpath : `/${locale}${subpath === '/' ? '' : subpath}`);
+
   const navItems = [
-    { label: t('breadcrumbs.home'), href: '/', icon: Home },
-    { label: t('breadcrumbs.games'), href: '/games', icon: Compass },
-    { label: t('nav.truthOrDare'), href: '/games/truth-or-dare', icon: Flame },
-    { label: t('nav.spinnerWheel'), href: '/games/spin-the-bottle', icon: Disc },
-    { label: t('nav.customDeck'), href: '/custom', icon: PlusCircle },
+    { label: t('breadcrumbs.home'), path: '/', icon: Home },
+    { label: t('breadcrumbs.games'), path: '/games', icon: Compass },
+    { label: t('nav.truthOrDare'), path: '/games/truth-or-dare', icon: Flame },
+    { label: t('nav.spinnerWheel'), path: '/games/spin-the-bottle', icon: Disc },
+    { label: t('nav.customDeck'), path: '/custom', icon: PlusCircle },
   ];
 
   return (
@@ -39,11 +41,11 @@ export function MobileDock() {
       <div className="flex items-center justify-around h-16 max-w-md mx-auto px-1">
         {navItems.map((item) => {
           const Icon = item.icon;
-          const isActive = normalizedPathname === item.href || (item.href !== '/' && normalizedPathname.startsWith(item.href));
+          const isActive = normalizedPathname === item.path || (item.path !== '/' && normalizedPathname.startsWith(item.path));
           return (
             <Link
-              key={item.href}
-              href={item.href}
+              key={item.path}
+              href={loc(item.path)}
               onClick={() => sound.triggerHaptic(10)}
               className={cn(
                 'flex flex-col items-center justify-center gap-0.5 flex-1 h-full min-h-[48px] py-1 text-[10px] sm:text-[11px] font-medium transition-colors select-none touch-manipulation',

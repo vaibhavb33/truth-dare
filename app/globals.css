@@ -181,6 +181,11 @@ body {
   animation: pulseGlow 6s ease-in-out infinite;
 }
 
+/* RTL Icon & Directional Mirroring */
+[dir="rtl"] .rtl-mirror {
+  transform: scaleX(-1);
+}
+
 /* Accessibility: Strict Reduced-Motion Rules */
 @media (prefers-reduced-motion: reduce) {
   *, ::before, ::after {

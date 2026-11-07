@@ -2,6 +2,8 @@ import React from 'react';
 import type { Metadata } from 'next';
 import { JsonLd } from '@/components/seo/JsonLd';
 import { Breadcrumbs } from '@/components/seo/Breadcrumbs';
+import { PrivacyClient } from '@/components/pages/PrivacyClient';
+import { getLocalizedAlternates } from '@/lib/i18n/seo';
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://truthordarequiz.com';
 
@@ -9,9 +11,7 @@ export const metadata: Metadata = {
   title: 'Privacy Policy | Asteria Online Party Gaming',
   description:
     'Read the Asteria Privacy Policy. Learn how we safeguard your data, respect local storage privacy, and never sell personal information.',
-  alternates: {
-    canonical: `${siteUrl}/privacy`,
-  },
+  alternates: getLocalizedAlternates('/privacy', 'en'),
   openGraph: {
     type: 'website',
     url: `${siteUrl}/privacy`,
@@ -58,45 +58,13 @@ const privacyPageSchema = {
 
 export default function PrivacyPolicyPage() {
   return (
-    <div className="max-w-3xl mx-auto px-4 py-6 md:py-16 space-y-6 flex-1 text-slate-300 text-sm leading-relaxed w-full">
+    <>
       <JsonLd data={privacyBreadcrumbSchema} />
       <JsonLd data={privacyPageSchema} />
-      <Breadcrumbs items={[{ label: 'Privacy Policy' }]} />
-
-      <h1 className="font-display font-extrabold text-3xl md:text-4xl text-white">
-        Asteria Privacy Policy
-      </h1>
-      <p className="text-xs text-slate-400">Last updated: November 2026</p>
-
-      <div className="space-y-6">
-        <section className="space-y-2">
-          <h2 className="font-bold text-lg text-white">1. Zero Mandatory Personal Data Collection</h2>
-          <p>
-            Project Asteria is engineered with privacy as a foundational constraint. We do not require accounts, phone numbers, or email addresses to play our party games. You can play every game completely anonymously.
-          </p>
-        </section>
-
-        <section className="space-y-2">
-          <h2 className="font-bold text-lg text-white">2. Browser Local Storage</h2>
-          <p>
-            We use modern browser <code className="text-brand-300 bg-white/5 px-1 py-0.5 rounded">localStorage</code> and <code className="text-brand-300 bg-white/5 px-1 py-0.5 rounded">sessionStorage</code> strictly to remember your preferences (such as audio mute state, affirmative 18+ age verification, and custom user-authored decks) directly on your device. This data never leaves your browser unless you explicitly choose to export or broadcast a deck.
-          </p>
-        </section>
-
-        <section className="space-y-2">
-          <h2 className="font-bold text-lg text-white">3. Multiplayer Room Data</h2>
-          <p>
-            Multiplayer room codes and temporary nicknames are retained only for the active duration of the game session (maximum 2 hours of inactivity), after which they are permanently expunged from memory. We do not maintain logs or tracking profiles on party participants.
-          </p>
-        </section>
-
-        <section className="space-y-2">
-          <h2 className="font-bold text-lg text-white">4. Analytics and External Trackers</h2>
-          <p>
-            We do not sell personal data to advertisers or third-party data brokers. Any diagnostic telemetry is strictly aggregated, privacy-preserving, and utilized solely to monitor server health, latency, and uptime.
-          </p>
-        </section>
+      <div className="max-w-4xl mx-auto px-4 pt-4 w-full">
+        <Breadcrumbs items={[{ label: 'Privacy Policy' }]} />
       </div>
-    </div>
+      <PrivacyClient />
+    </>
   );
 }

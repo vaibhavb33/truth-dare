@@ -1,15 +1,17 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { ArrowLeft, Users, Trophy, RotateCcw, ArrowRight } from 'lucide-react';
+import { ArrowLeft, Users, Trophy, ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { sound } from '@/lib/audio/soundSynthesizer';
 import { triggerConfetti } from '@/components/game/ConfettiCelebration';
 import { questionEngine } from '@/lib/questions/engine';
 import { Question } from '@/types';
+import { useTranslation } from '@/lib/i18n/LanguageContext';
 
 export function MostLikelyToClient() {
+  const { t, dict, locale } = useTranslation();
   const [players, setPlayers] = useState([
     { name: 'Alex', votes: 0 },
     { name: 'Maya', votes: 0 },
@@ -20,6 +22,7 @@ export function MostLikelyToClient() {
   const [currentCard, setCurrentCard] = useState<Question | null>(() => {
     const result = questionEngine.drawNextCard({
       gameId: 'most-likely-to',
+      language: locale,
       drawnCardIds: [],
     });
     return result.card;
@@ -27,6 +30,20 @@ export function MostLikelyToClient() {
 
   const [votedPlayer, setVotedPlayer] = useState<string | null>(null);
   const [drawnIds, setDrawnIds] = useState<string[]>([]);
+
+  // Re-draw if locale changes to keep language purely in sync
+  useEffect(() => {
+    const result = questionEngine.drawNextCard({
+      gameId: 'most-likely-to',
+      language: locale,
+      drawnCardIds: [],
+    });
+    if (result.card) {
+      setCurrentCard(result.card);
+      setVotedPlayer(null);
+      setDrawnIds([]);
+    }
+  }, [locale]);
 
   const handleVotePlayer = (name: string) => {
     if (votedPlayer !== null) return;
@@ -51,6 +68,7 @@ export function MostLikelyToClient() {
 
     const result = questionEngine.drawNextCard({
       gameId: 'most-likely-to',
+      language: locale,
       drawnCardIds: nextIds,
     });
 
@@ -61,6 +79,7 @@ export function MostLikelyToClient() {
       setDrawnIds([]);
       const restart = questionEngine.drawNextCard({
         gameId: 'most-likely-to',
+        language: locale,
         drawnCardIds: [],
       });
       setCurrentCard(restart.card);
@@ -72,40 +91,40 @@ export function MostLikelyToClient() {
       {/* Top Bar */}
       <div className="w-full flex items-center justify-between">
         <Link
-          href="/games"
+          href={`/${locale}/games`}
           className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-400 hover:text-white"
         >
-          <ArrowLeft className="w-4 h-4" /> All Games
+          <ArrowLeft className="w-4 h-4" /> {dict.nav.allGames}
         </Link>
         <span className="text-xs font-bold uppercase tracking-widest text-amber-400">
-          Player Voting
+          {dict.mostLikelyTo.badge}
         </span>
       </div>
 
       <div className="text-center space-y-2 px-2">
         <h1 className="font-display font-extrabold text-2xl sm:text-3xl md:text-5xl text-white">
-          Most Likely To
+          {dict.mostLikelyTo.title}
         </h1>
         <p className="text-xs text-slate-400 max-w-md mx-auto">
-          Vote for the person in your group who fits the prompt best!
+          {dict.mostLikelyTo.subtitle}
         </p>
       </div>
 
       {/* Main Question Card */}
       <div className="w-full p-5 sm:p-8 md:p-10 rounded-3xl bg-surface-elevated border border-amber-400/30 shadow-[0_0_35px_rgba(245,158,11,0.25)] text-center space-y-4">
         <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-500/10 text-amber-400 text-xs font-bold uppercase tracking-wider">
-          <Users className="w-3.5 h-3.5 sm:w-4 sm:h-4" /> Group Callout
+          <Users className="w-3.5 h-3.5 sm:w-4 sm:h-4" /> {dict.mostLikelyTo.badge}
         </span>
 
         <p className="font-display font-bold text-xl sm:text-2xl md:text-3xl text-white leading-relaxed break-words">
-          {currentCard?.prompt || 'Who is most likely to win the lottery and lose the ticket?'}
+          {currentCard?.question_text || currentCard?.prompt || dict.mostLikelyTo.whoIsMostLikely}
         </p>
       </div>
 
       {/* Player Voting Roster Grid */}
       <div className="w-full space-y-3">
         <p className="text-xs font-bold uppercase tracking-wider text-slate-400 text-center">
-          Tap a player to cast your vote:
+          {dict.mostLikelyTo.castVote}:
         </p>
 
         <div className="grid grid-cols-2 gap-2 sm:gap-3">
@@ -144,16 +163,15 @@ export function MostLikelyToClient() {
             onClick={handleNextPrompt}
             className="w-full text-base font-bold gap-2 min-h-[48px]"
           >
-            <span>Next Player Callout</span>
+            <span>{dict.mostLikelyTo.nextPrompt}</span>
             <ArrowRight className="w-5 h-5" />
           </Button>
         ) : (
           <p className="text-center text-xs text-slate-500">
-            Votes are locked in as soon as you tap a player card.
+            {dict.mostLikelyTo.subtitle}
           </p>
         )}
       </div>
     </div>
   );
 }
-

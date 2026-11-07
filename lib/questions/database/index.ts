@@ -8,6 +8,7 @@ import { FR_QUESTIONS } from './fr';
 import { ID_QUESTIONS } from './id';
 import { AR_QUESTIONS } from './ar';
 import { DE_QUESTIONS } from './de';
+import { PARTY_GAMES_QUESTIONS } from './partyGamesCatalog';
 
 export * from './categories';
 export {
@@ -20,18 +21,31 @@ export {
   ID_QUESTIONS,
   AR_QUESTIONS,
   DE_QUESTIONS,
+  PARTY_GAMES_QUESTIONS,
 };
 
-// Map of questions strictly segregated by ISO 639-1 language code
+// Map of Truth or Dare questions strictly segregated by ISO 639-1 language code
 export const QUESTIONS_BY_LANGUAGE: Record<SupportedLanguageCode, Question[]> = {
   en: [...INITIAL_QUESTIONS, ...EN_QUESTIONS],
-  hi: HI_QUESTIONS,
-  es: ES_QUESTIONS,
-  pt: PT_QUESTIONS,
-  fr: FR_QUESTIONS,
-  id: ID_QUESTIONS,
-  ar: AR_QUESTIONS,
-  de: DE_QUESTIONS,
+  hi: [...HI_QUESTIONS],
+  es: [...ES_QUESTIONS],
+  pt: [...PT_QUESTIONS],
+  fr: [...FR_QUESTIONS],
+  id: [...ID_QUESTIONS],
+  ar: [...AR_QUESTIONS],
+  de: [...DE_QUESTIONS],
+};
+
+// Map of party game questions segregated by language code
+export const PARTY_QUESTIONS_BY_LANGUAGE: Record<SupportedLanguageCode, Question[]> = {
+  en: PARTY_GAMES_QUESTIONS.filter((q) => q.language_code === 'en'),
+  hi: PARTY_GAMES_QUESTIONS.filter((q) => q.language_code === 'hi'),
+  es: PARTY_GAMES_QUESTIONS.filter((q) => q.language_code === 'es'),
+  pt: PARTY_GAMES_QUESTIONS.filter((q) => q.language_code === 'pt'),
+  fr: PARTY_GAMES_QUESTIONS.filter((q) => q.language_code === 'fr'),
+  id: PARTY_GAMES_QUESTIONS.filter((q) => q.language_code === 'id'),
+  ar: PARTY_GAMES_QUESTIONS.filter((q) => q.language_code === 'ar'),
+  de: PARTY_GAMES_QUESTIONS.filter((q) => q.language_code === 'de'),
 };
 
 // Complete aggregate of all verified questions across all 8 languages + legacy
@@ -45,6 +59,7 @@ export const ALL_QUESTIONS: Question[] = [
   ...ID_QUESTIONS,
   ...AR_QUESTIONS,
   ...DE_QUESTIONS,
+  ...PARTY_GAMES_QUESTIONS,
 ];
 
 // In-memory index map by Question ID for O(1) lookups

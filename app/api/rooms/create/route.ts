@@ -16,13 +16,14 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json();
-    const { gameId = 'truth-or-dare', categoryId = 'classic-party', hostName = 'Host', timerSeconds = 30 } = body;
+    const { gameId = 'truth-or-dare', categoryId = 'classic-party', hostName = 'Host', timerSeconds = 30, language = 'en' } = body;
 
     const { room, hostPlayerId } = roomEngine.createRoom({
       gameId: gameId as GameType,
       categoryId: categoryId as CategoryId,
       hostName,
       timerSeconds,
+      language,
     });
 
     return NextResponse.json({
