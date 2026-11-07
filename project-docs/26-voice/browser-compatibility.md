@@ -46,3 +46,4 @@ When a user navigates between pages or closes a modal, audio must not continue p
   - `useVoice()` unmount hook executes `speechService.stop()`.
   - `window.addEventListener('beforeunload', () => speechService.stop())`.
   - `window.addEventListener('pagehide', () => speechService.stop())`.
+

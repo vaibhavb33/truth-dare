@@ -65,3 +65,4 @@ Voice synthesis was tested comprehensively using automated Vitest integration su
 - **Accessibility**:
   - `aria-label` dynamically reflects active speech status (`Listen to Truth`, `Pause Speech`, `Resume Speech`, `Stop Speech`).
   - High contrast buttons with visible focus rings for keyboard and assistive navigation.
+

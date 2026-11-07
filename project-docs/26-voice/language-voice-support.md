@@ -40,3 +40,4 @@ When a user requests voice playback for a language with no installed synthesizer
 2. An accessible banner notification is displayed:
    - *"Native text-to-speech voice for this language is not available on your browser or device."*
 3. The notification auto-dismisses after 4 seconds and does not block normal visual gameplay.
+

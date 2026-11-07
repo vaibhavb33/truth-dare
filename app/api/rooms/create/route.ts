@@ -16,20 +16,29 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json();
-    const { gameId = 'truth-or-dare', categoryId = 'classic-party', hostName = 'Host', timerSeconds = 30, language = 'en' } = body;
+    const {
+      gameId = 'truth-or-dare',
+      categoryId = 'classic-party',
+      hostName = 'Host',
+      timerSeconds = 30,
+      language = 'en',
+      maxPlayers = 12,
+    } = body;
 
-    const { room, hostPlayerId } = roomEngine.createRoom({
+    const { room, hostPlayerId, sessionToken } = roomEngine.createRoom({
       gameId: gameId as GameType,
       categoryId: categoryId as CategoryId,
       hostName,
       timerSeconds,
       language,
+      maxPlayers: Number(maxPlayers),
     });
 
     return NextResponse.json({
       success: true,
       roomCode: room.roomCode,
       hostPlayerId,
+      sessionToken,
       room,
     });
   } catch {

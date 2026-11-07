@@ -77,6 +77,8 @@ export interface Player {
   avatarColor?: string;
   isHost?: boolean;
   isConnected?: boolean;
+  lastSeenAt?: number;
+  sessionToken?: string;
   lives?: number; // For Never Have I Ever (default: 10)
 }
 
@@ -115,9 +117,11 @@ export interface MultiplayerRoom {
   isCardFlipped: boolean;
   timerSecondsRemaining: number;
   isTimerRunning: boolean;
+  roundNumber: number;
+  maxPlayers: number;
   votes: Record<string, string>; // playerId -> vote ('pass' | 'fail' | 'optionA' | 'optionB')
   recentEmojis: Array<{ id: string; emoji: string; timestamp: number; playerName: string }>;
-  language?: SupportedLanguageCode; // Room question language selected by the host
+  language: SupportedLanguageCode; // Room question language selected by the host
   createdAt: number;
   expiresAt: number;
 }

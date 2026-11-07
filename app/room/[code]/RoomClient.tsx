@@ -1,7 +1,8 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import QRCode from 'qrcode';
 import {
   Users,
@@ -13,33 +14,87 @@ import {
   ArrowLeft,
   X,
   Globe,
+  Share2,
+  Settings,
+  LogOut,
+  RefreshCw,
+  Clock,
+  Sparkles,
+  Wifi,
+  WifiOff,
 } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Card3D } from '@/components/game/Card3D';
 import { triggerConfetti } from '@/components/game/ConfettiCelebration';
 import { sound } from '@/lib/audio/soundSynthesizer';
 import { speechService } from '@/lib/voice/speechService';
-import { MultiplayerRoom } from '@/types';
+import { MultiplayerRoom, Player, SupportedLanguageCode, CategoryId } from '@/types';
 import { useTranslation } from '@/lib/i18n/LanguageContext';
-import { SUPPORTED_LOCALES, Locale } from '@/lib/i18n/config';
+import { SUPPORTED_LOCALES, ALL_LOCALES, Locale } from '@/lib/i18n/config';
 
 interface RoomClientProps {
   roomCode: string;
 }
 
 export function RoomClient({ roomCode }: RoomClientProps) {
+  const router = useRouter();
   const { t, dict, locale } = useTranslation();
   const [room, setRoom] = useState<MultiplayerRoom | null>(null);
   const [playerId, setPlayerId] = useState<string>('');
+  const [sessionToken, setSessionToken] = useState<string>('');
   const [playerName, setPlayerName] = useState<string>('');
   const [isJoined, setIsJoined] = useState(false);
   const [joinInputName, setJoinInputName] = useState('');
   const [errorMsg, setErrorMsg] = useState('');
   const [qrDataUrl, setQrDataUrl] = useState<string>('');
   const [showQrModal, setShowQrModal] = useState(false);
+  const [showLeaveModal, setShowLeaveModal] = useState(false);
+  const [showSettingsModal, setShowSettingsModal] = useState(false);
   const [copiedLink, setCopiedLink] = useState(false);
+  const [isReconnecting, setIsReconnecting] = useState(false);
 
-  // Poll room state every 1.5 seconds for synchronized multi-device replication
+  const storageKey = `asteria_multiplayer_session_${roomCode}`;
+
+  // 1. Session Restoration on Mount (Phase 5 Reconnection)
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+
+    const savedSession = localStorage.getItem(storageKey);
+    if (savedSession) {
+      try {
+        const parsed = JSON.parse(savedSession);
+        if (parsed.playerId && parsed.sessionToken) {
+          setIsReconnecting(true);
+          fetch('/api/rooms/reconnect', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              roomCode,
+              playerId: parsed.playerId,
+              sessionToken: parsed.sessionToken,
+            }),
+          })
+            .then((res) => res.json())
+            .then((data) => {
+              setIsReconnecting(false);
+              if (data.success && data.player && data.room) {
+                setPlayerId(data.player.id);
+                setSessionToken(data.player.sessionToken || parsed.sessionToken);
+                setPlayerName(data.player.name);
+                setIsJoined(true);
+                setRoom(data.room);
+                sound.playChime();
+              }
+            })
+            .catch(() => setIsReconnecting(false));
+        }
+      } catch {
+        setIsReconnecting(false);
+      }
+    }
+  }, [roomCode, storageKey]);
+
+  // 2. Poll room state every 1.5 seconds for synchronized state replication
   useEffect(() => {
     let isSubscribed = true;
 
@@ -59,6 +114,7 @@ export function RoomClient({ roomCode }: RoomClientProps) {
 
     fetchRoom();
     const interval = setInterval(fetchRoom, 1500);
+
     return () => {
       isSubscribed = false;
       clearInterval(interval);
@@ -66,7 +122,29 @@ export function RoomClient({ roomCode }: RoomClientProps) {
     };
   }, [roomCode]);
 
-  // Generate QR Code on Mount
+  // 3. Heartbeat Keep-Alive Loop (Every 10 seconds)
+  useEffect(() => {
+    if (!isJoined || !playerId) return;
+
+    const interval = setInterval(() => {
+      fetch('/api/rooms/heartbeat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ roomCode, playerId }),
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.success && data.room) {
+            setRoom(data.room);
+          }
+        })
+        .catch(() => {});
+    }, 10000);
+
+    return () => clearInterval(interval);
+  }, [isJoined, playerId, roomCode]);
+
+  // 4. Generate QR Code on Mount
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const joinUrl = `${window.location.origin}/room/${roomCode}`;
@@ -76,27 +154,45 @@ export function RoomClient({ roomCode }: RoomClientProps) {
     }
   }, [roomCode]);
 
-  // Handle Joining Room
+  // 5. Handle Joining Room (Phase 2)
   const handleJoin = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!joinInputName.trim()) return;
+    const cleanName = joinInputName.trim();
+    if (!cleanName) return;
 
     sound.triggerHaptic(15);
+    setErrorMsg('');
+
     try {
       const res = await fetch('/api/rooms/join', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           roomCode,
-          playerName: joinInputName.trim(),
+          playerName: cleanName,
         }),
       });
       const data = await res.json();
       if (data.success) {
         setPlayerId(data.playerId);
-        setPlayerName(joinInputName.trim());
+        setSessionToken(data.sessionToken);
+        setPlayerName(cleanName);
         setIsJoined(true);
         setRoom(data.room);
+
+        // Persist session token for automatic reconnection
+        if (typeof window !== 'undefined') {
+          localStorage.setItem(
+            storageKey,
+            JSON.stringify({
+              roomCode,
+              playerId: data.playerId,
+              sessionToken: data.sessionToken,
+              playerName: cleanName,
+            })
+          );
+        }
+
         sound.playChime();
       } else {
         setErrorMsg(data.error);
@@ -106,12 +202,13 @@ export function RoomClient({ roomCode }: RoomClientProps) {
     }
   };
 
-  // Dispatch Action
+  // 6. Dispatch Server-Authoritative Actions (Phase 4)
   const dispatch = async (action: string, payload?: Record<string, unknown>) => {
     sound.triggerHaptic(15);
     if (action === 'SKIP_TURN' || action === 'COMPLETE_DARE') {
       speechService.stop();
     }
+
     try {
       const res = await fetch('/api/rooms/action', {
         method: 'POST',
@@ -119,6 +216,7 @@ export function RoomClient({ roomCode }: RoomClientProps) {
         body: JSON.stringify({
           roomCode,
           playerId,
+          sessionToken,
           action,
           payload,
         }),
@@ -126,19 +224,54 @@ export function RoomClient({ roomCode }: RoomClientProps) {
       const data = await res.json();
       if (data.success && data.room) {
         setRoom(data.room);
+      } else if (!data.success && data.error) {
+        // Surface action error temporarily
+        setErrorMsg(data.error);
+        setTimeout(() => setErrorMsg(''), 4000);
       }
     } catch {
       // Dispatch error
     }
   };
 
-  const handleCopyLink = () => {
+  // 7. Handle Leaving Room
+  const handleLeaveRoom = () => {
+    sound.triggerHaptic(15);
+    speechService.stop();
+    dispatch('LEAVE_ROOM');
+
     if (typeof window !== 'undefined') {
-      navigator.clipboard.writeText(`${window.location.origin}/room/${roomCode}`);
-      setCopiedLink(true);
-      sound.triggerHaptic(15);
-      setTimeout(() => setCopiedLink(false), 2000);
+      localStorage.removeItem(storageKey);
     }
+
+    router.push(`/${locale}`);
+  };
+
+  // 8. Share Room Invitation (Web Share API + Clipboard)
+  const handleShare = async () => {
+    sound.triggerHaptic(15);
+    if (typeof window === 'undefined') return;
+
+    const shareUrl = `${window.location.origin}/room/${roomCode}`;
+    const shareData = {
+      title: 'Asteria Truth or Dare Room',
+      text: `Join my Truth or Dare room (${roomCode}) on Asteria!`,
+      url: shareUrl,
+    };
+
+    if (navigator.share) {
+      try {
+        await navigator.share(shareData);
+        return;
+      } catch {
+        // User cancelled or unsupported
+      }
+    }
+
+    // Clipboard fallback
+    navigator.clipboard.writeText(shareUrl);
+    setCopiedLink(true);
+    setTimeout(() => setCopiedLink(false), 2000);
   };
 
   const isHost = room?.hostPlayerId === playerId;
@@ -147,7 +280,16 @@ export function RoomClient({ roomCode }: RoomClientProps) {
   const roomQuestionLang = room?.language || 'en';
   const roomLangMeta = SUPPORTED_LOCALES[roomQuestionLang as Locale] || SUPPORTED_LOCALES.en;
 
-  if (errorMsg && !room) {
+  // Categories list for host settings
+  const categoriesList = [
+    { id: 'classic-party', name: t('categories.classicParty.name'), icon: '🎉' },
+    { id: 'couples-flirty', name: t('categories.couplesFlirty.name'), icon: '❤️' },
+    { id: 'teens-hangout', name: t('categories.teensHangout.name'), icon: '🍕' },
+    { id: 'spicy-18', name: t('categories.spicy18.name'), icon: '🌶️' },
+    { id: 'family-kids', name: t('categories.familyKids.name'), icon: '🌟' },
+  ];
+
+  if (errorMsg && !room && !isJoined) {
     return (
       <div className="w-full max-w-md mx-auto p-8 my-auto text-center space-y-4">
         <div className="w-16 h-16 mx-auto rounded-2xl bg-rose-500/10 text-rose-400 flex items-center justify-center font-bold text-2xl">
@@ -165,7 +307,25 @@ export function RoomClient({ roomCode }: RoomClientProps) {
   }
 
   return (
-    <div className="w-full max-w-4xl lg:max-w-5xl mx-auto px-3 sm:px-4 py-4 sm:py-6 md:py-8 space-y-4 sm:space-y-6 flex-1 flex flex-col justify-between">
+    <div className="w-full max-w-4xl lg:max-w-5xl mx-auto px-3 sm:px-4 py-3 sm:py-6 md:py-8 space-y-4 sm:space-y-6 flex-1 flex flex-col justify-between">
+      {/* Reconnecting Banner */}
+      {isReconnecting && (
+        <div className="w-full p-2.5 rounded-2xl bg-brand-500/20 border border-brand-400/40 text-brand-300 text-xs font-semibold flex items-center justify-center gap-2 animate-pulse">
+          <RefreshCw className="w-4 h-4 animate-spin" />
+          <span>Restoring your player session...</span>
+        </div>
+      )}
+
+      {/* Ephemeral Action Error Banner */}
+      {errorMsg && isJoined && (
+        <div className="w-full p-3 rounded-2xl bg-rose-500/20 border border-rose-400/40 text-rose-300 text-xs font-semibold flex items-center justify-between animate-shake">
+          <span>{errorMsg}</span>
+          <button onClick={() => setErrorMsg('')} className="p-1 text-rose-300 hover:text-white">
+            <X className="w-4 h-4" />
+          </button>
+        </div>
+      )}
+
       {/* QR Code Modal */}
       {showQrModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-canvas-deep/85 backdrop-blur-md animate-fade-in pt-[max(0.75rem,env(safe-area-inset-top))] pb-[max(0.75rem,env(safe-area-inset-bottom))]">
@@ -178,57 +338,213 @@ export function RoomClient({ roomCode }: RoomClientProps) {
               <X className="w-5 h-5" />
             </button>
             <h3 className="font-display font-bold text-base sm:text-lg text-white">{dict.multiplayer.scanQr}</h3>
-            <p className="text-xs text-slate-400">{dict.multiplayer.subtitle}</p>
             {qrDataUrl && (
-              <img
-                src={qrDataUrl}
-                alt="Room QR Code"
-                className="w-40 h-40 xs:w-48 xs:h-48 sm:w-56 sm:h-56 mx-auto rounded-2xl border border-white/10 object-contain"
-              />
+              <div className="p-3 bg-white rounded-2xl inline-block shadow-elevation-2">
+                <img src={qrDataUrl} alt="Room QR Code" className="w-48 h-48 mx-auto" />
+              </div>
             )}
-            <p className="font-mono font-bold text-lg sm:text-xl text-brand-400 tracking-widest">{roomCode}</p>
+            <p className="text-xs text-slate-400">Scan with any phone camera to join instantly!</p>
           </div>
         </div>
       )}
 
-      {/* Top Header Bar */}
-      <div className="w-full flex items-center justify-between gap-2">
-        <Link
-          href={`/${locale}`}
-          className="inline-flex items-center gap-1 sm:gap-1.5 text-xs font-semibold text-slate-400 hover:text-white shrink-0"
-        >
-          <ArrowLeft className="w-4 h-4" /> {dict.multiplayer.leaveRoom}
-        </Link>
+      {/* Leave Room Confirmation Modal */}
+      {showLeaveModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-canvas-deep/85 backdrop-blur-md animate-fade-in pt-[max(0.75rem,env(safe-area-inset-top))] pb-[max(0.75rem,env(safe-area-inset-bottom))]">
+          <div className="w-full max-w-sm p-6 rounded-3xl bg-surface-elevated border border-white/10 text-center space-y-4">
+            <div className="w-12 h-12 rounded-2xl bg-rose-500/15 text-rose-400 mx-auto flex items-center justify-center">
+              <LogOut className="w-6 h-6" />
+            </div>
+            <h3 className="font-display font-bold text-lg text-white">Leave Party Room?</h3>
+            <p className="text-xs text-slate-400">
+              {isHost
+                ? 'As host, leaving will automatically promote the next player to host.'
+                : 'You will leave the current game room.'}
+            </p>
+            <div className="grid grid-cols-2 gap-2 pt-2">
+              <Button variant="secondary" size="md" onClick={() => setShowLeaveModal(false)}>
+                Cancel
+              </Button>
+              <Button
+                variant="secondary"
+                size="md"
+                className="!bg-rose-500/90 hover:!bg-rose-600 text-white border-rose-400/50"
+                onClick={handleLeaveRoom}
+              >
+                Leave Room
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
 
-        {/* Room Language Badge + Room Code Badge */}
+      {/* Host Lobby Settings Modal (Phase 1 & Phase 3) */}
+      {showSettingsModal && isHost && room?.status === 'lobby' && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-canvas-deep/85 backdrop-blur-md animate-fade-in pt-[max(0.75rem,env(safe-area-inset-top))] pb-[max(0.75rem,env(safe-area-inset-bottom))]">
+          <div className="w-full max-w-md p-5 sm:p-6 rounded-3xl bg-surface-elevated border border-white/10 space-y-4 text-left max-h-[calc(100dvh-2rem)] overflow-y-auto custom-scrollbar">
+            <div className="flex items-center justify-between border-b border-white/10 pb-3">
+              <div className="flex items-center gap-2">
+                <Settings className="w-5 h-5 text-brand-400" />
+                <h3 className="font-display font-bold text-lg text-white">Room Settings</h3>
+              </div>
+              <button onClick={() => setShowSettingsModal(false)} className="text-slate-400 hover:text-white p-1">
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Question Language Selector */}
+            <div className="space-y-1.5">
+              <label className="text-xs font-bold uppercase tracking-wider text-slate-300">
+                Shared Question Language:
+              </label>
+              <div className="grid grid-cols-2 gap-2">
+                {ALL_LOCALES.map((loc) => {
+                  const meta = SUPPORTED_LOCALES[loc];
+                  const isSelected = room.language === loc;
+                  return (
+                    <button
+                      key={loc}
+                      onClick={() => dispatch('UPDATE_LOBBY_SETTINGS', { language: loc })}
+                      className={`p-2 rounded-xl border text-xs font-semibold flex items-center gap-2 transition-all ${
+                        isSelected
+                          ? 'bg-brand-500/20 border-brand-400 text-white shadow-glow-brand'
+                          : 'bg-surface-highlight border-white/5 text-slate-300 hover:text-white'
+                      }`}
+                    >
+                      <span className="text-base">{meta.flag}</span>
+                      <span className="truncate">{meta.nativeName}</span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Category Selector */}
+            <div className="space-y-1.5">
+              <label className="text-xs font-bold uppercase tracking-wider text-slate-300">
+                Category Deck:
+              </label>
+              <div className="grid grid-cols-2 gap-2">
+                {categoriesList.map((cat) => {
+                  const isSelected = room.categoryId === cat.id;
+                  return (
+                    <button
+                      key={cat.id}
+                      onClick={() => dispatch('UPDATE_LOBBY_SETTINGS', { categoryId: cat.id })}
+                      className={`p-2 rounded-xl border text-xs font-semibold flex items-center gap-2 transition-all ${
+                        isSelected
+                          ? 'bg-brand-500/20 border-brand-400 text-white shadow-glow-brand'
+                          : 'bg-surface-highlight border-white/5 text-slate-300 hover:text-white'
+                      }`}
+                    >
+                      <span className="text-base">{cat.icon}</span>
+                      <span className="truncate">{cat.name}</span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Player Limit */}
+            <div className="space-y-1.5">
+              <label className="text-xs font-bold uppercase tracking-wider text-slate-300">
+                Player Capacity:
+              </label>
+              <div className="grid grid-cols-4 gap-2">
+                {[4, 8, 12, 20].map((cap) => (
+                  <button
+                    key={cap}
+                    onClick={() => dispatch('UPDATE_LOBBY_SETTINGS', { maxPlayers: cap })}
+                    className={`py-1.5 rounded-xl border text-xs font-bold transition-all ${
+                      room.maxPlayers === cap
+                        ? 'bg-brand-500 text-white border-brand-400'
+                        : 'bg-surface-highlight border-white/5 text-slate-400 hover:text-white'
+                    }`}
+                  >
+                    {cap} Max
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <Button variant="primary" size="md" onClick={() => setShowSettingsModal(false)} className="w-full font-bold">
+              Save Settings
+            </Button>
+          </div>
+        </div>
+      )}
+
+      {/* ========================================================
+          GLOBAL ROOM TOP BAR (Lobby & In-Game)
+         ======================================================== */}
+      <div className="flex items-center justify-between gap-2 p-2.5 sm:p-3 rounded-2xl bg-surface-elevated border border-white/10 shrink-0 backdrop-blur-md">
+        <div className="flex items-center gap-2 min-w-0">
+          {isJoined && (
+            <button
+              onClick={() => setShowLeaveModal(true)}
+              className="p-1.5 sm:p-2 rounded-xl bg-surface-highlight hover:bg-rose-500/20 text-slate-400 hover:text-rose-400 transition-colors border border-white/5 shrink-0"
+              title="Leave Room"
+            >
+              <ArrowLeft className="w-4 h-4" />
+            </button>
+          )}
+
+          <div className="overflow-hidden">
+            <span className="text-[10px] sm:text-xs font-black uppercase tracking-wider text-brand-400 flex items-center gap-1.5">
+              <span>{dict.multiplayer.title}</span>
+              {room?.status === 'in_game' && (
+                <span className="px-1.5 py-0.5 rounded bg-brand-500/20 text-brand-300 text-[10px] font-mono font-bold">
+                  Round {room.roundNumber}
+                </span>
+              )}
+            </span>
+          </div>
+        </div>
+
+        {/* Right Action Icons & Badges */}
         <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
-          <span className="hidden sm:inline-flex items-center gap-1 px-2.5 py-1 rounded-xl bg-surface-highlight border border-white/10 text-[11px] font-semibold text-slate-300">
+          {/* Question Language Badge */}
+          <span className="hidden xs:inline-flex items-center gap-1 px-2 sm:px-2.5 py-1 rounded-xl bg-surface-highlight border border-white/10 text-[11px] font-semibold text-slate-300">
             <Globe className="w-3.5 h-3.5 text-brand-400" />
             <span>{roomLangMeta.flag} {roomLangMeta.nativeName}</span>
           </span>
 
+          {/* Lobby Settings (Host Only) */}
+          {isHost && room?.status === 'lobby' && (
+            <button
+              onClick={() => setShowSettingsModal(true)}
+              className="p-2 rounded-xl bg-surface-elevated hover:bg-surface-highlight border border-white/10 text-slate-300 min-h-[36px] min-w-[36px] flex items-center justify-center transition-colors"
+              title="Lobby Settings"
+            >
+              <Settings className="w-4 h-4" />
+            </button>
+          )}
+
+          {/* QR Code Button */}
           <button
             onClick={() => setShowQrModal(true)}
             aria-label={dict.multiplayer.scanQr}
-            className="p-2 rounded-xl bg-surface-elevated hover:bg-surface-highlight border border-white/10 text-slate-300 min-h-[36px] min-w-[36px] flex items-center justify-center"
+            className="p-2 rounded-xl bg-surface-elevated hover:bg-surface-highlight border border-white/10 text-slate-300 min-h-[36px] min-w-[36px] flex items-center justify-center transition-colors"
           >
             <QrCode className="w-4 h-4" />
           </button>
 
+          {/* Share Invitation Link Button */}
           <button
-            onClick={handleCopyLink}
-            className="flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3.5 py-1.5 rounded-xl bg-surface-elevated hover:bg-surface-highlight border border-brand-500/30 text-xs font-bold text-brand-300 font-mono min-h-[36px]"
+            onClick={handleShare}
+            className="flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3.5 py-1.5 rounded-xl bg-surface-elevated hover:bg-surface-highlight border border-brand-500/30 text-xs font-bold text-brand-300 font-mono min-h-[36px] transition-colors"
           >
             <span>{roomCode}</span>
-            <Copy className="w-3.5 h-3.5 shrink-0" />
-            {copiedLink && <span className="text-[10px] text-emerald-400 ml-1">✓</span>}
+            {copiedLink ? <CheckCircle className="w-3.5 h-3.5 text-emerald-400" /> : <Share2 className="w-3.5 h-3.5 shrink-0" />}
           </button>
         </div>
       </div>
 
-      {/* VIEW A: NAME PROMPT (If not joined yet) */}
+      {/* ========================================================
+          VIEW A: JOIN PROMPT (If not joined yet)
+         ======================================================== */}
       {!isJoined ? (
-        <div className="w-full max-w-md mx-auto my-auto p-5 sm:p-8 rounded-3xl bg-surface-elevated border border-white/10 space-y-5 sm:space-y-6 text-center">
+        <div className="w-full max-w-md mx-auto my-auto p-5 sm:p-8 rounded-3xl bg-surface-elevated border border-white/10 space-y-5 sm:space-y-6 text-center shadow-elevation-2">
           <div className="space-y-1">
             <span className="text-xs font-bold uppercase tracking-widest text-brand-400">
               {dict.multiplayer.title}
@@ -237,7 +553,7 @@ export function RoomClient({ roomCode }: RoomClientProps) {
               {t('multiplayer.roomCode', { code: roomCode })}
             </h2>
             <p className="text-xs text-slate-400">
-              {t('multiplayer.playerCount', { count: room?.players.length || 1 })}
+              {t('multiplayer.playerCount', { count: room?.players.length || 1 })} / {room?.maxPlayers || 12} Players
             </p>
             <p className="text-[11px] text-brand-300 pt-1">
               {t('multiplayer.roomLanguageBadge', { lang: `${roomLangMeta.flag} ${roomLangMeta.nativeName}` })}
@@ -260,21 +576,26 @@ export function RoomClient({ roomCode }: RoomClientProps) {
           </form>
         </div>
       ) : (
-        /* VIEW B: ACTIVE MULTIPLAYER ROOM (Lobby or Game) */
+        /* ========================================================
+            VIEW B: ACTIVE MULTIPLAYER ROOM (Lobby or In-Game)
+           ======================================================== */
         <div className="w-full flex-1 flex flex-col justify-between space-y-4 sm:space-y-6">
-          {/* Room Players Presence Bar */}
-          <div className="w-full p-2.5 sm:p-3 rounded-2xl bg-surface-elevated/80 border border-white/10 space-y-2">
+          {/* Room Players Presence Bar (Showing connection status & scores) */}
+          <div className="w-full p-2.5 sm:p-3 rounded-2xl bg-surface-elevated/80 border border-white/10 space-y-2 backdrop-blur-sm">
             <div className="flex items-center justify-between text-xs font-semibold px-1 text-slate-400">
               <span className="flex items-center gap-1.5">
                 <Users className="w-3.5 h-3.5 text-brand-400" />
-                {t('multiplayer.playerCount', { count: room?.players.length || 0 })}
+                {room?.players.length || 0} / {room?.maxPlayers || 12} Players Connected
               </span>
-              <span className="text-[11px]">{isHost ? dict.multiplayer.hostBadge : dict.multiplayer.guestBadge}</span>
+              <span className="text-[11px] font-bold text-brand-300">
+                {isHost ? dict.multiplayer.hostBadge : dict.multiplayer.guestBadge}
+              </span>
             </div>
 
             <div className="flex flex-wrap gap-1.5 sm:gap-2">
               {room?.players.map((p) => {
                 const isActive = p.id === room?.activePlayerId;
+                const isOnline = p.isConnected !== false;
                 return (
                   <div
                     key={p.id}
@@ -284,6 +605,13 @@ export function RoomClient({ roomCode }: RoomClientProps) {
                         : 'bg-surface-highlight border-white/5 text-slate-300'
                     }`}
                   >
+                    {/* Live connection dot */}
+                    <span
+                      className={`w-2 h-2 rounded-full shrink-0 ${
+                        isOnline ? 'bg-emerald-400 animate-pulse' : 'bg-amber-400'
+                      }`}
+                      title={isOnline ? 'Online' : 'Reconnecting...'}
+                    />
                     {p.isHost && <Crown className="w-3 h-3 text-amber-400 shrink-0" />}
                     <span className="max-w-[100px] sm:max-w-[140px] truncate">{p.name}</span>
                     <span className="text-[10px] text-brand-400 font-mono shrink-0">({p.score}pts)</span>
@@ -293,34 +621,47 @@ export function RoomClient({ roomCode }: RoomClientProps) {
             </div>
           </div>
 
-          {/* LOBBY VIEW (Waiting for Host to Start) */}
+          {/* ========================================================
+              LOBBY VIEW (Phase 3: Waiting for Host to Start)
+             ======================================================== */}
           {room?.status === 'lobby' ? (
-            <div className="w-full max-w-md mx-auto my-auto p-5 sm:p-8 rounded-3xl bg-surface-elevated border border-white/10 text-center space-y-5 sm:space-y-6">
+            <div className="w-full max-w-md mx-auto my-auto p-5 sm:p-8 rounded-3xl bg-surface-elevated border border-white/10 text-center space-y-5 sm:space-y-6 shadow-elevation-2">
               <div className="w-14 h-14 sm:w-16 sm:h-16 mx-auto rounded-2xl bg-brand-500/10 border border-brand-400/30 flex items-center justify-center text-brand-400 font-bold text-2xl">
                 ⏳
               </div>
 
               <div className="space-y-1">
-                <h3 className="font-display font-bold text-xl sm:text-2xl text-white">{dict.multiplayer.title}</h3>
+                <h3 className="font-display font-bold text-xl sm:text-2xl text-white">Party Lobby</h3>
                 <p className="text-xs text-slate-400">
                   {isHost
-                    ? dict.multiplayer.lobbyWaiting
+                    ? 'Invite your friends! When everyone is ready, start the game below.'
                     : dict.multiplayer.lobbyWaiting}
                 </p>
-                <p className="text-[11px] text-brand-300 pt-1">
-                  {t('multiplayer.roomLanguageBadge', { lang: `${roomLangMeta.flag} ${roomLangMeta.nativeName}` })}
-                </p>
+                <div className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-white/5 text-[11px] text-brand-300 border border-white/10 mt-1">
+                  <span>{roomLangMeta.flag} {roomLangMeta.nativeName}</span>
+                  <span>•</span>
+                  <span className="capitalize">{room.categoryId.replace(/-/g, ' ')}</span>
+                </div>
               </div>
 
               {isHost ? (
-                <Button
-                  variant="primary"
-                  size="xl"
-                  onClick={() => dispatch('START_GAME')}
-                  className="w-full font-bold min-h-[48px]"
-                >
-                  {dict.multiplayer.startGame} →
-                </Button>
+                <div className="space-y-2">
+                  <Button
+                    variant="primary"
+                    size="xl"
+                    onClick={() => dispatch('START_GAME')}
+                    className="w-full font-bold min-h-[48px]"
+                  >
+                    {dict.multiplayer.startGame} →
+                  </Button>
+                  <button
+                    onClick={() => setShowSettingsModal(true)}
+                    className="text-xs text-slate-400 hover:text-white flex items-center justify-center gap-1 mx-auto py-1"
+                  >
+                    <Settings className="w-3.5 h-3.5" />
+                    <span>Adjust category or question language</span>
+                  </button>
+                </div>
               ) : (
                 <div className="p-3 rounded-xl bg-canvas-base border border-white/5 text-xs text-slate-400 animate-pulse">
                   {dict.multiplayer.lobbyWaiting}
@@ -328,12 +669,22 @@ export function RoomClient({ roomCode }: RoomClientProps) {
               )}
             </div>
           ) : (
-            /* ACTIVE IN-GAME ARENA */
+            /* ========================================================
+                ACTIVE IN-GAME ARENA (Phase 4: Synchronized Gameplay)
+               ======================================================== */
             <div className="w-full flex-1 flex flex-col items-center justify-between space-y-4 sm:space-y-6">
-              {/* Turn Pill */}
-              <div className="px-3 sm:px-4 py-1.5 rounded-full bg-brand-500/20 border border-brand-400/30 text-xs font-bold text-brand-300 shadow-glow-brand flex items-center gap-1.5 sm:gap-2 max-w-full">
+              {/* Active Player Turn Banner */}
+              <div
+                className={`px-3 sm:px-4 py-1.5 rounded-full border text-xs font-bold shadow-glow-brand flex items-center gap-1.5 sm:gap-2 max-w-full ${
+                  isMyTurn
+                    ? 'bg-brand-500 text-white border-brand-300 animate-pulse'
+                    : 'bg-brand-500/20 border-brand-400/30 text-brand-300'
+                }`}
+              >
                 <span className="truncate">
-                  {isMyTurn ? dict.multiplayer.yourTurn : t('multiplayer.playerTurn', { name: activePlayer?.name || 'Player' })}
+                  {isMyTurn
+                    ? `🎯 ${dict.multiplayer.yourTurn}`
+                    : t('multiplayer.playerTurn', { name: activePlayer?.name || 'Player' })}
                 </span>
               </div>
 
@@ -347,10 +698,15 @@ export function RoomClient({ roomCode }: RoomClientProps) {
                       dispatch('FLIP_CARD', { type });
                     }
                   }}
+                  onListenType={(type) => {
+                    if (isHost || isMyTurn) {
+                      dispatch('FLIP_CARD', { type });
+                    }
+                  }}
                 />
               </div>
 
-              {/* Host & Active Player Controls */}
+              {/* Host & Active Player Turn Controls */}
               <div className="w-full max-w-md space-y-2.5 sm:space-y-3">
                 {room?.isCardFlipped && (isHost || isMyTurn) ? (
                   <div className="grid grid-cols-2 gap-2 sm:gap-3">
@@ -395,15 +751,16 @@ export function RoomClient({ roomCode }: RoomClientProps) {
                         dispatch('SEND_EMOJI', { emoji });
                       }}
                       className="w-9 h-9 sm:w-11 sm:h-11 rounded-xl sm:rounded-2xl bg-surface-elevated hover:bg-surface-highlight border border-white/10 flex items-center justify-center text-lg sm:text-xl hover:scale-110 active:scale-95 transition-all shadow-elevation-1"
+                      title={`Send ${emoji} reaction`}
                     >
                       {emoji}
                     </button>
                   ))}
                 </div>
 
-                {/* Recent Emojis Overlay */}
+                {/* Live Floating Reactions Overlay */}
                 {room?.recentEmojis && room.recentEmojis.length > 0 && (
-                  <div className="flex items-center justify-center gap-2 overflow-hidden h-8 text-xs text-slate-400">
+                  <div className="flex items-center justify-center gap-2 overflow-hidden h-7 text-xs text-slate-400">
                     {room.recentEmojis.slice(0, 5).map((e) => (
                       <span key={e.id} className="animate-bounce">
                         {e.playerName}: {e.emoji}

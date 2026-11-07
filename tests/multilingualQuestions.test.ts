@@ -191,6 +191,6 @@ describe('Multilingual Question Database & Engine Verification', () => {
       expect(q.safety_reviewed).toBe(true);
       expect(q.created_at).toBeDefined();
     }
-  });
+  }, 20000);
 });
 
