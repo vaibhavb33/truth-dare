@@ -67,3 +67,4 @@ The system ensures zero interruption during gameplay:
 1. **Route Check:** If `window.location.pathname.includes('/room/')`, the visitor is in a live multiplayer room with real-time turns. Promotion is completely suppressed.
 2. **State Check:** `isGameplayActive()` checks whether Truth or Dare cards are in play, the bottle spinner is spinning, or a local game round is ongoing.
 3. **Dynamic Cancellation:** If a promotion is scheduled and the player starts a game, `subscribeGameplayActive()` automatically cancels the pending timer and suppresses display.
+

@@ -72,3 +72,4 @@ The promotional card conforms to Asteria's signature cosmic dark aesthetic:
 - **Keyboard Navigation:** Escape key dismisses the dialog and activates the 7-day cooldown timer.
 - **Reduced Motion:** Adheres to user OS preferences (`motion-reduce:transition-none`).
 - **Storage Safety:** Wrapped in robust `try/catch` fallbacks to support incognito/private modes without throwing `SecurityError`.
+

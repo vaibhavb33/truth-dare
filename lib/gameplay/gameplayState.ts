@@ -49,3 +49,4 @@ export function subscribeGameplayActive(callback: (active: boolean) => void): ()
     listeners.delete(callback);
   };
 }
+

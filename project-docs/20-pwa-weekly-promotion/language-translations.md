@@ -49,3 +49,4 @@ When `locale === 'ar'`:
 - Text aligns to the right side of the card.
 - Icon badge aligns gracefully on the right edge.
 - Verified in automated visual regression testing (`promotion-banner-arabic-rtl.png`).
+

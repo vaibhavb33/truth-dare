@@ -181,3 +181,4 @@ export function PWAPromotionModal({ forceOpen, onClose }: PWAPromotionModalProps
     document.body
   );
 }
+

@@ -178,3 +178,4 @@ export const PWA_PROMOTION_TRANSLATIONS: Record<Locale, PWAPromotionTranslation>
 export function getPWAPromotionTranslation(locale: Locale): PWAPromotionTranslation {
   return PWA_PROMOTION_TRANSLATIONS[locale] || PWA_PROMOTION_TRANSLATIONS.en;
 }
+

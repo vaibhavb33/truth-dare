@@ -47,3 +47,4 @@ For desktop browsers without active `beforeinstallprompt` eligibility (or where 
 - Clicking "Add to Home Screen" flips the card to an inline **Help Screen** (`showDesktopHelp = true`).
 - The player is guided to click the install icon in their browser address bar or use shortcut `Ctrl+D` (`Cmd+D`) to bookmark.
 - A "Got It, Thanks!" dismiss action returns the card to clean state.
+
