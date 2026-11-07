@@ -63,3 +63,4 @@ The top banner maintains live reactive counters:
 - **Truth Count**: Number of active truth prompts.
 - **Dare Count**: Number of active dare challenges.
 - **Total Count**: Combined card count (minimum 3 cards required to launch gameplay).
+

@@ -49,3 +49,4 @@ The content safety engine evaluates user submissions against 5 prohibited catego
 
 ### 5. `hate_harassment`
 - Slurs, hate speech, white supremacy, targeted group attacks.
+

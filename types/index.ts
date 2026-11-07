@@ -27,6 +27,9 @@ export type QuestionCategory =
   | 'family-kids' 
   | 'spicy-18' 
   | 'deep-talk'
+  | 'deep-secrets'
+  | 'wild-party'
+  | 'extreme'
   | 'custom';
 
 export type CategoryId = QuestionCategory;

@@ -107,3 +107,4 @@ Asteria implements a hybrid client repository in [`lib/custom/deckStorage.ts`](f
 Every browser generates an anonymous persistent creator ID (`asteria_user_id`, e.g., `usr_9a8b7c6_1730985600`). When modifying or deleting decks, `deckStorage` and `/api/custom-decks/[id]` enforce:
 $$\text{deck.creatorId} \equiv \text{currentCreatorId}$$
 Any attempt by a third party to mutate another user's deck is blocked with an HTTP 401/403 or storage error.
+

@@ -141,3 +141,4 @@ CREATE POLICY "Service role full access to custom deck questions"
 - **`GET /api/custom-decks/[id]`**: Retrieves deck metadata and question roster with visibility authorization checks.
 - **`PUT /api/custom-decks/[id]`**: Updates deck properties and questions with strict creator authentication.
 - **`DELETE /api/custom-decks/[id]`**: Deletes deck and cascades to all child questions.
+

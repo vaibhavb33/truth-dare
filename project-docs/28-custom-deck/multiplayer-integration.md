@@ -85,3 +85,4 @@ When a player triggers `FLIP_CARD` in a room configured with a custom deck:
 - **Score Attribution**: Completing a custom dare awards `+1` point to the active player's score.
 - **Skip Handling**: Skipping advances the active turn and increments the player's skip counter.
 - **Round Advancement**: When the active turn cycles back to player 0, `room.roundNumber` automatically increments.
+
