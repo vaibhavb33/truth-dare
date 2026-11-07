@@ -53,3 +53,4 @@ A comprehensive regression audit was conducted across seven target viewports spa
    - *Fix applied*: Implemented responsive text labels: `"All"` / `"Truth"` / `"Dare"` on screens under 640px, expanding to full labels on wider screens.
 3. **Defect #3 (Resolved)**: Sticky header on 320px viewports had 0.4px sub-pixel overflow due to `px-4` padding combined with action icon gaps.
    - *Fix applied*: Adjusted padding to `px-3 sm:px-4 md:px-8` and action gap to `gap-1.5 sm:gap-2.5`, providing 10px buffer margin.
+

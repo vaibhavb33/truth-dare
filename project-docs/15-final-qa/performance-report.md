@@ -51,3 +51,4 @@ Route First Load JS:
 During initial QA testing, `Truth or Dare Game` recorded a CLS of 0.27 caused by a placeholder discrepancy where the fallback container measured `h-96` (384px) before expanding to the setup view (~700px).
 - **Remediation**: Replaced the static fallback with a structured `min-h-[680px]` pulse skeleton in [`TruthOrDareGameClient.tsx`](file:///Users/vaibhavborkar/truth&dare/components/games/TruthOrDareGameClient.tsx) that reserves exact layout boundaries.
 - **Post-Fix Measurement**: CLS dropped from **0.27 to 0.02** on English and **0.017** on Hindi, achieving a 100% Core Web Vitals rating.
+

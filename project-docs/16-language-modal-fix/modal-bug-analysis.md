@@ -82,3 +82,4 @@ A comprehensive architectural and mobile UX audit of the language selection inte
 
 ## 4. Architectural Recommendation
 The resolution requires decoupling the modal from the header hierarchy via **React Portal (`createPortal`)**, introducing an opaque full-viewport backdrop, implementing strict scroll-locking and keyboard event listeners, restructuring the card typography into vertical stacks, and adapting the grid dynamically based on available viewport width.
+

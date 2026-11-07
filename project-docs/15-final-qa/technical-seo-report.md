@@ -52,3 +52,4 @@
 - **Googlebot Compatibility**: Rendered pages audited via raw HTTP GET requests mimicking Googlebot user agents.
 - **Dynamic Content vs. SEO Content**: Interactive gameplay uses client-side hydration (`'use client'`), but all SEO text, category descriptions, breadcrumbs, and keyword-rich headers are pre-rendered into the initial HTML document by Next.js Server Components.
 - **Broken Link Audit**: All internal anchor targets (`/games`, `/questions`, `/custom`, `/blog`, `/privacy`, `/terms`) resolve to valid 200 OK responses with zero 404 errors.
+

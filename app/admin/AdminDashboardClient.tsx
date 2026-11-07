@@ -207,7 +207,7 @@ export function AdminDashboardClient() {
       </div>
 
       {/* Metrics Row: Total Prompts by Language */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-3">
+      <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-2.5 sm:gap-3">
         {(Object.keys(LANGUAGE_LABELS) as SupportedLanguageCode[]).map((code) => {
           const langStat = stats[code] || { truth: 0, dare: 0, total: 0 };
           const info = LANGUAGE_LABELS[code];
@@ -215,7 +215,7 @@ export function AdminDashboardClient() {
             <div
               key={code}
               onClick={() => setSelectedLanguage(code)}
-              className={`p-3.5 rounded-2xl border transition-all cursor-pointer ${
+              className={`p-2.5 sm:p-3.5 rounded-2xl border transition-all cursor-pointer min-w-0 ${
                 selectedLanguage === code
                   ? 'bg-brand-500/20 border-brand-400/50 shadow-glow-brand'
                   : 'bg-surface-elevated border-white/10 hover:border-white/20'
@@ -225,8 +225,8 @@ export function AdminDashboardClient() {
                 <span>{info.flag}</span>
                 <span className="font-mono uppercase font-bold text-[10px]">{code}</span>
               </div>
-              <p className="font-bold text-white text-base leading-tight">{info.native}</p>
-              <p className="text-[11px] text-slate-400 mt-0.5">
+              <p className="font-bold text-white text-sm sm:text-base leading-tight truncate">{info.native}</p>
+              <p className="text-[10px] sm:text-[11px] text-slate-400 mt-0.5 truncate">
                 {langStat.total} Qs ({langStat.truth}T / {langStat.dare}D)
               </p>
             </div>
@@ -478,8 +478,8 @@ export function AdminDashboardClient() {
 
       {/* Duplicate Audit Modal */}
       {showDuplicateAudit && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-canvas-deep/85 backdrop-blur-md">
-          <div className="w-full max-w-2xl p-6 rounded-3xl bg-surface-elevated border border-white/10 space-y-4">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-canvas-deep/85 backdrop-blur-md pt-[max(0.75rem,env(safe-area-inset-top))] pb-[max(0.75rem,env(safe-area-inset-bottom))] animate-in fade-in duration-200">
+          <div className="w-full max-w-2xl p-5 sm:p-6 rounded-3xl bg-surface-elevated border border-white/10 space-y-4 max-h-[calc(100dvh-2rem)] overflow-y-auto custom-scrollbar">
             <div className="flex items-center justify-between">
               <h3 className="font-display font-bold text-xl text-white flex items-center gap-2">
                 <CheckCircle className="w-5 h-5 text-emerald-400" /> Duplicate String Detection Audit

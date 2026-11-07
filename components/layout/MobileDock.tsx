@@ -12,6 +12,17 @@ export function MobileDock() {
   const pathname = usePathname();
   const { t } = useTranslation();
 
+  // Normalize pathname to strip leading locale prefix so active state highlights correctly across all languages
+  const normalizedPathname = React.useMemo(() => {
+    const raw = pathname || '/';
+    const segments = raw.split('/').filter(Boolean);
+    if (segments.length > 0 && ['en', 'hi', 'es', 'pt', 'fr', 'id', 'ar', 'de'].includes(segments[0])) {
+      const subpath = '/' + segments.slice(1).join('/');
+      return subpath === '/' ? '/' : subpath;
+    }
+    return raw;
+  }, [pathname]);
+
   const navItems = [
     { label: t('breadcrumbs.home'), href: '/', icon: Home },
     { label: t('breadcrumbs.games'), href: '/games', icon: Compass },
@@ -28,7 +39,7 @@ export function MobileDock() {
       <div className="flex items-center justify-around h-16 max-w-md mx-auto px-1">
         {navItems.map((item) => {
           const Icon = item.icon;
-          const isActive = pathname === item.href || (item.href !== '/' && pathname.startsWith(item.href));
+          const isActive = normalizedPathname === item.href || (item.href !== '/' && normalizedPathname.startsWith(item.href));
           return (
             <Link
               key={item.href}

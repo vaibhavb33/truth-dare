@@ -184,3 +184,4 @@
 * **Header Controls:** Reduced horizontal padding to `gap-1.5 sm:gap-2 px-2.5 sm:px-3.5 py-1.5` with `shrink-0` on the room code pill and exit button.
 * **Emoji Reaction Buttons:** Scaled to `w-9 h-9 sm:w-11 sm:h-11 gap-1.5 sm:gap-3` ensuring all 5 reaction emojis fit inside 320px screens.
 * **Synchronized 3D Card:** Seamlessly inherits all `Card3D` responsiveness improvements.
+

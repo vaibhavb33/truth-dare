@@ -169,3 +169,4 @@ In `tailwind.config.js`, the `xs: '360px'` breakpoint was added to extend standa
    - Transitions to the corresponding localized subpath (`/hi`, `/es`, `/ar`, etc.).
    - Dynamically updates `<html lang="...">` and `<html dir="...">`.
    - Closes the modal with haptic feedback without resetting ongoing game state.
+

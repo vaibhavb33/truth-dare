@@ -60,3 +60,4 @@
 - **Navigation**: Selecting a new language updates the URL slug (`/en/...` -> `/hi/...`) while preserving subpaths.
 - **Cookie & LocalStorage Persistence**: Stores `NEXT_LOCALE` cookie to ensure returning visitors maintain their selected language across browser sessions.
 - **Verdict**: **PASS**.
+

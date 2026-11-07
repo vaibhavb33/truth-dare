@@ -1,0 +1,1176 @@
+{
+  "testedViewports": 10,
+  "testedPages": 17,
+  "viewportResults": {
+    "320": {
+      "name": "320px (iPhone SE 1st gen)",
+      "deviceType": "mobile",
+      "pages": [
+        {
+          "page": "Homepage",
+          "path": "/",
+          "passed": true,
+          "docWidth": 320
+        },
+        {
+          "page": "All Games Directory",
+          "path": "/games",
+          "passed": true,
+          "docWidth": 320
+        },
+        {
+          "page": "Truth or Dare Setup",
+          "path": "/games/truth-or-dare",
+          "passed": true,
+          "docWidth": 320
+        },
+        {
+          "page": "Spinner Wheel",
+          "path": "/games/spin-the-bottle",
+          "passed": true,
+          "docWidth": 320
+        },
+        {
+          "page": "Never Have I Ever",
+          "path": "/games/never-have-i-ever",
+          "passed": true,
+          "docWidth": 320
+        },
+        {
+          "page": "Would You Rather",
+          "path": "/games/would-you-rather",
+          "passed": true,
+          "docWidth": 320
+        },
+        {
+          "page": "Most Likely To",
+          "path": "/games/most-likely-to",
+          "passed": true,
+          "docWidth": 320
+        },
+        {
+          "page": "This or That",
+          "path": "/games/this-or-that",
+          "passed": true,
+          "docWidth": 320
+        },
+        {
+          "page": "Question Library",
+          "path": "/questions",
+          "passed": true,
+          "docWidth": 320
+        },
+        {
+          "page": "Custom Deck Studio",
+          "path": "/custom",
+          "passed": true,
+          "docWidth": 320
+        },
+        {
+          "page": "Blog Guides Hub",
+          "path": "/blog",
+          "passed": true,
+          "docWidth": 320
+        },
+        {
+          "page": "Blog Article Rules",
+          "path": "/blog/official-truth-or-dare-rules",
+          "passed": true,
+          "docWidth": 320
+        },
+        {
+          "page": "About Page",
+          "path": "/about",
+          "passed": true,
+          "docWidth": 320
+        },
+        {
+          "page": "Contact Page",
+          "path": "/contact",
+          "passed": true,
+          "docWidth": 320
+        },
+        {
+          "page": "Privacy Policy",
+          "path": "/privacy",
+          "passed": true,
+          "docWidth": 320
+        },
+        {
+          "page": "Terms of Service",
+          "path": "/terms",
+          "passed": true,
+          "docWidth": 320
+        },
+        {
+          "page": "Multiplayer Room Arena",
+          "path": "/room/TEST01",
+          "passed": true,
+          "docWidth": 320
+        }
+      ]
+    },
+    "360": {
+      "name": "360px (Android Compact)",
+      "deviceType": "mobile",
+      "pages": [
+        {
+          "page": "Homepage",
+          "path": "/",
+          "passed": true,
+          "docWidth": 360
+        },
+        {
+          "page": "All Games Directory",
+          "path": "/games",
+          "passed": true,
+          "docWidth": 360
+        },
+        {
+          "page": "Truth or Dare Setup",
+          "path": "/games/truth-or-dare",
+          "passed": true,
+          "docWidth": 360
+        },
+        {
+          "page": "Spinner Wheel",
+          "path": "/games/spin-the-bottle",
+          "passed": true,
+          "docWidth": 360
+        },
+        {
+          "page": "Never Have I Ever",
+          "path": "/games/never-have-i-ever",
+          "passed": true,
+          "docWidth": 360
+        },
+        {
+          "page": "Would You Rather",
+          "path": "/games/would-you-rather",
+          "passed": true,
+          "docWidth": 360
+        },
+        {
+          "page": "Most Likely To",
+          "path": "/games/most-likely-to",
+          "passed": true,
+          "docWidth": 360
+        },
+        {
+          "page": "This or That",
+          "path": "/games/this-or-that",
+          "passed": true,
+          "docWidth": 360
+        },
+        {
+          "page": "Question Library",
+          "path": "/questions",
+          "passed": true,
+          "docWidth": 360
+        },
+        {
+          "page": "Custom Deck Studio",
+          "path": "/custom",
+          "passed": true,
+          "docWidth": 360
+        },
+        {
+          "page": "Blog Guides Hub",
+          "path": "/blog",
+          "passed": true,
+          "docWidth": 360
+        },
+        {
+          "page": "Blog Article Rules",
+          "path": "/blog/official-truth-or-dare-rules",
+          "passed": true,
+          "docWidth": 360
+        },
+        {
+          "page": "About Page",
+          "path": "/about",
+          "passed": true,
+          "docWidth": 360
+        },
+        {
+          "page": "Contact Page",
+          "path": "/contact",
+          "passed": true,
+          "docWidth": 360
+        },
+        {
+          "page": "Privacy Policy",
+          "path": "/privacy",
+          "passed": true,
+          "docWidth": 360
+        },
+        {
+          "page": "Terms of Service",
+          "path": "/terms",
+          "passed": true,
+          "docWidth": 360
+        },
+        {
+          "page": "Multiplayer Room Arena",
+          "path": "/room/TEST01",
+          "passed": true,
+          "docWidth": 360
+        }
+      ]
+    },
+    "375": {
+      "name": "375px (iPhone 8 / SE 3)",
+      "deviceType": "mobile",
+      "pages": [
+        {
+          "page": "Homepage",
+          "path": "/",
+          "passed": true,
+          "docWidth": 375
+        },
+        {
+          "page": "All Games Directory",
+          "path": "/games",
+          "passed": true,
+          "docWidth": 375
+        },
+        {
+          "page": "Truth or Dare Setup",
+          "path": "/games/truth-or-dare",
+          "passed": true,
+          "docWidth": 375
+        },
+        {
+          "page": "Spinner Wheel",
+          "path": "/games/spin-the-bottle",
+          "passed": true,
+          "docWidth": 375
+        },
+        {
+          "page": "Never Have I Ever",
+          "path": "/games/never-have-i-ever",
+          "passed": true,
+          "docWidth": 375
+        },
+        {
+          "page": "Would You Rather",
+          "path": "/games/would-you-rather",
+          "passed": true,
+          "docWidth": 375
+        },
+        {
+          "page": "Most Likely To",
+          "path": "/games/most-likely-to",
+          "passed": true,
+          "docWidth": 375
+        },
+        {
+          "page": "This or That",
+          "path": "/games/this-or-that",
+          "passed": true,
+          "docWidth": 375
+        },
+        {
+          "page": "Question Library",
+          "path": "/questions",
+          "passed": true,
+          "docWidth": 375
+        },
+        {
+          "page": "Custom Deck Studio",
+          "path": "/custom",
+          "passed": true,
+          "docWidth": 375
+        },
+        {
+          "page": "Blog Guides Hub",
+          "path": "/blog",
+          "passed": true,
+          "docWidth": 375
+        },
+        {
+          "page": "Blog Article Rules",
+          "path": "/blog/official-truth-or-dare-rules",
+          "passed": true,
+          "docWidth": 375
+        },
+        {
+          "page": "About Page",
+          "path": "/about",
+          "passed": true,
+          "docWidth": 375
+        },
+        {
+          "page": "Contact Page",
+          "path": "/contact",
+          "passed": true,
+          "docWidth": 375
+        },
+        {
+          "page": "Privacy Policy",
+          "path": "/privacy",
+          "passed": true,
+          "docWidth": 375
+        },
+        {
+          "page": "Terms of Service",
+          "path": "/terms",
+          "passed": true,
+          "docWidth": 375
+        },
+        {
+          "page": "Multiplayer Room Arena",
+          "path": "/room/TEST01",
+          "passed": true,
+          "docWidth": 375
+        }
+      ]
+    },
+    "390": {
+      "name": "390px (iPhone 14/15)",
+      "deviceType": "mobile",
+      "pages": [
+        {
+          "page": "Homepage",
+          "path": "/",
+          "passed": true,
+          "docWidth": 390
+        },
+        {
+          "page": "All Games Directory",
+          "path": "/games",
+          "passed": true,
+          "docWidth": 390
+        },
+        {
+          "page": "Truth or Dare Setup",
+          "path": "/games/truth-or-dare",
+          "passed": true,
+          "docWidth": 390
+        },
+        {
+          "page": "Spinner Wheel",
+          "path": "/games/spin-the-bottle",
+          "passed": true,
+          "docWidth": 390
+        },
+        {
+          "page": "Never Have I Ever",
+          "path": "/games/never-have-i-ever",
+          "passed": true,
+          "docWidth": 390
+        },
+        {
+          "page": "Would You Rather",
+          "path": "/games/would-you-rather",
+          "passed": true,
+          "docWidth": 390
+        },
+        {
+          "page": "Most Likely To",
+          "path": "/games/most-likely-to",
+          "passed": true,
+          "docWidth": 390
+        },
+        {
+          "page": "This or That",
+          "path": "/games/this-or-that",
+          "passed": true,
+          "docWidth": 390
+        },
+        {
+          "page": "Question Library",
+          "path": "/questions",
+          "passed": true,
+          "docWidth": 390
+        },
+        {
+          "page": "Custom Deck Studio",
+          "path": "/custom",
+          "passed": true,
+          "docWidth": 390
+        },
+        {
+          "page": "Blog Guides Hub",
+          "path": "/blog",
+          "passed": true,
+          "docWidth": 390
+        },
+        {
+          "page": "Blog Article Rules",
+          "path": "/blog/official-truth-or-dare-rules",
+          "passed": true,
+          "docWidth": 390
+        },
+        {
+          "page": "About Page",
+          "path": "/about",
+          "passed": true,
+          "docWidth": 390
+        },
+        {
+          "page": "Contact Page",
+          "path": "/contact",
+          "passed": true,
+          "docWidth": 390
+        },
+        {
+          "page": "Privacy Policy",
+          "path": "/privacy",
+          "passed": true,
+          "docWidth": 390
+        },
+        {
+          "page": "Terms of Service",
+          "path": "/terms",
+          "passed": true,
+          "docWidth": 390
+        },
+        {
+          "page": "Multiplayer Room Arena",
+          "path": "/room/TEST01",
+          "passed": true,
+          "docWidth": 390
+        }
+      ]
+    },
+    "414": {
+      "name": "414px (iPhone XR/Plus)",
+      "deviceType": "mobile",
+      "pages": [
+        {
+          "page": "Homepage",
+          "path": "/",
+          "passed": true,
+          "docWidth": 414
+        },
+        {
+          "page": "All Games Directory",
+          "path": "/games",
+          "passed": true,
+          "docWidth": 414
+        },
+        {
+          "page": "Truth or Dare Setup",
+          "path": "/games/truth-or-dare",
+          "passed": true,
+          "docWidth": 414
+        },
+        {
+          "page": "Spinner Wheel",
+          "path": "/games/spin-the-bottle",
+          "passed": true,
+          "docWidth": 414
+        },
+        {
+          "page": "Never Have I Ever",
+          "path": "/games/never-have-i-ever",
+          "passed": true,
+          "docWidth": 414
+        },
+        {
+          "page": "Would You Rather",
+          "path": "/games/would-you-rather",
+          "passed": true,
+          "docWidth": 414
+        },
+        {
+          "page": "Most Likely To",
+          "path": "/games/most-likely-to",
+          "passed": true,
+          "docWidth": 414
+        },
+        {
+          "page": "This or That",
+          "path": "/games/this-or-that",
+          "passed": true,
+          "docWidth": 414
+        },
+        {
+          "page": "Question Library",
+          "path": "/questions",
+          "passed": true,
+          "docWidth": 414
+        },
+        {
+          "page": "Custom Deck Studio",
+          "path": "/custom",
+          "passed": true,
+          "docWidth": 414
+        },
+        {
+          "page": "Blog Guides Hub",
+          "path": "/blog",
+          "passed": true,
+          "docWidth": 414
+        },
+        {
+          "page": "Blog Article Rules",
+          "path": "/blog/official-truth-or-dare-rules",
+          "passed": true,
+          "docWidth": 414
+        },
+        {
+          "page": "About Page",
+          "path": "/about",
+          "passed": true,
+          "docWidth": 414
+        },
+        {
+          "page": "Contact Page",
+          "path": "/contact",
+          "passed": true,
+          "docWidth": 414
+        },
+        {
+          "page": "Privacy Policy",
+          "path": "/privacy",
+          "passed": true,
+          "docWidth": 414
+        },
+        {
+          "page": "Terms of Service",
+          "path": "/terms",
+          "passed": true,
+          "docWidth": 414
+        },
+        {
+          "page": "Multiplayer Room Arena",
+          "path": "/room/TEST01",
+          "passed": true,
+          "docWidth": 414
+        }
+      ]
+    },
+    "430": {
+      "name": "430px (iPhone 15/16 Pro Max)",
+      "deviceType": "mobile",
+      "pages": [
+        {
+          "page": "Homepage",
+          "path": "/",
+          "passed": true,
+          "docWidth": 430
+        },
+        {
+          "page": "All Games Directory",
+          "path": "/games",
+          "passed": true,
+          "docWidth": 430
+        },
+        {
+          "page": "Truth or Dare Setup",
+          "path": "/games/truth-or-dare",
+          "passed": true,
+          "docWidth": 430
+        },
+        {
+          "page": "Spinner Wheel",
+          "path": "/games/spin-the-bottle",
+          "passed": true,
+          "docWidth": 430
+        },
+        {
+          "page": "Never Have I Ever",
+          "path": "/games/never-have-i-ever",
+          "passed": true,
+          "docWidth": 430
+        },
+        {
+          "page": "Would You Rather",
+          "path": "/games/would-you-rather",
+          "passed": true,
+          "docWidth": 430
+        },
+        {
+          "page": "Most Likely To",
+          "path": "/games/most-likely-to",
+          "passed": true,
+          "docWidth": 430
+        },
+        {
+          "page": "This or That",
+          "path": "/games/this-or-that",
+          "passed": true,
+          "docWidth": 430
+        },
+        {
+          "page": "Question Library",
+          "path": "/questions",
+          "passed": true,
+          "docWidth": 430
+        },
+        {
+          "page": "Custom Deck Studio",
+          "path": "/custom",
+          "passed": true,
+          "docWidth": 430
+        },
+        {
+          "page": "Blog Guides Hub",
+          "path": "/blog",
+          "passed": true,
+          "docWidth": 430
+        },
+        {
+          "page": "Blog Article Rules",
+          "path": "/blog/official-truth-or-dare-rules",
+          "passed": true,
+          "docWidth": 430
+        },
+        {
+          "page": "About Page",
+          "path": "/about",
+          "passed": true,
+          "docWidth": 430
+        },
+        {
+          "page": "Contact Page",
+          "path": "/contact",
+          "passed": true,
+          "docWidth": 430
+        },
+        {
+          "page": "Privacy Policy",
+          "path": "/privacy",
+          "passed": true,
+          "docWidth": 430
+        },
+        {
+          "page": "Terms of Service",
+          "path": "/terms",
+          "passed": true,
+          "docWidth": 430
+        },
+        {
+          "page": "Multiplayer Room Arena",
+          "path": "/room/TEST01",
+          "passed": true,
+          "docWidth": 430
+        }
+      ]
+    },
+    "768": {
+      "name": "768px (iPad Portrait)",
+      "deviceType": "tablet",
+      "pages": [
+        {
+          "page": "Homepage",
+          "path": "/",
+          "passed": true,
+          "docWidth": 768
+        },
+        {
+          "page": "All Games Directory",
+          "path": "/games",
+          "passed": true,
+          "docWidth": 768
+        },
+        {
+          "page": "Truth or Dare Setup",
+          "path": "/games/truth-or-dare",
+          "passed": true,
+          "docWidth": 768
+        },
+        {
+          "page": "Spinner Wheel",
+          "path": "/games/spin-the-bottle",
+          "passed": true,
+          "docWidth": 768
+        },
+        {
+          "page": "Never Have I Ever",
+          "path": "/games/never-have-i-ever",
+          "passed": true,
+          "docWidth": 768
+        },
+        {
+          "page": "Would You Rather",
+          "path": "/games/would-you-rather",
+          "passed": true,
+          "docWidth": 768
+        },
+        {
+          "page": "Most Likely To",
+          "path": "/games/most-likely-to",
+          "passed": true,
+          "docWidth": 768
+        },
+        {
+          "page": "This or That",
+          "path": "/games/this-or-that",
+          "passed": true,
+          "docWidth": 768
+        },
+        {
+          "page": "Question Library",
+          "path": "/questions",
+          "passed": true,
+          "docWidth": 768
+        },
+        {
+          "page": "Custom Deck Studio",
+          "path": "/custom",
+          "passed": true,
+          "docWidth": 768
+        },
+        {
+          "page": "Blog Guides Hub",
+          "path": "/blog",
+          "passed": true,
+          "docWidth": 768
+        },
+        {
+          "page": "Blog Article Rules",
+          "path": "/blog/official-truth-or-dare-rules",
+          "passed": true,
+          "docWidth": 768
+        },
+        {
+          "page": "About Page",
+          "path": "/about",
+          "passed": true,
+          "docWidth": 768
+        },
+        {
+          "page": "Contact Page",
+          "path": "/contact",
+          "passed": true,
+          "docWidth": 768
+        },
+        {
+          "page": "Privacy Policy",
+          "path": "/privacy",
+          "passed": true,
+          "docWidth": 768
+        },
+        {
+          "page": "Terms of Service",
+          "path": "/terms",
+          "passed": true,
+          "docWidth": 768
+        },
+        {
+          "page": "Multiplayer Room Arena",
+          "path": "/room/TEST01",
+          "passed": true,
+          "docWidth": 768
+        }
+      ]
+    },
+    "1024": {
+      "name": "1024px (iPad Pro / Laptop)",
+      "deviceType": "laptop",
+      "pages": [
+        {
+          "page": "Homepage",
+          "path": "/",
+          "passed": true,
+          "docWidth": 1024
+        },
+        {
+          "page": "All Games Directory",
+          "path": "/games",
+          "passed": true,
+          "docWidth": 1024
+        },
+        {
+          "page": "Truth or Dare Setup",
+          "path": "/games/truth-or-dare",
+          "passed": true,
+          "docWidth": 1024
+        },
+        {
+          "page": "Spinner Wheel",
+          "path": "/games/spin-the-bottle",
+          "passed": true,
+          "docWidth": 1024
+        },
+        {
+          "page": "Never Have I Ever",
+          "path": "/games/never-have-i-ever",
+          "passed": true,
+          "docWidth": 1024
+        },
+        {
+          "page": "Would You Rather",
+          "path": "/games/would-you-rather",
+          "passed": true,
+          "docWidth": 1024
+        },
+        {
+          "page": "Most Likely To",
+          "path": "/games/most-likely-to",
+          "passed": true,
+          "docWidth": 1024
+        },
+        {
+          "page": "This or That",
+          "path": "/games/this-or-that",
+          "passed": true,
+          "docWidth": 1024
+        },
+        {
+          "page": "Question Library",
+          "path": "/questions",
+          "passed": true,
+          "docWidth": 1024
+        },
+        {
+          "page": "Custom Deck Studio",
+          "path": "/custom",
+          "passed": true,
+          "docWidth": 1024
+        },
+        {
+          "page": "Blog Guides Hub",
+          "path": "/blog",
+          "passed": true,
+          "docWidth": 1024
+        },
+        {
+          "page": "Blog Article Rules",
+          "path": "/blog/official-truth-or-dare-rules",
+          "passed": true,
+          "docWidth": 1024
+        },
+        {
+          "page": "About Page",
+          "path": "/about",
+          "passed": true,
+          "docWidth": 1024
+        },
+        {
+          "page": "Contact Page",
+          "path": "/contact",
+          "passed": true,
+          "docWidth": 1024
+        },
+        {
+          "page": "Privacy Policy",
+          "path": "/privacy",
+          "passed": true,
+          "docWidth": 1024
+        },
+        {
+          "page": "Terms of Service",
+          "path": "/terms",
+          "passed": true,
+          "docWidth": 1024
+        },
+        {
+          "page": "Multiplayer Room Arena",
+          "path": "/room/TEST01",
+          "passed": true,
+          "docWidth": 1024
+        }
+      ]
+    },
+    "1280": {
+      "name": "1280px (MacBook / Desktop)",
+      "deviceType": "desktop",
+      "pages": [
+        {
+          "page": "Homepage",
+          "path": "/",
+          "passed": true,
+          "docWidth": 1280
+        },
+        {
+          "page": "All Games Directory",
+          "path": "/games",
+          "passed": true,
+          "docWidth": 1280
+        },
+        {
+          "page": "Truth or Dare Setup",
+          "path": "/games/truth-or-dare",
+          "passed": true,
+          "docWidth": 1280
+        },
+        {
+          "page": "Spinner Wheel",
+          "path": "/games/spin-the-bottle",
+          "passed": true,
+          "docWidth": 1280
+        },
+        {
+          "page": "Never Have I Ever",
+          "path": "/games/never-have-i-ever",
+          "passed": true,
+          "docWidth": 1280
+        },
+        {
+          "page": "Would You Rather",
+          "path": "/games/would-you-rather",
+          "passed": true,
+          "docWidth": 1280
+        },
+        {
+          "page": "Most Likely To",
+          "path": "/games/most-likely-to",
+          "passed": true,
+          "docWidth": 1280
+        },
+        {
+          "page": "This or That",
+          "path": "/games/this-or-that",
+          "passed": true,
+          "docWidth": 1280
+        },
+        {
+          "page": "Question Library",
+          "path": "/questions",
+          "passed": true,
+          "docWidth": 1280
+        },
+        {
+          "page": "Custom Deck Studio",
+          "path": "/custom",
+          "passed": true,
+          "docWidth": 1280
+        },
+        {
+          "page": "Blog Guides Hub",
+          "path": "/blog",
+          "passed": true,
+          "docWidth": 1280
+        },
+        {
+          "page": "Blog Article Rules",
+          "path": "/blog/official-truth-or-dare-rules",
+          "passed": true,
+          "docWidth": 1280
+        },
+        {
+          "page": "About Page",
+          "path": "/about",
+          "passed": true,
+          "docWidth": 1280
+        },
+        {
+          "page": "Contact Page",
+          "path": "/contact",
+          "passed": true,
+          "docWidth": 1280
+        },
+        {
+          "page": "Privacy Policy",
+          "path": "/privacy",
+          "passed": true,
+          "docWidth": 1280
+        },
+        {
+          "page": "Terms of Service",
+          "path": "/terms",
+          "passed": true,
+          "docWidth": 1280
+        },
+        {
+          "page": "Multiplayer Room Arena",
+          "path": "/room/TEST01",
+          "passed": true,
+          "docWidth": 1280
+        }
+      ]
+    },
+    "1440": {
+      "name": "1440px (Desktop Widescreen)",
+      "deviceType": "wide",
+      "pages": [
+        {
+          "page": "Homepage",
+          "path": "/",
+          "passed": true,
+          "docWidth": 1440
+        },
+        {
+          "page": "All Games Directory",
+          "path": "/games",
+          "passed": true,
+          "docWidth": 1440
+        },
+        {
+          "page": "Truth or Dare Setup",
+          "path": "/games/truth-or-dare",
+          "passed": true,
+          "docWidth": 1440
+        },
+        {
+          "page": "Spinner Wheel",
+          "path": "/games/spin-the-bottle",
+          "passed": true,
+          "docWidth": 1440
+        },
+        {
+          "page": "Never Have I Ever",
+          "path": "/games/never-have-i-ever",
+          "passed": true,
+          "docWidth": 1440
+        },
+        {
+          "page": "Would You Rather",
+          "path": "/games/would-you-rather",
+          "passed": true,
+          "docWidth": 1440
+        },
+        {
+          "page": "Most Likely To",
+          "path": "/games/most-likely-to",
+          "passed": true,
+          "docWidth": 1440
+        },
+        {
+          "page": "This or That",
+          "path": "/games/this-or-that",
+          "passed": true,
+          "docWidth": 1440
+        },
+        {
+          "page": "Question Library",
+          "path": "/questions",
+          "passed": true,
+          "docWidth": 1440
+        },
+        {
+          "page": "Custom Deck Studio",
+          "path": "/custom",
+          "passed": true,
+          "docWidth": 1440
+        },
+        {
+          "page": "Blog Guides Hub",
+          "path": "/blog",
+          "passed": true,
+          "docWidth": 1440
+        },
+        {
+          "page": "Blog Article Rules",
+          "path": "/blog/official-truth-or-dare-rules",
+          "passed": true,
+          "docWidth": 1440
+        },
+        {
+          "page": "About Page",
+          "path": "/about",
+          "passed": true,
+          "docWidth": 1440
+        },
+        {
+          "page": "Contact Page",
+          "path": "/contact",
+          "passed": true,
+          "docWidth": 1440
+        },
+        {
+          "page": "Privacy Policy",
+          "path": "/privacy",
+          "passed": true,
+          "docWidth": 1440
+        },
+        {
+          "page": "Terms of Service",
+          "path": "/terms",
+          "passed": true,
+          "docWidth": 1440
+        },
+        {
+          "page": "Multiplayer Room Arena",
+          "path": "/room/TEST01",
+          "passed": true,
+          "docWidth": 1440
+        }
+      ]
+    }
+  },
+  "componentAudits": {
+    "mobileHeaderAndDrawer": {
+      "menuButtonPresent": true,
+      "drawerPortaled": true,
+      "bodyScrollLocked": true,
+      "passed": true
+    },
+    "languageModal": {
+      "passed": true
+    }
+  },
+  "screenshots": [
+    {
+      "name": "Homepage (390px)",
+      "path": "/Users/vaibhavborkar/truth&dare/project-docs/18-global-responsive-audit/screenshots/homepage-390px.png"
+    },
+    {
+      "name": "All Games Directory (390px)",
+      "path": "/Users/vaibhavborkar/truth&dare/project-docs/18-global-responsive-audit/screenshots/all-games-directory-390px.png"
+    },
+    {
+      "name": "Truth or Dare Setup (390px)",
+      "path": "/Users/vaibhavborkar/truth&dare/project-docs/18-global-responsive-audit/screenshots/truth-or-dare-setup-390px.png"
+    },
+    {
+      "name": "Question Library (390px)",
+      "path": "/Users/vaibhavborkar/truth&dare/project-docs/18-global-responsive-audit/screenshots/question-library-390px.png"
+    },
+    {
+      "name": "Blog Article Rules (390px)",
+      "path": "/Users/vaibhavborkar/truth&dare/project-docs/18-global-responsive-audit/screenshots/blog-article-rules-390px.png"
+    },
+    {
+      "name": "Homepage (768px)",
+      "path": "/Users/vaibhavborkar/truth&dare/project-docs/18-global-responsive-audit/screenshots/homepage-768px.png"
+    },
+    {
+      "name": "All Games Directory (768px)",
+      "path": "/Users/vaibhavborkar/truth&dare/project-docs/18-global-responsive-audit/screenshots/all-games-directory-768px.png"
+    },
+    {
+      "name": "Truth or Dare Setup (768px)",
+      "path": "/Users/vaibhavborkar/truth&dare/project-docs/18-global-responsive-audit/screenshots/truth-or-dare-setup-768px.png"
+    },
+    {
+      "name": "Question Library (768px)",
+      "path": "/Users/vaibhavborkar/truth&dare/project-docs/18-global-responsive-audit/screenshots/question-library-768px.png"
+    },
+    {
+      "name": "Blog Article Rules (768px)",
+      "path": "/Users/vaibhavborkar/truth&dare/project-docs/18-global-responsive-audit/screenshots/blog-article-rules-768px.png"
+    },
+    {
+      "name": "Homepage (1280px)",
+      "path": "/Users/vaibhavborkar/truth&dare/project-docs/18-global-responsive-audit/screenshots/homepage-1280px.png"
+    },
+    {
+      "name": "All Games Directory (1280px)",
+      "path": "/Users/vaibhavborkar/truth&dare/project-docs/18-global-responsive-audit/screenshots/all-games-directory-1280px.png"
+    },
+    {
+      "name": "Truth or Dare Setup (1280px)",
+      "path": "/Users/vaibhavborkar/truth&dare/project-docs/18-global-responsive-audit/screenshots/truth-or-dare-setup-1280px.png"
+    },
+    {
+      "name": "Question Library (1280px)",
+      "path": "/Users/vaibhavborkar/truth&dare/project-docs/18-global-responsive-audit/screenshots/question-library-1280px.png"
+    },
+    {
+      "name": "Blog Article Rules (1280px)",
+      "path": "/Users/vaibhavborkar/truth&dare/project-docs/18-global-responsive-audit/screenshots/blog-article-rules-1280px.png"
+    },
+    {
+      "name": "Mobile Navigation Drawer (390px)",
+      "path": "/Users/vaibhavborkar/truth&dare/project-docs/18-global-responsive-audit/screenshots/mobile-drawer-390px.png"
+    },
+    {
+      "name": "Language Modal (390px)",
+      "path": "/Users/vaibhavborkar/truth&dare/project-docs/18-global-responsive-audit/screenshots/language-modal-390px.png"
+    },
+    {
+      "name": "Age Gate Modal (390px)",
+      "path": "/Users/vaibhavborkar/truth&dare/project-docs/18-global-responsive-audit/screenshots/age-gate-modal-390px.png"
+    },
+    {
+      "name": "Homepage Arabic RTL (390px)",
+      "path": "/Users/vaibhavborkar/truth&dare/project-docs/18-global-responsive-audit/screenshots/homepage-arabic-rtl-390px.png"
+    }
+  ],
+  "failures": []
+}

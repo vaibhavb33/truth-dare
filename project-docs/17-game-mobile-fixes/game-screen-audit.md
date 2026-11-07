@@ -110,3 +110,4 @@ Prior to this audit, several critical mobile UX and CSS layout defects were pres
 | **Custom Deck Studio** | ❌ Overflow | ⚠️ Tight | ✅ Pass | ✅ Pass | ✅ Pass | ✅ Pass | ✅ Pass | ✅ Pass |
 | **Player Selection** | ❌ Overlap | ✅ Pass | ✅ Pass | ✅ Pass | ✅ Pass | ✅ Pass | ✅ Pass | ✅ Pass |
 | **Multiplayer Rooms** | ❌ Crowded | ⚠️ Tight | ✅ Pass | ✅ Pass | ✅ Pass | ✅ Pass | ✅ Pass | ⚠️ Scrollable |
+

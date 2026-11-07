@@ -157,8 +157,8 @@ export function RoomClient({ roomCode }: RoomClientProps) {
     <div className="w-full max-w-4xl mx-auto px-3 sm:px-4 py-4 sm:py-6 md:py-8 space-y-4 sm:space-y-6 flex-1 flex flex-col justify-between">
       {/* QR Code Modal */}
       {showQrModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-canvas-deep/85 backdrop-blur-md animate-fade-in">
-          <div className="w-full max-w-xs p-5 sm:p-6 rounded-3xl bg-surface-elevated border border-white/10 text-center space-y-4 relative">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-canvas-deep/85 backdrop-blur-md animate-fade-in pt-[max(0.75rem,env(safe-area-inset-top))] pb-[max(0.75rem,env(safe-area-inset-bottom))]">
+          <div className="w-full max-w-xs p-5 sm:p-6 rounded-3xl bg-surface-elevated border border-white/10 text-center space-y-4 relative max-h-[calc(100dvh-2rem)] overflow-y-auto custom-scrollbar">
             <button
               onClick={() => setShowQrModal(false)}
               className="absolute top-4 right-4 text-slate-400 hover:text-white p-1"
@@ -172,7 +172,7 @@ export function RoomClient({ roomCode }: RoomClientProps) {
               <img
                 src={qrDataUrl}
                 alt="Room QR Code"
-                className="w-48 h-48 sm:w-56 sm:h-56 mx-auto rounded-2xl border border-white/10"
+                className="w-40 h-40 xs:w-48 xs:h-48 sm:w-56 sm:h-56 mx-auto rounded-2xl border border-white/10 object-contain"
               />
             )}
             <p className="font-mono font-bold text-lg sm:text-xl text-brand-400 tracking-widest">{roomCode}</p>

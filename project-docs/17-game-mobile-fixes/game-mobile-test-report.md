@@ -87,3 +87,4 @@ Captured at **390px** (standard iPhone) and **430px** (iPhone Pro Max) inside `p
 * **Mobile E2E Viewports Tested:** **8 / 8 PASS (100%)**
 * **Game Screens Audited:** **12 / 12 PASS (100%)**
 * **Production Static Build:** **78 / 78 routes compiled cleanly**
+

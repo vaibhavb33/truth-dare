@@ -43,6 +43,18 @@ function TruthOrDareInner() {
   const [newPlayerName, setNewPlayerName] = useState('');
   const [showAgeGate, setShowAgeGate] = useState(false);
 
+  // If page was loaded directly with spicy-18 in URL query, verify age consent
+  useEffect(() => {
+    if (initialCategory === 'spicy-18') {
+      if (typeof window !== 'undefined') {
+        const isConfirmed = localStorage.getItem('asteria_age_verified') === 'true';
+        if (!isConfirmed) {
+          setShowAgeGate(true);
+        }
+      }
+    }
+  }, [initialCategory]);
+
   // Active Gameplay States
   const [activePlayerIndex, setActivePlayerIndex] = useState(0);
   const [currentCard, setCurrentCard] = useState<Question | null>(null);
@@ -272,11 +284,10 @@ function TruthOrDareInner() {
                 <button
                   key={cat.id}
                   onClick={() => handleSelectCategory(cat.id)}
-                  className={`p-2.5 sm:p-3.5 rounded-2xl border text-left flex items-center gap-2.5 sm:gap-3 transition-all ${
-                    selectedCategory === cat.id
-                      ? 'bg-brand-500/20 border-brand-400 text-white shadow-glow-brand'
-                      : 'bg-surface-elevated hover:bg-surface-highlight border-white/10 text-slate-300'
-                  }`}
+                  className={`p-2.5 sm:p-3.5 rounded-2xl border text-left flex items-center gap-2.5 sm:gap-3 transition-all ${selectedCategory === cat.id
+                    ? 'bg-brand-500/20 border-brand-400 text-white shadow-glow-brand'
+                    : 'bg-surface-elevated hover:bg-surface-highlight border-white/10 text-slate-300'
+                    }`}
                 >
                   <span className="text-xl sm:text-2xl shrink-0">{cat.icon}</span>
                   <div className="overflow-hidden min-w-0">
@@ -342,11 +353,10 @@ function TruthOrDareInner() {
                 <button
                   key={sec}
                   onClick={() => setTimerSeconds(sec)}
-                  className={`py-2.5 rounded-xl border text-xs font-bold transition-colors ${
-                    timerSeconds === sec
-                      ? 'bg-brand-500 text-white border-brand-400'
-                      : 'bg-surface-elevated text-slate-400 border-white/10 hover:text-white'
-                  }`}
+                  className={`py-2.5 rounded-xl border text-xs font-bold transition-colors ${timerSeconds === sec
+                    ? 'bg-brand-500 text-white border-brand-400'
+                    : 'bg-surface-elevated text-slate-400 border-white/10 hover:text-white'
+                    }`}
                 >
                   {sec === 0 ? 'Off' : `${sec}s`}
                 </button>
@@ -447,14 +457,14 @@ function TruthOrDareInner() {
           SUMMARY MODAL: Deck Complete
          ========================================================= */}
       {showSummaryModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-canvas-deep/85 backdrop-blur-md">
-          <div className="w-full max-w-md p-6 rounded-3xl bg-surface-elevated border border-white/10 text-center space-y-6">
-            <div className="w-16 h-16 mx-auto rounded-2xl bg-brand-500/10 border border-brand-400/30 flex items-center justify-center text-brand-400">
-              <Trophy className="w-8 h-8" />
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-canvas-deep/85 backdrop-blur-md pt-[max(0.75rem,env(safe-area-inset-top))] pb-[max(0.75rem,env(safe-area-inset-bottom))] animate-in fade-in duration-200">
+          <div className="w-full max-w-md p-5 sm:p-6 rounded-3xl bg-surface-elevated border border-white/10 text-center space-y-5 max-h-[calc(100dvh-2rem)] overflow-y-auto custom-scrollbar">
+            <div className="w-14 h-14 sm:w-16 sm:h-16 mx-auto rounded-2xl bg-brand-500/10 border border-brand-400/30 flex items-center justify-center text-brand-400 shrink-0">
+              <Trophy className="w-7 h-7 sm:w-8 sm:h-8" />
             </div>
 
             <div className="space-y-1">
-              <h3 className="font-display font-extrabold text-2xl text-white">
+              <h3 className="font-display font-extrabold text-xl sm:text-2xl text-white">
                 {categoryUnavailableNotice ? 'Category Unavailable' : t('game.scoresTitle')}
               </h3>
               <p className="text-xs text-slate-400">
@@ -464,17 +474,17 @@ function TruthOrDareInner() {
 
             {/* Leaderboard Table */}
             {!categoryUnavailableNotice && (
-              <div className="p-4 rounded-2xl bg-canvas-base border border-white/5 space-y-2 text-left">
+              <div className="p-3.5 sm:p-4 rounded-2xl bg-canvas-base border border-white/5 space-y-2 text-left max-h-48 overflow-y-auto custom-scrollbar">
                 <p className="text-xs font-bold text-slate-300 uppercase tracking-wider mb-2">Final Scores:</p>
                 {players
                   .slice()
                   .sort((a, b) => b.score - a.score)
                   .map((p, idx) => (
-                    <div key={p.id} className="flex items-center justify-between text-xs py-1 border-b border-white/5">
-                      <span className="font-semibold text-white">
+                    <div key={p.id} className="flex items-center justify-between text-xs py-1.5 border-b border-white/5">
+                      <span className="font-semibold text-white truncate max-w-[150px] sm:max-w-[200px]">
                         #{idx + 1} {p.name}
                       </span>
-                      <span className="text-brand-400 font-mono font-bold">
+                      <span className="text-brand-400 font-mono font-bold shrink-0 ml-2">
                         {p.score} pts ({p.skips} skips)
                       </span>
                     </div>
@@ -482,9 +492,9 @@ function TruthOrDareInner() {
               </div>
             )}
 
-            <div className="flex flex-col gap-2">
+            <div className="flex flex-col gap-2 pt-1">
               {!categoryUnavailableNotice && (
-                <Button variant="primary" size="lg" onClick={handleResetSession} className="w-full">
+                <Button variant="primary" size="lg" onClick={handleResetSession} className="w-full min-h-[48px] font-bold">
                   {t('game.playAgain')}
                 </Button>
               )}
@@ -495,7 +505,7 @@ function TruthOrDareInner() {
                   setShowSummaryModal(false);
                   setIsPlaying(false);
                 }}
-                className="w-full"
+                className="w-full min-h-[44px]"
               >
                 {categoryUnavailableNotice ? 'Choose Another Category' : t('game.backToSetup')}
               </Button>

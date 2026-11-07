@@ -10,7 +10,7 @@ export function AppFooter() {
   const { t } = useTranslation();
 
   return (
-    <footer className="w-full bg-canvas-deep border-t border-white/10 pt-12 pb-16 px-4 md:px-8 text-slate-400 text-sm">
+    <footer className="w-full bg-canvas-deep border-t border-white/10 pt-12 pb-[calc(5.5rem+env(safe-area-inset-bottom,0px))] lg:pb-16 px-4 md:px-8 text-slate-400 text-sm">
       <div className="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-8 mb-12">
         {/* Col 1: Brand Info */}
         <div className="space-y-4 sm:col-span-2 md:col-span-1">
