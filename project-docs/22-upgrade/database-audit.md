@@ -108,3 +108,4 @@ The static TypeScript question repository in `lib/questions/database/` contains 
 | **Client HTTP Polling (1.5s interval)** | Unnecessary server bandwidth, high latency (up to 1,500ms), mobile battery drain. | Replace with WebSockets or Supabase Realtime broadcast channels for sub-50ms turn synchronization. |
 | **LocalStorage Custom Decks** | Custom decks cannot be shared with friends or used in multiplayer rooms. | Sync custom decks to `custom_questions` table with shareable deck tokens/slugs. |
 | **Static Question Bundles** | Adding questions requires recompiling the Next.js production build. | Seed `questions` table with the 2,652 static items and enable real-time admin CRUD in Supabase. |
+

@@ -249,7 +249,7 @@ function TruthOrDareInner() {
   const activePlayer = players[activePlayerIndex] || players[0];
 
   return (
-    <div className="w-full flex-1 flex flex-col items-center justify-start p-3 sm:p-4 md:p-8 max-w-4xl mx-auto">
+    <div className="w-full flex-1 flex flex-col items-center justify-start p-2.5 sm:p-4 md:p-8 max-w-4xl lg:max-w-5xl mx-auto">
       {/* Age Gate Modal */}
       <AgeGateModal
         isOpen={showAgeGate}
@@ -261,15 +261,15 @@ function TruthOrDareInner() {
           VIEW A: SETUP SCREEN (Before Game Starts)
          ========================================================= */}
       {!isPlaying ? (
-        <div className="w-full max-w-2xl space-y-7 my-auto py-6">
+        <div className="w-full max-w-2xl lg:max-w-3xl xl:max-w-4xl space-y-6 sm:space-y-7 my-auto py-4 sm:py-6">
           <div className="text-center space-y-2">
             <span className="text-xs font-bold uppercase tracking-widest text-dare-400">
               Pass & Play Setup
             </span>
-            <h1 className="font-display font-extrabold text-3xl md:text-5xl text-white">
+            <h1 className="font-display font-extrabold text-2xl sm:text-4xl md:text-5xl text-white heading-fluid-hero">
               {t('home.heroTitle')}
             </h1>
-            <p className="text-xs md:text-sm text-slate-400">
+            <p className="text-xs md:text-sm text-slate-400 max-w-lg mx-auto">
               {t('home.heroSubtitle')}
             </p>
           </div>
@@ -287,7 +287,7 @@ function TruthOrDareInner() {
             <label className="text-xs font-bold uppercase tracking-wider text-slate-300">
               1. {t('game.selectCategory')}:
             </label>
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 sm:gap-2.5">
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-3 gap-2 sm:gap-2.5">
               {categoriesList.map((cat) => (
                 <button
                   key={cat.id}
@@ -381,11 +381,11 @@ function TruthOrDareInner() {
         /* =========================================================
             VIEW B: ACTIVE GAMEPLAY SCREEN (Distraction-Free)
            ========================================================= */
-        <div className="w-full flex-1 flex flex-col items-center justify-between space-y-3 sm:space-y-5 py-1 sm:py-2 max-w-md mx-auto">
+        <div className="w-full flex-1 flex flex-col items-center justify-between space-y-2 sm:space-y-4 py-0.5 sm:py-2 max-w-md mx-auto">
           {/* Header Bar: Turn & Progress Indicator */}
-          <div className="w-full flex items-center justify-between text-xs font-semibold px-1 pt-1 gap-1.5 sm:gap-2">
+          <div className="w-full flex items-center justify-between text-xs font-semibold px-1 pt-0.5 sm:pt-1 gap-1.5 sm:gap-2 shrink-0">
             {/* Active Player Pill */}
-            <div className="flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3 py-1.5 rounded-full bg-brand-500/20 border border-brand-400/40 text-brand-300 shadow-glow-brand min-w-0 flex-1 max-w-[62%] sm:max-w-[65%]">
+            <div className="flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3 py-1 rounded-full bg-brand-500/20 border border-brand-400/40 text-brand-300 shadow-glow-brand min-w-0 flex-1 max-w-[62%] sm:max-w-[65%]">
               <Users className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-brand-400 shrink-0" />
               <span className="truncate">{t('game.playerTurn', { name: activePlayer.name })}</span>
             </div>
@@ -408,7 +408,7 @@ function TruthOrDareInner() {
           </div>
 
           {/* Center 3D Flip Card */}
-          <div className="w-full flex flex-col items-center justify-center my-auto py-1">
+          <div className="w-full flex-1 flex flex-col items-center justify-center my-auto py-0.5">
             <Card3D
               question={currentCard}
               isFlipped={isFlipped}
@@ -418,14 +418,14 @@ function TruthOrDareInner() {
           </div>
 
           {/* Bottom Action Controls (Thumb Zone) */}
-          <div className="w-full max-w-md space-y-2.5 pt-1">
+          <div className="w-full max-w-md space-y-2 pt-1 shrink-0">
             {isFlipped ? (
               <div className="grid grid-cols-2 gap-2 sm:gap-3">
                 <Button
                   variant="skip"
                   size="lg"
                   onClick={handleSkipTurn}
-                  className="w-full gap-1 sm:gap-2 px-2 sm:px-4 text-xs sm:text-sm font-bold min-h-[48px]"
+                  className="w-full gap-1 sm:gap-2 px-2 sm:px-4 text-xs sm:text-sm font-bold min-h-[46px] sm:min-h-[48px]"
                 >
                   <SkipForward className="w-4 h-4 sm:w-5 sm:h-5 shrink-0" />
                   <span className="truncate">{t('game.skipQuestion')}</span>
@@ -435,24 +435,24 @@ function TruthOrDareInner() {
                   variant="primary"
                   size="lg"
                   onClick={handleCompleteTurn}
-                  className="w-full gap-1 sm:gap-2 px-2 sm:px-4 text-xs sm:text-sm font-bold min-h-[48px]"
+                  className="w-full gap-1 sm:gap-2 px-2 sm:px-4 text-xs sm:text-sm font-bold min-h-[46px] sm:min-h-[48px]"
                 >
                   <CheckCircle className="w-4 h-4 sm:w-5 sm:h-5 shrink-0 text-emerald-300" />
                   <span className="truncate">{t('game.completedDare')}</span>
                 </Button>
               </div>
             ) : (
-              <p className="text-center text-[11px] sm:text-xs text-slate-400 py-1">
+              <p className="text-center text-[11px] sm:text-xs text-slate-400 py-0.5">
                 {t('game.revealQuestion')}
               </p>
             )}
 
             {/* Session Reset / Deck Count Bar */}
-            <div className="flex items-center justify-between text-[11px] text-slate-500 px-1 pt-1">
+            <div className="flex items-center justify-between text-[11px] text-slate-500 px-1 pt-0.5">
               <span>{drawnCardIds.length} cards played</span>
               <button
                 onClick={handleResetSession}
-                className="flex items-center gap-1 hover:text-slate-300 transition-colors py-1 min-h-[30px]"
+                className="flex items-center gap-1 hover:text-slate-300 transition-colors py-0.5 min-h-[28px]"
               >
                 <RotateCcw className="w-3 h-3" /> Reshuffle Deck
               </button>

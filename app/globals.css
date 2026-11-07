@@ -6,6 +6,8 @@
   --font-display: 'Plus Jakarta Sans', system-ui, sans-serif;
   --font-body: 'Inter', system-ui, sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
+  --font-hindi: 'Noto Sans Devanagari', system-ui, sans-serif;
+  --font-arabic: 'Cairo', system-ui, sans-serif;
 }
 
 body {
@@ -15,6 +17,33 @@ body {
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
+}
+
+/* Multilingual Font Families and Generous Line-Heights to prevent character clipping */
+[lang="hi"], .font-hindi {
+  font-family: var(--font-hindi), var(--font-body);
+  line-height: 1.6;
+}
+
+[lang="ar"], [dir="rtl"], .font-arabic {
+  font-family: var(--font-arabic), var(--font-body);
+  line-height: 1.6;
+}
+
+/* Fluid Typography Clamp Classes for High-Res Displays and Mobile Screens */
+.heading-fluid-hero {
+  font-size: clamp(1.75rem, 5vw + 0.5rem, 3.25rem);
+  line-height: 1.15;
+}
+
+.heading-fluid-section {
+  font-size: clamp(1.35rem, 3.5vw + 0.25rem, 2.25rem);
+  line-height: 1.2;
+}
+
+.text-fluid-card {
+  font-size: clamp(1rem, 2.8vw + 0.2rem, 1.35rem);
+  line-height: 1.5;
 }
 
 /* 3D Card Perspective Utilities */

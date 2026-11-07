@@ -72,7 +72,7 @@ export function PWAPromotionModal({ forceOpen, onClose }: PWAPromotionModalProps
         aria-labelledby="pwa-promo-title"
         aria-describedby="pwa-promo-desc"
         dir={isRTL ? 'rtl' : 'ltr'}
-        className="pointer-events-auto relative w-full sm:w-[420px] max-w-full rounded-t-3xl sm:rounded-3xl bg-[#0D0D1F] border-t sm:border border-brand-500/30 p-5 sm:p-6 shadow-2xl sm:shadow-glow-brand text-slate-100 overflow-hidden animate-in fade-in slide-in-from-bottom duration-300 pb-[calc(1.25rem+env(safe-area-inset-bottom,0px))] sm:pb-6"
+        className="pointer-events-auto relative w-full sm:w-[420px] max-w-full max-h-[85dvh] overflow-y-auto custom-scrollbar rounded-t-3xl sm:rounded-3xl bg-[#0D0D1F] border-t sm:border border-brand-500/30 p-4 sm:p-6 shadow-2xl sm:shadow-glow-brand text-slate-100 animate-in fade-in slide-in-from-bottom duration-300 pb-[calc(1.25rem+env(safe-area-inset-bottom,0px))] sm:pb-6"
       >
         {/* Ambient Cosmic Background Accents */}
         <div className="absolute top-0 right-0 -mr-16 -mt-16 w-36 h-36 rounded-full bg-brand-500/15 blur-2xl pointer-events-none" />

@@ -35,7 +35,7 @@ export function Card3D({ question, isFlipped, onChooseType, timerSeconds = 0, cl
   return (
     <div
       className={cn(
-        'relative w-full max-w-[360px] sm:max-w-md min-h-[380px] sm:min-h-[440px] md:min-h-[480px] h-[380px] sm:h-[440px] md:h-[480px] perspective-1000 select-none mx-auto',
+        'relative w-full max-w-[340px] xs:max-w-[360px] sm:max-w-[420px] md:max-w-[460px] min-h-[290px] sm:min-h-[360px] md:min-h-[420px] h-[min(48dvh,400px)] sm:h-[min(52dvh,460px)] md:h-[480px] perspective-1000 select-none mx-auto',
         className
       )}
     >
@@ -51,7 +51,7 @@ export function Card3D({ question, isFlipped, onChooseType, timerSeconds = 0, cl
            ======================================================== */}
         <div
           className={cn(
-            'absolute inset-0 w-full h-full card-face-front rounded-3xl bg-gradient-to-b from-[#161630] via-surface-elevated to-[#0C0C1C] border border-white/15 shadow-elevation-3 flex flex-col p-4 sm:p-6 md:p-8 items-center justify-between text-center',
+            'absolute inset-0 w-full h-full card-face-front rounded-3xl bg-gradient-to-b from-[#161630] via-surface-elevated to-[#0C0C1C] border border-white/15 shadow-elevation-3 flex flex-col p-3.5 sm:p-6 md:p-8 items-center justify-between text-center',
             isFlipped
               ? 'opacity-0 pointer-events-none [visibility:hidden] transition-[opacity,visibility] duration-200'
               : 'opacity-100 pointer-events-auto [visibility:visible] transition-[opacity] duration-300 delay-150'
@@ -64,26 +64,26 @@ export function Card3D({ question, isFlipped, onChooseType, timerSeconds = 0, cl
           </div>
 
           {/* Top Pill Header */}
-          <div className="relative z-10 inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-[10px] sm:text-xs font-bold uppercase tracking-wider text-brand-300 shadow-glow-brand backdrop-blur-md">
+          <div className="relative z-10 inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-0.5 sm:py-1 rounded-full bg-white/5 border border-white/10 text-[10px] sm:text-xs font-bold uppercase tracking-wider text-brand-300 shadow-glow-brand backdrop-blur-md">
             <Sparkles className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-brand-400" />
             <span>{t('game.choosePath')}</span>
           </div>
 
           {/* Center Emblem & Headline */}
-          <div className="relative z-10 space-y-2 sm:space-y-3 my-auto py-1">
+          <div className="relative z-10 space-y-1.5 sm:space-y-3 my-auto py-1">
             {/* Visual Emblem */}
-            <div className="w-14 h-14 sm:w-20 sm:h-20 mx-auto rounded-2xl bg-gradient-to-tr from-brand-600/30 to-surface-highlight border border-brand-400/30 flex items-center justify-center shadow-glow-brand group animate-float">
+            <div className="w-12 h-12 sm:w-16 sm:h-16 md:w-20 md:h-20 mx-auto rounded-2xl bg-gradient-to-tr from-brand-600/30 to-surface-highlight border border-brand-400/30 flex items-center justify-center shadow-glow-brand group animate-float">
               <div className="relative flex items-center justify-center">
-                <HelpCircle className="w-6 h-6 sm:w-8 sm:h-8 text-truth-400 -translate-x-1.5 -translate-y-1 drop-shadow-[0_0_12px_rgba(6,182,212,0.8)]" />
-                <Flame className="w-7 h-7 sm:w-9 sm:h-9 text-dare-400 translate-x-1 translate-y-1 drop-shadow-[0_0_12px_rgba(255,92,119,0.8)]" />
+                <HelpCircle className="w-5 h-5 sm:w-7 sm:h-7 md:w-8 md:h-8 text-truth-400 -translate-x-1.5 -translate-y-1 drop-shadow-[0_0_12px_rgba(6,182,212,0.8)]" />
+                <Flame className="w-6 h-6 sm:w-8 sm:h-8 md:w-9 md:h-9 text-dare-400 translate-x-1 translate-y-1 drop-shadow-[0_0_12px_rgba(255,92,119,0.8)]" />
               </div>
             </div>
 
             <div className="space-y-1 px-2">
-              <h3 className="font-display font-extrabold text-lg sm:text-2xl md:text-3xl text-white tracking-tight">
+              <h3 className="font-display font-extrabold text-base sm:text-2xl md:text-3xl text-white tracking-tight">
                 {t('home.heroTitle')}
               </h3>
-              <p className="text-[11px] sm:text-xs md:text-sm text-slate-400 max-w-[260px] sm:max-w-xs mx-auto leading-relaxed">
+              <p className="text-[10px] sm:text-xs md:text-sm text-slate-400 max-w-[260px] sm:max-w-xs mx-auto leading-relaxed">
                 {t('game.revealQuestion')}
               </p>
             </div>
@@ -95,13 +95,13 @@ export function Card3D({ question, isFlipped, onChooseType, timerSeconds = 0, cl
               variant="truth"
               size="lg"
               onClick={() => onChooseType('truth')}
-              className="w-full flex-col min-h-[76px] sm:min-h-[92px] py-2 sm:py-3 px-2 gap-1 rounded-2xl group hover:-translate-y-0.5 active:scale-95"
+              className="w-full flex-col min-h-[66px] sm:min-h-[84px] py-1.5 sm:py-2.5 px-2 gap-1 rounded-2xl group hover:-translate-y-0.5 active:scale-95"
             >
-              <div className="w-7 h-7 sm:w-9 sm:h-9 rounded-xl bg-white/10 flex items-center justify-center group-hover:scale-110 transition-transform shrink-0">
-                <HelpCircle className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
+              <div className="w-6 h-6 sm:w-8 sm:h-8 rounded-xl bg-white/10 flex items-center justify-center group-hover:scale-110 transition-transform shrink-0">
+                <HelpCircle className="w-3.5 h-3.5 sm:w-5 sm:h-5 text-white" />
               </div>
-              <span className="text-base sm:text-lg font-black tracking-wider leading-none">{t('game.truth')}</span>
-              <span className="text-[9px] sm:text-[10px] font-medium text-truth-100/90 truncate max-w-full leading-tight">
+              <span className="text-sm sm:text-lg font-black tracking-wider leading-none">{t('game.truth')}</span>
+              <span className="text-[8px] sm:text-[10px] font-medium text-truth-100/90 truncate max-w-full leading-tight">
                 {t('game.truthSub')}
               </span>
             </Button>
@@ -110,13 +110,13 @@ export function Card3D({ question, isFlipped, onChooseType, timerSeconds = 0, cl
               variant="dare"
               size="lg"
               onClick={() => onChooseType('dare')}
-              className="w-full flex-col min-h-[76px] sm:min-h-[92px] py-2 sm:py-3 px-2 gap-1 rounded-2xl group hover:-translate-y-0.5 active:scale-95"
+              className="w-full flex-col min-h-[66px] sm:min-h-[84px] py-1.5 sm:py-2.5 px-2 gap-1 rounded-2xl group hover:-translate-y-0.5 active:scale-95"
             >
-              <div className="w-7 h-7 sm:w-9 sm:h-9 rounded-xl bg-white/10 flex items-center justify-center group-hover:scale-110 transition-transform shrink-0">
-                <Flame className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
+              <div className="w-6 h-6 sm:w-8 sm:h-8 rounded-xl bg-white/10 flex items-center justify-center group-hover:scale-110 transition-transform shrink-0">
+                <Flame className="w-3.5 h-3.5 sm:w-5 sm:h-5 text-white" />
               </div>
-              <span className="text-base sm:text-lg font-black tracking-wider leading-none">{t('game.dare')}</span>
-              <span className="text-[9px] sm:text-[10px] font-medium text-dare-100/90 truncate max-w-full leading-tight">
+              <span className="text-sm sm:text-lg font-black tracking-wider leading-none">{t('game.dare')}</span>
+              <span className="text-[8px] sm:text-[10px] font-medium text-dare-100/90 truncate max-w-full leading-tight">
                 {t('game.dareSub')}
               </span>
             </Button>
@@ -129,7 +129,7 @@ export function Card3D({ question, isFlipped, onChooseType, timerSeconds = 0, cl
            ======================================================== */}
         <div
           className={cn(
-            'absolute inset-0 w-full h-full card-face-back rounded-3xl border shadow-elevation-3 flex flex-col p-4 sm:p-6 md:p-8 items-center justify-between text-center',
+            'absolute inset-0 w-full h-full card-face-back rounded-3xl border shadow-elevation-3 flex flex-col p-3.5 sm:p-6 md:p-8 items-center justify-between text-center',
             isDare
               ? 'bg-gradient-to-b from-[#240F1D] via-[#160A13] to-[#0D050B] border-dare-400/40 shadow-glow-dare'
               : 'bg-gradient-to-b from-[#0C1E30] via-[#081320] to-[#040A12] border-truth-400/40 shadow-glow-truth',
@@ -153,7 +153,7 @@ export function Card3D({ question, isFlipped, onChooseType, timerSeconds = 0, cl
           <div className="relative z-10 flex items-center justify-between w-full">
             <span
               className={cn(
-                'px-3 py-1 rounded-full text-[10px] sm:text-xs font-black uppercase tracking-wider border shadow-sm flex items-center gap-1.5',
+                'px-2.5 sm:px-3 py-0.5 sm:py-1 rounded-full text-[10px] sm:text-xs font-black uppercase tracking-wider border shadow-sm flex items-center gap-1.5',
                 isDare
                   ? 'bg-dare-500/20 text-dare-300 border-dare-400/40'
                   : 'bg-truth-500/20 text-truth-300 border-truth-400/40'
@@ -176,7 +176,7 @@ export function Card3D({ question, isFlipped, onChooseType, timerSeconds = 0, cl
             <button
               onClick={handleCopyPrompt}
               aria-label={t('common.copyLink')}
-              className="p-2 rounded-xl bg-white/5 hover:bg-white/10 text-slate-400 hover:text-white transition-colors border border-white/10 active:scale-95"
+              className="p-1.5 sm:p-2 rounded-xl bg-white/5 hover:bg-white/10 text-slate-400 hover:text-white transition-colors border border-white/10 active:scale-95"
               title="Copy challenge text"
             >
               {copied ? (
@@ -188,8 +188,8 @@ export function Card3D({ question, isFlipped, onChooseType, timerSeconds = 0, cl
           </div>
 
           {/* Center Challenge Statement with auto-scroll if long */}
-          <div className="relative z-10 my-auto py-2 px-1 max-w-full max-h-[220px] sm:max-h-[260px] overflow-y-auto custom-scrollbar flex items-center justify-center">
-            <p className="font-display font-bold text-base sm:text-lg md:text-xl text-white leading-relaxed text-center select-text break-words">
+          <div className="relative z-10 my-auto py-1 sm:py-2 px-1 max-w-full max-h-[170px] sm:max-h-[220px] md:max-h-[260px] overflow-y-auto custom-scrollbar flex items-center justify-center">
+            <p className="font-display font-bold text-[clamp(0.95rem,2.8vw+0.15rem,1.35rem)] text-white leading-relaxed text-center select-text break-words">
               {question?.prompt || t('game.revealQuestion')}
             </p>
           </div>
@@ -197,7 +197,7 @@ export function Card3D({ question, isFlipped, onChooseType, timerSeconds = 0, cl
           {/* Bottom Dare Timer Ring (if Dare with Timer) or Safety Pill */}
           <div className="relative z-10 w-full flex items-center justify-center pt-1">
             {isDare && timerSeconds > 0 ? (
-              <DareTimerRing initialSeconds={timerSeconds} />
+              <DareTimerRing initialSeconds={timerSeconds} compact={true} />
             ) : (
               <div className="inline-flex items-center gap-1.5 text-[10px] sm:text-[11px] text-slate-400 bg-white/5 px-2.5 sm:px-3 py-1 rounded-full border border-white/10 max-w-full">
                 <ShieldCheck className="w-3.5 h-3.5 text-emerald-400 shrink-0" />

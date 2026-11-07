@@ -84,3 +84,4 @@ If any phase of the major upgrade encounters catastrophic regression:
 1. **Git Rollback Point:** Checkout branch `asteria-major-upgrade-backup` (`git checkout asteria-major-upgrade-backup`).
 2. **Database Isolation:** All new database tables are additive (`CREATE TABLE IF NOT EXISTS`) and will not drop or alter existing code structures.
 3. **PWA Invalidation:** Bump cache version string from `v1` to `v2` in `public/sw.js` to instantly evict obsolete client assets across all user devices.
+

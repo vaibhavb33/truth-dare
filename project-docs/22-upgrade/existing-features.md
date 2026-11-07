@@ -89,3 +89,4 @@
   - Cooldown of 7 days (`asteria_pwa_last_prompt_at`).
   - Active gameplay protection (never interrupts live rooms or active rounds).
   - Triggers native `beforeinstallprompt` on Chromium and 3-step portaled modal on iOS Safari.
+

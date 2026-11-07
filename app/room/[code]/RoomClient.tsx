@@ -154,7 +154,7 @@ export function RoomClient({ roomCode }: RoomClientProps) {
   }
 
   return (
-    <div className="w-full max-w-4xl mx-auto px-3 sm:px-4 py-4 sm:py-6 md:py-8 space-y-4 sm:space-y-6 flex-1 flex flex-col justify-between">
+    <div className="w-full max-w-4xl lg:max-w-5xl mx-auto px-3 sm:px-4 py-4 sm:py-6 md:py-8 space-y-4 sm:space-y-6 flex-1 flex flex-col justify-between">
       {/* QR Code Modal */}
       {showQrModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-canvas-deep/85 backdrop-blur-md animate-fade-in pt-[max(0.75rem,env(safe-area-inset-top))] pb-[max(0.75rem,env(safe-area-inset-bottom))]">

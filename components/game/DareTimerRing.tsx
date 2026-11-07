@@ -16,7 +16,7 @@ export function DareTimerRing({ initialSeconds = 30, onExpire, className, compac
   const [timeLeft, setTimeLeft] = useState(initialSeconds);
   const [isRunning, setIsRunning] = useState(true);
 
-  const radius = compact ? 26 : 38;
+  const radius = compact ? 26 : 32;
   const circumference = 2 * Math.PI * radius;
   const strokeDashoffset = circumference - (timeLeft / initialSeconds) * circumference;
 
@@ -70,28 +70,28 @@ export function DareTimerRing({ initialSeconds = 30, onExpire, className, compac
     <div
       className={cn(
         'flex items-center justify-center select-none',
-        compact ? 'gap-2.5 px-3 py-1.5 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-sm' : 'flex-col gap-2',
+        compact ? 'gap-2 px-2.5 py-1 rounded-xl bg-white/5 border border-white/10 backdrop-blur-sm' : 'flex-col gap-1.5',
         className
       )}
     >
-      <div className={cn('relative flex items-center justify-center', compact ? 'w-14 h-14' : 'w-24 h-24')}>
-        <svg className="w-full h-full transform -rotate-90" viewBox={compact ? '0 0 64 64' : '0 0 96 96'}>
+      <div className={cn('relative flex items-center justify-center', compact ? 'w-11 h-11 sm:w-13 sm:h-13' : 'w-16 h-16 sm:w-20 sm:h-20')}>
+        <svg className="w-full h-full transform -rotate-90" viewBox={compact ? '0 0 64 64' : '0 0 76 76'}>
           {/* Background Track */}
           <circle
-            cx={compact ? '32' : '48'}
-            cy={compact ? '32' : '48'}
+            cx={compact ? '32' : '38'}
+            cy={compact ? '32' : '38'}
             r={radius}
             stroke="rgba(255, 255, 255, 0.12)"
-            strokeWidth={compact ? '4' : '6'}
+            strokeWidth={compact ? '4' : '5'}
             fill="transparent"
           />
           {/* Animated Progress Indicator */}
           <circle
-            cx={compact ? '32' : '48'}
-            cy={compact ? '32' : '48'}
+            cx={compact ? '32' : '38'}
+            cy={compact ? '32' : '38'}
             r={radius}
             stroke={strokeColor}
-            strokeWidth={compact ? '4' : '6'}
+            strokeWidth={compact ? '4' : '5'}
             strokeDasharray={circumference}
             strokeDashoffset={strokeDashoffset}
             strokeLinecap="round"
@@ -105,14 +105,14 @@ export function DareTimerRing({ initialSeconds = 30, onExpire, className, compac
           <span
             className={cn(
               'font-mono font-bold tracking-tight transition-colors',
-              compact ? 'text-sm' : 'text-2xl tracking-tighter',
+              compact ? 'text-xs sm:text-sm' : 'text-base sm:text-xl tracking-tight',
               isUrgent ? 'text-dare-400 animate-pulse' : 'text-white'
             )}
           >
             {timeLeft}s
           </span>
           {!compact && (
-            <span className="text-[10px] text-slate-400 font-medium uppercase tracking-wider mt-0.5">Dare Time</span>
+            <span className="text-[8px] sm:text-[9px] text-slate-400 font-medium uppercase tracking-wider mt-0.5">Dare</span>
           )}
         </div>
       </div>

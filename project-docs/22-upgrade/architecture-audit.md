@@ -105,3 +105,4 @@ Client components are strictly marked with `'use client'` and organized by domai
    - Custom decks are currently confined to browser `localStorage` (`asteria_custom_deck`). Users cannot share custom decks across devices or send room codes with their custom questions.
 5. **Admin Mutation Persistence:**
    - The `/api/admin/questions` endpoint handles queries and duplicate detection, but does not persist new or modified questions back to PostgreSQL or disk.
+

@@ -107,7 +107,7 @@ export function CustomDeckClient() {
   };
 
   return (
-    <div className="w-full max-w-3xl mx-auto px-3 sm:px-4 py-6 sm:py-8 md:py-12 space-y-6 sm:space-y-8 flex-1">
+    <div className="w-full max-w-3xl lg:max-w-4xl xl:max-w-5xl mx-auto px-3 sm:px-4 md:px-8 py-6 sm:py-8 md:py-12 space-y-6 sm:space-y-8 flex-1">
       <div className="space-y-2 text-center md:text-left px-1">
         <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-brand-500/10 border border-brand-500/20 text-xs font-bold uppercase tracking-wider text-brand-300">
           <Sparkles className="w-3.5 h-3.5 text-brand-400" />

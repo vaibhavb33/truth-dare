@@ -86,17 +86,17 @@ export function LanguageModal({ isOpen, onClose }: LanguageModalProps) {
         ref={modalRef}
         onClick={(e) => e.stopPropagation()}
         className={cn(
-          'relative w-full max-w-[520px] max-h-[calc(100dvh-32px)] sm:max-h-[85vh] rounded-3xl bg-[#0F0F23] border border-white/15 shadow-[0_24px_64px_rgba(0,0,0,0.95)] flex flex-col overflow-hidden animate-in zoom-in-95 duration-200',
+          'relative w-full max-w-[520px] max-h-[min(88dvh,600px)] rounded-3xl bg-[#0F0F23] border border-white/15 shadow-[0_24px_64px_rgba(0,0,0,0.95)] flex flex-col overflow-hidden animate-in zoom-in-95 duration-200',
           isRTL ? 'text-right' : 'text-left'
         )}
       >
         {/* Sticky Header */}
         <div className="sticky top-0 z-10 px-4 sm:px-6 py-3.5 sm:py-4 bg-[#0F0F23]/98 backdrop-blur-xl border-b border-white/10 flex items-center justify-between shrink-0">
-          <div className="flex items-center gap-3 min-w-0">
+          <div className="flex items-center gap-3 min-w-0 flex-1 pr-2">
             <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-brand-500/20 border border-brand-500/30 flex items-center justify-center text-brand-400 shrink-0">
               <Globe className="w-5 h-5" />
             </div>
-            <div className="min-w-0">
+            <div className="min-w-0 flex-1">
               <h2
                 id="language-modal-title"
                 className="font-display font-extrabold text-base sm:text-lg text-white tracking-tight flex items-center gap-1.5 truncate"
@@ -127,10 +127,12 @@ export function LanguageModal({ isOpen, onClose }: LanguageModalProps) {
 
         {/* Scrollable Language Grid */}
         <div className="flex-1 overflow-y-auto p-3 sm:p-5 custom-scrollbar space-y-3">
-          <div className="grid grid-cols-1 xs:grid-cols-2 gap-2 sm:gap-2.5">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-3">
             {ALL_LOCALES.map((code) => {
               const item = SUPPORTED_LOCALES[code];
               const isSelected = item.code === locale;
+              const isHindi = item.code === 'hi';
+              const isArabic = item.code === 'ar';
 
               return (
                 <button
@@ -147,20 +149,25 @@ export function LanguageModal({ isOpen, onClose }: LanguageModalProps) {
                       : 'bg-[#14142B]/80 hover:bg-[#1C1C3B] border-white/10 hover:border-brand-500/40 text-slate-300 hover:text-white'
                   )}
                 >
-                  {/* Left: Flag & Stact-Aligned Names */}
-                  <div className="flex items-center gap-3 min-w-0 pr-2">
+                  {/* Left: Flag & Stack-Aligned Names */}
+                  <div className="flex items-center gap-3 min-w-0 pr-2 flex-1">
                     <span className="text-2xl sm:text-3xl select-none shrink-0 w-8 text-center" aria-hidden="true">
                       {item.flag}
                     </span>
 
-                    <div className="flex flex-col min-w-0 truncate">
+                    <div className="flex flex-col min-w-0 flex-1">
                       <span className="text-xs sm:text-sm font-bold tracking-tight text-white truncate leading-tight">
                         {item.name}
                       </span>
-                      <span className="text-[11px] sm:text-xs font-semibold text-brand-300 truncate leading-tight mt-0.5">
+                      <span
+                        className={cn(
+                          'text-[11px] sm:text-xs font-semibold text-brand-300 truncate mt-0.5 leading-relaxed',
+                          isHindi ? 'font-hindi' : isArabic ? 'font-arabic' : ''
+                        )}
+                      >
                         {item.nativeName}
                       </span>
-                      <div className="flex items-center gap-1.5 mt-1">
+                      <div className="flex items-center gap-1.5 mt-0.5">
                         <span className="text-[9px] font-mono uppercase tracking-wider font-semibold text-slate-400">
                           {item.code}
                         </span>
@@ -174,7 +181,7 @@ export function LanguageModal({ isOpen, onClose }: LanguageModalProps) {
                   </div>
 
                   {/* Right: Active Checkmark Indicator */}
-                  <div className="shrink-0 flex items-center justify-center">
+                  <div className="shrink-0 flex items-center justify-center ml-2">
                     {isSelected ? (
                       <div className="w-6 h-6 rounded-full bg-brand-500 flex items-center justify-center text-white shadow-glow-brand ring-2 ring-brand-300/40">
                         <Check className="w-3.5 h-3.5 stroke-[3]" />

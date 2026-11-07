@@ -1,17 +1,39 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { Sparkles, Heart } from 'lucide-react';
 import { useTranslation } from '@/lib/i18n/LanguageContext';
 import { LanguageSelector } from '@/components/i18n/LanguageSelector';
 import { PWAInstallButton } from '@/components/pwa/PWAInstallButton';
+import { isGameplayActive, subscribeGameplayActive } from '@/lib/gameplay/gameplayState';
 
 export function AppFooter() {
   const { t } = useTranslation();
+  const pathname = usePathname() || '';
+  const [gameplayActive, setGameplayActiveState] = useState(false);
+
+  useEffect(() => {
+    setGameplayActiveState(isGameplayActive());
+    const unsubscribe = subscribeGameplayActive((active) => {
+      setGameplayActiveState(active);
+    });
+    return unsubscribe;
+  }, [pathname]);
+
+  // Hide footer completely on active gameplay sessions or multiplayer rooms
+  if (gameplayActive || pathname.includes('/room/')) {
+    return null;
+  }
+
+  // On individual game routes (like /games/truth-or-dare), hide footer on mobile (< md)
+  // to preserve an app-like full-canvas experience without dock/footer clipping
+  const isGameRoute = pathname.startsWith('/games/') && pathname !== '/games';
+  const mobileVisibilityClass = isGameRoute ? 'hidden md:block' : '';
 
   return (
-    <footer className="w-full bg-canvas-deep border-t border-white/10 pt-12 pb-[calc(5.5rem+env(safe-area-inset-bottom,0px))] lg:pb-16 px-4 md:px-8 text-slate-400 text-sm">
+    <footer className={`w-full bg-canvas-deep border-t border-white/10 pt-12 pb-[calc(5.5rem+env(safe-area-inset-bottom,0px))] lg:pb-16 px-4 md:px-8 text-slate-400 text-sm ${mobileVisibilityClass}`}>
       <div className="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-8 mb-12">
         {/* Col 1: Brand Info */}
         <div className="space-y-4 sm:col-span-2 md:col-span-1">
