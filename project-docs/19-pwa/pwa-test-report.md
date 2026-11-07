@@ -111,3 +111,4 @@ The following automated high-resolution screenshots were captured during the tes
 
 - **Next.js Production Build:** `79 / 79` routes compiled and prerendered cleanly.
 - **Vitest Unit Test Suite:** `42 / 42` tests passed (8 test files across question engines, room synchronization, multilingual translation, security, and SEO schemas).
+

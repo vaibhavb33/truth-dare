@@ -10,12 +10,26 @@ interface IOSInstallModalProps {
   onClose: () => void;
 }
 
-export function IOSInstallModal({ isOpen, onClose }: IOSInstallModalProps) {
+export function IOSInstallModal({ isOpen: controlledIsOpen, onClose }: IOSInstallModalProps) {
   const [mounted, setMounted] = useState(false);
+  const [internalOpen, setInternalOpen] = useState(false);
 
   useEffect(() => {
     setMounted(true);
+
+    const handleOpen = () => setInternalOpen(true);
+    window.addEventListener('asteria:open_ios_install', handleOpen);
+    return () => {
+      window.removeEventListener('asteria:open_ios_install', handleOpen);
+    };
   }, []);
+
+  const isOpen = controlledIsOpen || internalOpen;
+
+  const handleClose = () => {
+    setInternalOpen(false);
+    onClose();
+  };
 
   // Lock body scroll when modal is active
   useEffect(() => {
@@ -24,7 +38,7 @@ export function IOSInstallModal({ isOpen, onClose }: IOSInstallModalProps) {
     document.body.style.overflow = 'hidden';
 
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose();
+      if (e.key === 'Escape') handleClose();
     };
     window.addEventListener('keydown', handleKeyDown);
 
@@ -32,7 +46,7 @@ export function IOSInstallModal({ isOpen, onClose }: IOSInstallModalProps) {
       document.body.style.overflow = originalOverflow;
       window.removeEventListener('keydown', handleKeyDown);
     };
-  }, [isOpen, onClose]);
+  }, [isOpen]);
 
   if (!isOpen || !mounted) return null;
 
@@ -46,7 +60,7 @@ export function IOSInstallModal({ isOpen, onClose }: IOSInstallModalProps) {
       <div className="relative w-full max-w-sm sm:max-w-md p-6 rounded-3xl bg-surface-elevated border border-brand-500/30 shadow-elevation-3 text-center space-y-5 max-h-[calc(100dvh-2rem)] overflow-y-auto custom-scrollbar">
         {/* Close Button */}
         <button
-          onClick={onClose}
+          onClick={handleClose}
           aria-label="Close Install Instructions"
           className="absolute top-4 right-4 p-2 rounded-full text-slate-400 hover:text-white hover:bg-white/5 transition-colors"
         >
@@ -125,7 +139,7 @@ export function IOSInstallModal({ isOpen, onClose }: IOSInstallModalProps) {
         <Button
           variant="primary"
           size="lg"
-          onClick={onClose}
+          onClick={handleClose}
           className="w-full font-bold min-h-[48px]"
         >
           Got It, Thanks!

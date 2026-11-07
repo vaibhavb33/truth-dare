@@ -3,6 +3,7 @@
 import React, { useEffect } from 'react';
 import { usePWA } from '@/lib/pwa/usePWA';
 import { IOSInstallModal } from './IOSInstallModal';
+import { PWAPromotionModal } from './PWAPromotionModal';
 
 export function PWARegistration() {
   const { showIOSPrompt, setShowIOSPrompt } = usePWA();
@@ -63,6 +64,7 @@ export function PWARegistration() {
   return (
     <>
       <IOSInstallModal isOpen={showIOSPrompt} onClose={() => setShowIOSPrompt(false)} />
+      <PWAPromotionModal />
     </>
   );
 }

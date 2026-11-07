@@ -2,9 +2,9 @@
 
 **Project Name:** Project Asteria (Working Title: Truth & Dare Premium)  
 **Role:** CTO & Project Director  
-**Last Updated:** November 6, 2026  
-**Current Phase:** Phase 10 — Mobile Optimization & Responsive Repair Complete  
-**Overall Project Health:** 🟢 GREEN (All 10 Phases Complete | 11/11 Viewports Tested Clean | 29/29 Tests Passing | 27/27 Routes Compiled | 0 Open Bugs | GO Decision)
+**Last Updated:** November 7, 2026  
+**Current Phase:** Task 5 — Recurring Add to Home Screen PWA Promotion Complete  
+**Overall Project Health:** 🟢 GREEN (PWA & Offline Pass-and-Play Complete | 7-Day Recurring Promotion Live | 42/42 Vitest Tests Passing | 13/13 PWA Promotion Tests Passing | 79/79 Routes Prerendered | 0 Open Bugs | GO Decision)
 
 ---
 
@@ -77,3 +77,5 @@ Automated test coverage stands at 29/29 passing unit tests across 6 test suites,
 - [07. Quality Assurance & Testing Reports](project-docs/07-testing/README.md)
 - [08. Production Deployment & DevOps Runbook](project-docs/08-deployment/README.md)
 - [09. Mobile UI Optimization & Responsive Audit](project-docs/09-mobile-optimization/mobile-ui-audit.md)
+- [19. Progressive Web App (PWA) Architecture & Audit](project-docs/19-pwa/pwa-architecture.md)
+- [20. Recurring Add to Home Screen PWA Promotion](project-docs/20-pwa-weekly-promotion/promotion-feature-spec.md)

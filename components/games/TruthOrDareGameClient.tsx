@@ -26,6 +26,7 @@ import { questionEngine } from '@/lib/questions/engine';
 import { Question, CategoryId, Player } from '@/types';
 import { useTranslation } from '@/lib/i18n/LanguageContext';
 import { LanguageSelector } from '@/components/i18n/LanguageSelector';
+import { setGameplayActive } from '@/lib/gameplay/gameplayState';
 
 function TruthOrDareInner() {
   const searchParams = useSearchParams();
@@ -34,6 +35,13 @@ function TruthOrDareInner() {
 
   // Game Setup States
   const [isPlaying, setIsPlaying] = useState(false);
+
+  useEffect(() => {
+    setGameplayActive(isPlaying);
+    return () => {
+      setGameplayActive(false);
+    };
+  }, [isPlaying]);
   const [selectedCategory, setSelectedCategory] = useState<CategoryId>(initialCategory);
   const [timerSeconds, setTimerSeconds] = useState<number>(30);
   const [players, setPlayers] = useState<Player[]>([

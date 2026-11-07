@@ -102,9 +102,8 @@ export function NeverHaveIEverClient() {
           {Array.from({ length: 10 }).map((_, i) => (
             <Heart
               key={i}
-              className={`w-5 h-5 sm:w-6 sm:h-6 shrink-0 transition-all ${
-                i < lives ? 'text-rose-500 fill-rose-500 scale-100' : 'text-slate-700 scale-75'
-              }`}
+              className={`w-5 h-5 sm:w-6 sm:h-6 shrink-0 transition-all ${i < lives ? 'text-rose-500 fill-rose-500 scale-100' : 'text-slate-700 scale-75'
+                }`}
             />
           ))}
         </div>

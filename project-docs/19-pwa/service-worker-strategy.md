@@ -136,3 +136,4 @@ The offline screen (`app/offline/page.tsx`) satisfies all user requirements:
   > *"Online multiplayer rooms and live synchronized screens require internet access. You can still play Pass & Play mode locally with friends or browse questions on your device."*
 - **Interactive Recovery CTA:** Includes a `"Try Reconnecting"` button that evaluates `window.navigator.onLine` and reloads.
 - **Direct Local Play Shortcuts:** Links to `/games/truth-or-dare` (Pass & Play) and `/questions` (offline question library).
+

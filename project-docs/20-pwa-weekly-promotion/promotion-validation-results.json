@@ -1,0 +1,15 @@
+{
+  "firstTimeVisitorAppearance": true,
+  "timestampPersistedOnAppear": true,
+  "maybeLaterSevenDayCooldown": true,
+  "closeButtonSevenDayCooldown": true,
+  "withinSevenDaysSuppression": true,
+  "sevenDayExpirationReappearance": true,
+  "installedApplicationSuppression": true,
+  "activeGameplaySuppression": true,
+  "androidNativeInstallTrigger": true,
+  "iosSafariGuidanceTrigger": true,
+  "multilingualAllEightLanguages": true,
+  "arabicRTLSupport": true,
+  "storageUnavailableResilience": true
+}

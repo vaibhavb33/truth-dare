@@ -148,3 +148,4 @@ sequenceDiagram
         SW-->>Browser: 200 OK (Asteria Offline Screen)
     end
 ```
+

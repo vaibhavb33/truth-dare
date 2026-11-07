@@ -112,3 +112,4 @@ The manifest and corresponding metadata are linked in `app/layout.tsx`:
 <!-- Browser Chrome & Theming -->
 <meta name="theme-color" content="#0A0A16" />
 ```
+

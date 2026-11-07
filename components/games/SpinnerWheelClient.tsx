@@ -6,6 +6,7 @@ import { ArrowLeft, Disc, Plus, X, Trophy, Sparkles, RefreshCw } from 'lucide-re
 import { Button } from '@/components/ui/Button';
 import { sound } from '@/lib/audio/soundSynthesizer';
 import { triggerConfetti } from '@/components/game/ConfettiCelebration';
+import { setGameplayActive } from '@/lib/gameplay/gameplayState';
 
 const PRESETS = {
   classic: {
@@ -37,6 +38,13 @@ export function SpinnerWheelClient() {
   const [isSpinning, setIsSpinning] = useState(false);
   const [winner, setWinner] = useState<string | null>(null);
   const rotationRef = useRef<number>(0);
+
+  useEffect(() => {
+    setGameplayActive(isSpinning);
+    return () => {
+      setGameplayActive(false);
+    };
+  }, [isSpinning]);
 
   const colors = [
     '#8B5CF6', '#06B6D4', '#FF5C77', '#10B981',

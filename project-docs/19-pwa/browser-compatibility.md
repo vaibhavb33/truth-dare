@@ -70,3 +70,4 @@ In `app/layout.tsx`:
 | **Android Chrome** | Up to 60% of free storage | Least-Recently-Used (LRU) under disk pressure | Negligible; Asteria cache bundle is < 3 MB |
 | **iOS Safari** | ~50 MB default partition | 7-day eviction if unused in regular browser; **retained indefinitely** once installed to Home Screen | Installing to Home Screen protects player's offline question cache from 7-day safari purge |
 | **Desktop Chrome** | Gigabytes available | Extremely persistent | Zero eviction risk |
+
