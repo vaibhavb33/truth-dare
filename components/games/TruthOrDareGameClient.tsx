@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useTransition, Suspense } from 'react';
 import Link from 'next/link';
-import { useSearchParams } from 'next/navigation';
+import { useSearchParams, useRouter } from 'next/navigation';
 import {
   Flame,
   HelpCircle,
@@ -30,12 +30,62 @@ import { LanguageSelector } from '@/components/i18n/LanguageSelector';
 import { setGameplayActive } from '@/lib/gameplay/gameplayState';
 
 function TruthOrDareInner() {
+  const router = useRouter();
   const searchParams = useSearchParams();
   const initialCategory = (searchParams.get('category') as CategoryId) || 'classic-party';
+  const shouldCreateRoom = searchParams.get('createRoom') === 'true';
   const { t, locale, isRTL } = useTranslation();
 
   // Game Setup States
   const [isPlaying, setIsPlaying] = useState(false);
+  const [isHostingRoom, setIsHostingRoom] = useState(false);
+
+  // Host Online Multiplayer Room handler
+  const handleHostMultiplayer = async () => {
+    setIsHostingRoom(true);
+    sound.triggerHaptic(15);
+    try {
+      const res = await fetch('/api/rooms/create', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          gameId: 'truth-or-dare',
+          categoryId: selectedCategory,
+          hostName: players[0]?.name || 'Host',
+          language: locale,
+          timerSeconds,
+        }),
+      });
+      const data = await res.json();
+      if (data.success && data.roomCode) {
+        if (typeof window !== 'undefined') {
+          localStorage.setItem(
+            `asteria_multiplayer_session_${data.roomCode}`,
+            JSON.stringify({
+              roomId: data.roomId,
+              roomCode: data.roomCode,
+              playerId: data.hostPlayerId,
+              sessionToken: data.sessionToken,
+              playerName: players[0]?.name || 'Host',
+            })
+          );
+        }
+        sound.playChime();
+        router.push(`/room/${data.roomCode}`);
+      } else {
+        setIsHostingRoom(false);
+      }
+    } catch {
+      setIsHostingRoom(false);
+    }
+  };
+
+  // If page was loaded directly with ?createRoom=true in URL, trigger room creation
+  useEffect(() => {
+    if (shouldCreateRoom && !isHostingRoom) {
+      handleHostMultiplayer();
+    }
+  }, [shouldCreateRoom]);
 
   useEffect(() => {
     setGameplayActive(isPlaying);
@@ -383,9 +433,27 @@ function TruthOrDareInner() {
           </div>
 
           {/* Start CTA */}
-          <Button variant="primary" size="xl" onClick={handleStartGame} className="w-full text-lg font-bold">
-            {t('game.launchGame')} →
-          </Button>
+          <div className="space-y-3 pt-1">
+            <Button variant="primary" size="xl" onClick={handleStartGame} className="w-full text-lg font-bold">
+              {t('game.launchGame')} →
+            </Button>
+
+            <div className="relative flex py-1 items-center">
+              <div className="flex-grow border-t border-white/10"></div>
+              <span className="flex-shrink mx-4 text-xs text-slate-500 uppercase tracking-wider">or play with remote friends</span>
+              <div className="flex-grow border-t border-white/10"></div>
+            </div>
+
+            <Button
+              variant="secondary"
+              size="lg"
+              onClick={handleHostMultiplayer}
+              disabled={isHostingRoom}
+              className="w-full font-bold"
+            >
+              {isHostingRoom ? 'Creating Room...' : '🌐 Host Online Party Room →'}
+            </Button>
+          </div>
         </div>
       ) : (
         /* =========================================================

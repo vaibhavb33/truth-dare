@@ -9,7 +9,7 @@ export async function POST(request: NextRequest) {
 
     if (!rateCheck.allowed) {
       return NextResponse.json(
-        { success: false, error: 'Too many requests. Please slow down.' },
+        { success: false, code: 'PERMISSION_DENIED', error: 'Too many requests. Please slow down.' },
         { status: 429 }
       );
     }
@@ -30,7 +30,11 @@ export async function POST(request: NextRequest) {
     });
 
     if (!result.success) {
-      return NextResponse.json({ success: false, error: result.error }, { status: 400 });
+      const httpStatus = result.code === 'PERMISSION_DENIED' ? 403 : result.code === 'ROOM_NOT_FOUND' ? 404 : 400;
+      return NextResponse.json(
+        { success: false, code: result.code, error: result.error },
+        { status: httpStatus }
+      );
     }
 
     return NextResponse.json({
@@ -41,4 +45,3 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ success: false, error: 'Failed to dispatch action.' }, { status: 400 });
   }
 }
-

@@ -6,15 +6,22 @@ export async function GET(
   { params }: { params: Promise<{ code: string }> }
 ) {
   const { code } = await params;
-  const room = roomEngine.getRoom(code);
+  const lookup = roomEngine.getRoomWithStatus(code);
 
-  if (!room) {
-    return NextResponse.json({ success: false, error: 'Room not found or expired.' }, { status: 404 });
+  if (!lookup.room) {
+    const status = lookup.code === 'ROOM_EXPIRED' || lookup.code === 'ROOM_CLOSED' ? 410 : 404;
+    return NextResponse.json(
+      {
+        success: false,
+        code: lookup.code || 'ROOM_NOT_FOUND',
+        error: lookup.error || 'Room not found. Please verify the 6-character room code.',
+      },
+      { status }
+    );
   }
 
   return NextResponse.json({
     success: true,
-    room,
+    room: lookup.room,
   });
 }
-

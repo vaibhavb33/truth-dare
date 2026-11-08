@@ -6,11 +6,11 @@ import { GameType, CategoryId } from '@/types';
 export async function POST(request: NextRequest) {
   try {
     const ip = request.headers.get('x-forwarded-for')?.split(',')[0].trim() || 'local-room-client';
-    const rateCheck = rateLimiter.check(`create-room:${ip}`, 20, 60 * 1000); // 20 rooms per minute max
+    const rateCheck = rateLimiter.check(`create-room:${ip}`, 30, 60 * 1000); // 30 rooms per minute max
 
     if (!rateCheck.allowed) {
       return NextResponse.json(
-        { success: false, error: 'Too many room creations. Please slow down.' },
+        { success: false, code: 'PERMISSION_DENIED', error: 'Too many room creations. Please slow down.' },
         { status: 429 }
       );
     }
@@ -24,9 +24,10 @@ export async function POST(request: NextRequest) {
       language = 'en',
       maxPlayers = 12,
       customDeckSnapshot = null,
+      clientRequestId,
     } = body;
 
-    const { room, hostPlayerId, sessionToken } = roomEngine.createRoom({
+    const { room, hostPlayerId, sessionToken, roomId, roomCode } = roomEngine.createRoom({
       gameId: gameId as GameType,
       categoryId: categoryId as CategoryId,
       hostName,
@@ -34,11 +35,13 @@ export async function POST(request: NextRequest) {
       language,
       maxPlayers: Number(maxPlayers),
       customDeckSnapshot,
+      clientRequestId,
     });
 
     return NextResponse.json({
       success: true,
-      roomCode: room.roomCode,
+      roomId,
+      roomCode,
       hostPlayerId,
       sessionToken,
       room,

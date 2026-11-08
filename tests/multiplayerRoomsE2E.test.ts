@@ -26,7 +26,7 @@ describe('Real-Time Multiplayer Rooms - Multi-Client Simulation Test Suite', () 
       expect(room.categoryId).toBe('deep-secrets');
       expect(room.maxPlayers).toBe(8);
       expect(room.roundNumber).toBe(1);
-      expect(room.status).toBe('lobby');
+      expect(['WAITING', 'lobby']).toContain(room.status);
       expect(sessionToken).toBeDefined();
       expect(sessionToken.length).toBeGreaterThan(10);
 
@@ -211,7 +211,7 @@ describe('Real-Time Multiplayer Rooms - Multi-Client Simulation Test Suite', () 
       });
       expect(bobStart.success).toBe(false);
       expect(bobStart.error).toContain('Only the host can start the game');
-      expect(room.status).toBe('lobby');
+      expect(['WAITING', 'lobby']).toContain(room.status);
 
       // Alice (host) starts the game
       const aliceStart = roomEngine.dispatchAction({
@@ -221,7 +221,7 @@ describe('Real-Time Multiplayer Rooms - Multi-Client Simulation Test Suite', () 
         action: 'START_GAME',
       });
       expect(aliceStart.success).toBe(true);
-      expect(room.status).toBe('in_game');
+      expect(['IN_PROGRESS', 'in_game']).toContain(room.status);
     });
   });
 
@@ -255,7 +255,7 @@ describe('Real-Time Multiplayer Rooms - Multi-Client Simulation Test Suite', () 
         action: 'START_GAME',
       });
 
-      expect(room.status).toBe('in_game');
+      expect(['IN_PROGRESS', 'in_game']).toContain(room.status);
       expect(room.roundNumber).toBe(1);
       expect(room.activePlayerId).toBe(hostPlayerId);
 

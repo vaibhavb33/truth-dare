@@ -18,10 +18,14 @@ import {
   Heart,
   QrCode,
   Share2,
+  X,
+  Globe,
+  RefreshCw,
 } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { sound } from '@/lib/audio/soundSynthesizer';
 import { useTranslation } from '@/lib/i18n/LanguageContext';
+import { ALL_LOCALES, SUPPORTED_LOCALES, Locale } from '@/lib/i18n/config';
 
 export function HomeClientContent() {
   const router = useRouter();
@@ -29,6 +33,62 @@ export function HomeClientContent() {
   const [roomCodeInput, setRoomCodeInput] = useState('');
   const [joinError, setJoinError] = useState('');
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(null);
+
+  // Host Create Room Modal State
+  const [showCreateModal, setShowCreateModal] = useState(false);
+  const [hostName, setHostName] = useState('Host');
+  const [selectedLanguage, setSelectedLanguage] = useState<string>('en');
+  const [selectedCategory, setSelectedCategory] = useState<string>('classic-party');
+  const [maxPlayers, setMaxPlayers] = useState<number>(12);
+  const [isCreatingRoom, setIsCreatingRoom] = useState(false);
+  const [createError, setCreateError] = useState('');
+
+  const handleCreateRoom = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsCreatingRoom(true);
+    setCreateError('');
+    sound.triggerHaptic(15);
+
+    try {
+      const res = await fetch('/api/rooms/create', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          gameId: 'truth-or-dare',
+          categoryId: selectedCategory,
+          hostName: hostName.trim() || 'Host',
+          language: selectedLanguage,
+          maxPlayers,
+          clientRequestId: `req-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
+        }),
+      });
+
+      const data = await res.json();
+      if (data.success && data.roomCode) {
+        if (typeof window !== 'undefined') {
+          localStorage.setItem(
+            `asteria_multiplayer_session_${data.roomCode}`,
+            JSON.stringify({
+              roomId: data.roomId,
+              roomCode: data.roomCode,
+              playerId: data.hostPlayerId,
+              sessionToken: data.sessionToken,
+              playerName: hostName.trim() || 'Host',
+            })
+          );
+        }
+        sound.playChime();
+        setShowCreateModal(false);
+        router.push(`/room/${data.roomCode}`);
+      } else {
+        setCreateError(data.error || 'Failed to create room.');
+        setIsCreatingRoom(false);
+      }
+    } catch {
+      setCreateError('Network error while establishing room. Please try again.');
+      setIsCreatingRoom(false);
+    }
+  };
 
   const handleJoinRoom = (e: React.FormEvent) => {
     e.preventDefault();
@@ -327,13 +387,161 @@ export function HomeClientContent() {
               <div className="flex-grow border-t border-white/10"></div>
             </div>
 
-            <Link href="/games/truth-or-dare?createRoom=true">
-              <Button variant="secondary" size="md" className="w-full">
-                {t('home.createRoomPrompt')}
-              </Button>
-            </Link>
+            <Button
+              variant="secondary"
+              size="md"
+              className="w-full"
+              onClick={() => {
+                sound.triggerHaptic(15);
+                setShowCreateModal(true);
+              }}
+            >
+              {t('home.createRoomPrompt')}
+            </Button>
           </div>
         </div>
+
+        {/* CREATE ROOM MODAL */}
+        {showCreateModal && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-canvas-deep/85 backdrop-blur-md animate-fade-in pt-[max(0.75rem,env(safe-area-inset-top))] pb-[max(0.75rem,env(safe-area-inset-bottom))]">
+            <div className="w-full max-w-md p-5 sm:p-6 rounded-3xl bg-surface-elevated border border-white/10 space-y-4 text-left max-h-[calc(100dvh-2rem)] overflow-y-auto custom-scrollbar shadow-elevation-2">
+              <div className="flex items-center justify-between border-b border-white/10 pb-3">
+                <div className="flex items-center gap-2">
+                  <div className="w-8 h-8 rounded-xl bg-brand-500/20 text-brand-400 flex items-center justify-center font-bold text-sm">
+                    👑
+                  </div>
+                  <h3 className="font-display font-bold text-lg text-white">Host Multiplayer Party</h3>
+                </div>
+                <button
+                  onClick={() => setShowCreateModal(false)}
+                  className="text-slate-400 hover:text-white p-1"
+                  aria-label="Close"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+
+              {createError && (
+                <div className="p-3 rounded-xl bg-rose-500/20 border border-rose-400/40 text-rose-300 text-xs font-semibold">
+                  {createError}
+                </div>
+              )}
+
+              <form onSubmit={handleCreateRoom} className="space-y-4">
+                {/* Host Nickname */}
+                <div className="space-y-1.5">
+                  <label className="text-xs font-bold uppercase tracking-wider text-slate-300">
+                    Your Host Name:
+                  </label>
+                  <input
+                    type="text"
+                    value={hostName}
+                    onChange={(e) => setHostName(e.target.value)}
+                    maxLength={25}
+                    required
+                    placeholder="e.g. PartyCaptain"
+                    className="w-full h-11 px-4 rounded-xl bg-canvas-base border border-white/10 text-white font-bold placeholder:text-slate-500 focus:outline-none focus:border-brand-400"
+                  />
+                </div>
+
+                {/* Question Language */}
+                <div className="space-y-1.5">
+                  <label className="text-xs font-bold uppercase tracking-wider text-slate-300">
+                    Game Language:
+                  </label>
+                  <div className="grid grid-cols-2 gap-2">
+                    {ALL_LOCALES.map((loc) => {
+                      const meta = SUPPORTED_LOCALES[loc];
+                      const isSelected = selectedLanguage === loc;
+                      return (
+                        <button
+                          type="button"
+                          key={loc}
+                          onClick={() => setSelectedLanguage(loc)}
+                          className={`p-2 rounded-xl border text-xs font-semibold flex items-center gap-2 transition-all ${
+                            isSelected
+                              ? 'bg-brand-500/20 border-brand-400 text-white shadow-glow-brand'
+                              : 'bg-surface-highlight border-white/5 text-slate-300 hover:text-white'
+                          }`}
+                        >
+                          <span className="text-base">{meta.flag}</span>
+                          <span className="truncate">{meta.nativeName}</span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {/* Category Deck */}
+                <div className="space-y-1.5">
+                  <label className="text-xs font-bold uppercase tracking-wider text-slate-300">
+                    Starting Deck Category:
+                  </label>
+                  <div className="grid grid-cols-2 gap-2">
+                    {categories.map((cat) => {
+                      const isSelected = selectedCategory === cat.id;
+                      return (
+                        <button
+                          type="button"
+                          key={cat.id}
+                          onClick={() => setSelectedCategory(cat.id)}
+                          className={`p-2 rounded-xl border text-xs font-semibold flex items-center gap-2 transition-all ${
+                            isSelected
+                              ? 'bg-brand-500/20 border-brand-400 text-white shadow-glow-brand'
+                              : 'bg-surface-highlight border-white/5 text-slate-300 hover:text-white'
+                          }`}
+                        >
+                          <span className="text-base">{cat.icon}</span>
+                          <span className="truncate">{cat.name}</span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {/* Capacity */}
+                <div className="space-y-1.5">
+                  <label className="text-xs font-bold uppercase tracking-wider text-slate-300">
+                    Player Capacity:
+                  </label>
+                  <div className="grid grid-cols-4 gap-2">
+                    {[4, 8, 12, 20].map((cap) => (
+                      <button
+                        type="button"
+                        key={cap}
+                        onClick={() => setMaxPlayers(cap)}
+                        className={`py-1.5 rounded-xl border text-xs font-bold transition-all ${
+                          maxPlayers === cap
+                            ? 'bg-brand-500 text-white border-brand-400'
+                            : 'bg-surface-highlight border-white/5 text-slate-400 hover:text-white'
+                        }`}
+                      >
+                        {cap} Max
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <Button
+                  type="submit"
+                  variant="primary"
+                  size="lg"
+                  disabled={isCreatingRoom}
+                  className="w-full font-bold min-h-[48px]"
+                >
+                  {isCreatingRoom ? (
+                    <span className="flex items-center gap-2">
+                      <RefreshCw className="w-4 h-4 animate-spin" />
+                      Creating Private Room...
+                    </span>
+                  ) : (
+                    'Create Party Room →'
+                  )}
+                </Button>
+              </form>
+            </div>
+          </div>
+        )}
       </section>
 
       {/* SECTION 5: HOW TO PLAY IN 3 STEPS */}

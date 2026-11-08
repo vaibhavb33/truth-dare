@@ -9,7 +9,7 @@ export async function POST(request: NextRequest) {
 
     if (!rateCheck.allowed) {
       return NextResponse.json(
-        { success: false, error: 'Too many reconnect attempts. Please slow down.' },
+        { success: false, code: 'PERMISSION_DENIED', error: 'Too many reconnect attempts. Please slow down.' },
         { status: 429 }
       );
     }
@@ -19,7 +19,7 @@ export async function POST(request: NextRequest) {
 
     if (!roomCode || !playerId || !sessionToken) {
       return NextResponse.json(
-        { success: false, error: 'Missing reconnection credentials.' },
+        { success: false, code: 'INVALID_ROOM_CODE', error: 'Missing reconnection credentials.' },
         { status: 400 }
       );
     }
@@ -31,18 +31,31 @@ export async function POST(request: NextRequest) {
     });
 
     if (!result.success) {
-      return NextResponse.json({ success: false, error: result.error }, { status: 400 });
+      const httpStatus =
+        result.code === 'ROOM_NOT_FOUND'
+          ? 404
+          : result.code === 'ROOM_EXPIRED'
+          ? 410
+          : 400;
+
+      return NextResponse.json(
+        { success: false, code: result.code, error: result.error },
+        { status: httpStatus }
+      );
     }
 
     return NextResponse.json({
       success: true,
+      roomId: result.room?.id,
       roomCode: result.room?.roomCode,
       playerId: result.player?.id,
       player: result.player,
       room: result.room,
     });
   } catch {
-    return NextResponse.json({ success: false, error: 'Failed to reconnect.' }, { status: 400 });
+    return NextResponse.json(
+      { success: false, code: 'NETWORK_UNAVAILABLE', error: 'Failed to reconnect.' },
+      { status: 400 }
+    );
   }
 }
-

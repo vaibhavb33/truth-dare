@@ -108,13 +108,35 @@ export interface GameSessionState {
   settings: GameSettings;
 }
 
+export type RoomLifecycleStatus =
+  | 'CREATING'
+  | 'WAITING'
+  | 'IN_PROGRESS'
+  | 'COMPLETED'
+  | 'EXPIRED'
+  | 'CANCELLED'
+  | 'lobby'
+  | 'in_game'
+  | 'finished';
+
+export type RoomErrorCode =
+  | 'ROOM_NOT_FOUND'
+  | 'ROOM_EXPIRED'
+  | 'ROOM_FULL'
+  | 'ROOM_CLOSED'
+  | 'INVALID_ROOM_CODE'
+  | 'NETWORK_UNAVAILABLE'
+  | 'PERMISSION_DENIED';
+
 export interface MultiplayerRoom {
-  roomCode: string;
+  id: string; // Canonical UUID
+  roomCode: string; // 6-character uppercase alphanumeric code
   gameId: GameType;
   categoryId: CategoryId;
   hostPlayerId: string;
-  status: 'lobby' | 'in_game' | 'finished';
+  status: RoomLifecycleStatus;
   players: Player[];
+  playerCount?: number;
   activePlayerId: string;
   currentCard: Question | null;
   isCardFlipped: boolean;
@@ -131,8 +153,11 @@ export interface MultiplayerRoom {
     language: SupportedLanguageCode;
     questions: CustomQuestion[];
   } | null;
-  createdAt: number;
-  expiresAt: number;
+  createdAt: number; // UTC timestamp milliseconds
+  updatedAt: number; // UTC timestamp milliseconds
+  expiresAt: number; // UTC timestamp milliseconds
+  createdAtIso?: string; // ISO 8601 UTC string
+  expiresAtIso?: string; // ISO 8601 UTC string
 }
 
 export interface CustomQuestion {

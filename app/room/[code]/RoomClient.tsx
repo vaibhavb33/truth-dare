@@ -55,6 +55,11 @@ export function RoomClient({ roomCode }: RoomClientProps) {
 
   const storageKey = `asteria_multiplayer_session_${roomCode}`;
 
+  const isJoinedRef = React.useRef(isJoined);
+  isJoinedRef.current = isJoined;
+  const roomRef = React.useRef(room);
+  roomRef.current = room;
+
   // 1. Session Restoration on Mount (Phase 5 Reconnection)
   useEffect(() => {
     if (typeof window === 'undefined') return;
@@ -83,6 +88,7 @@ export function RoomClient({ roomCode }: RoomClientProps) {
                 setPlayerName(data.player.name);
                 setIsJoined(true);
                 setRoom(data.room);
+                setErrorMsg(''); // Clean stale errors on successful session restoration
                 sound.playChime();
               }
             })
@@ -104,11 +110,21 @@ export function RoomClient({ roomCode }: RoomClientProps) {
         const data = await res.json();
         if (isSubscribed && data.success && data.room) {
           setRoom(data.room);
+          // Clear stale errors whenever a valid room is retrieved
+          setErrorMsg('');
         } else if (isSubscribed && !data.success) {
-          setErrorMsg(data.error || 'Room not found.');
+          if (data.code === 'ROOM_EXPIRED') {
+            setErrorMsg(data.error || 'This party room has expired.');
+            setRoom((prev) => (prev ? { ...prev, status: 'EXPIRED' } : null));
+          } else if (data.code === 'ROOM_CLOSED') {
+            setErrorMsg(data.error || 'This party room is closed.');
+            setRoom((prev) => (prev ? { ...prev, status: 'CANCELLED' } : null));
+          } else if (!roomRef.current && !isJoinedRef.current) {
+            setErrorMsg(data.error || 'Room not found.');
+          }
         }
       } catch {
-        // Network polling error
+        // Network polling error - keep existing state active
       }
     };
 
@@ -280,6 +296,12 @@ export function RoomClient({ roomCode }: RoomClientProps) {
   const roomQuestionLang = room?.language || 'en';
   const roomLangMeta = SUPPORTED_LOCALES[roomQuestionLang as Locale] || SUPPORTED_LOCALES.en;
 
+  // Lifecycle state helpers
+  const isLobby = room?.status === 'WAITING' || room?.status === 'lobby';
+  const isInGame = room?.status === 'IN_PROGRESS' || room?.status === 'in_game';
+  const isExpired = room?.status === 'EXPIRED';
+  const isCancelled = room?.status === 'CANCELLED';
+
   // Categories list for host settings
   const categoriesList = [
     { id: 'classic-party', name: t('categories.classicParty.name'), icon: '🎉' },
@@ -288,6 +310,44 @@ export function RoomClient({ roomCode }: RoomClientProps) {
     { id: 'spicy-18', name: t('categories.spicy18.name'), icon: '🌶️' },
     { id: 'family-kids', name: t('categories.familyKids.name'), icon: '🌟' },
   ];
+
+  if (isExpired) {
+    return (
+      <div className="w-full max-w-md mx-auto p-8 my-auto text-center space-y-4">
+        <div className="w-16 h-16 mx-auto rounded-2xl bg-amber-500/10 text-amber-400 flex items-center justify-center font-bold text-2xl">
+          ⏳
+        </div>
+        <h2 className="font-display font-bold text-2xl text-white">Party Room Expired</h2>
+        <p className="text-xs text-slate-400">
+          This party room has expired after reaching its maximum 2-hour lifespan. Start a new party room to continue playing with friends!
+        </p>
+        <Link href={`/${locale}`}>
+          <Button variant="primary" size="md" className="mt-4">
+            {dict.breadcrumbs.home}
+          </Button>
+        </Link>
+      </div>
+    );
+  }
+
+  if (isCancelled) {
+    return (
+      <div className="w-full max-w-md mx-auto p-8 my-auto text-center space-y-4">
+        <div className="w-16 h-16 mx-auto rounded-2xl bg-slate-500/10 text-slate-400 flex items-center justify-center font-bold text-2xl">
+          🚪
+        </div>
+        <h2 className="font-display font-bold text-2xl text-white">Party Room Closed</h2>
+        <p className="text-xs text-slate-400">
+          This room has been closed or cancelled by the host. Create a new room to host another game!
+        </p>
+        <Link href={`/${locale}`}>
+          <Button variant="primary" size="md" className="mt-4">
+            {dict.breadcrumbs.home}
+          </Button>
+        </Link>
+      </div>
+    );
+  }
 
   if (errorMsg && !room && !isJoined) {
     return (
@@ -306,6 +366,13 @@ export function RoomClient({ roomCode }: RoomClientProps) {
     );
   }
 
+  // Never display "not found or expired" if an active room is verified and loaded
+  const displayActionError =
+    errorMsg &&
+    isJoined &&
+    !errorMsg.toLowerCase().includes('not found') &&
+    !errorMsg.toLowerCase().includes('expired');
+
   return (
     <div className="w-full max-w-4xl lg:max-w-5xl mx-auto px-3 sm:px-4 py-3 sm:py-6 md:py-8 space-y-4 sm:space-y-6 flex-1 flex flex-col justify-between">
       {/* Reconnecting Banner */}
@@ -317,7 +384,7 @@ export function RoomClient({ roomCode }: RoomClientProps) {
       )}
 
       {/* Ephemeral Action Error Banner */}
-      {errorMsg && isJoined && (
+      {displayActionError && (
         <div className="w-full p-3 rounded-2xl bg-rose-500/20 border border-rose-400/40 text-rose-300 text-xs font-semibold flex items-center justify-between animate-shake">
           <span>{errorMsg}</span>
           <button onClick={() => setErrorMsg('')} className="p-1 text-rose-300 hover:text-white">
@@ -379,7 +446,7 @@ export function RoomClient({ roomCode }: RoomClientProps) {
       )}
 
       {/* Host Lobby Settings Modal (Phase 1 & Phase 3) */}
-      {showSettingsModal && isHost && room?.status === 'lobby' && (
+      {showSettingsModal && isHost && isLobby && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-canvas-deep/85 backdrop-blur-md animate-fade-in pt-[max(0.75rem,env(safe-area-inset-top))] pb-[max(0.75rem,env(safe-area-inset-bottom))]">
           <div className="w-full max-w-md p-5 sm:p-6 rounded-3xl bg-surface-elevated border border-white/10 space-y-4 text-left max-h-[calc(100dvh-2rem)] overflow-y-auto custom-scrollbar">
             <div className="flex items-center justify-between border-b border-white/10 pb-3">
@@ -492,7 +559,7 @@ export function RoomClient({ roomCode }: RoomClientProps) {
           <div className="overflow-hidden">
             <span className="text-[10px] sm:text-xs font-black uppercase tracking-wider text-brand-400 flex items-center gap-1.5">
               <span>{dict.multiplayer.title}</span>
-              {room?.status === 'in_game' && (
+              {isInGame && (
                 <span className="px-1.5 py-0.5 rounded bg-brand-500/20 text-brand-300 text-[10px] font-mono font-bold">
                   Round {room.roundNumber}
                 </span>
@@ -510,7 +577,7 @@ export function RoomClient({ roomCode }: RoomClientProps) {
           </span>
 
           {/* Lobby Settings (Host Only) */}
-          {isHost && room?.status === 'lobby' && (
+          {isHost && isLobby && (
             <button
               onClick={() => setShowSettingsModal(true)}
               className="p-2 rounded-xl bg-surface-elevated hover:bg-surface-highlight border border-white/10 text-slate-300 min-h-[36px] min-w-[36px] flex items-center justify-center transition-colors"
@@ -624,7 +691,7 @@ export function RoomClient({ roomCode }: RoomClientProps) {
           {/* ========================================================
               LOBBY VIEW (Phase 3: Waiting for Host to Start)
              ======================================================== */}
-          {room?.status === 'lobby' ? (
+          {isLobby ? (
             <div className="w-full max-w-md mx-auto my-auto p-5 sm:p-8 rounded-3xl bg-surface-elevated border border-white/10 text-center space-y-5 sm:space-y-6 shadow-elevation-2">
               <div className="w-14 h-14 sm:w-16 sm:h-16 mx-auto rounded-2xl bg-brand-500/10 border border-brand-400/30 flex items-center justify-center text-brand-400 font-bold text-2xl">
                 ⏳
@@ -650,10 +717,16 @@ export function RoomClient({ roomCode }: RoomClientProps) {
                     variant="primary"
                     size="xl"
                     onClick={() => dispatch('START_GAME')}
-                    className="w-full font-bold min-h-[48px]"
+                    disabled={!room || room.players.length < 2}
+                    className="w-full font-bold min-h-[48px] disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     {dict.multiplayer.startGame} →
                   </Button>
+                  {room && room.players.length < 2 && (
+                    <p className="text-[11px] text-amber-300/90 font-medium pt-0.5">
+                      ⚠️ Waiting for at least 1 more player to join before starting.
+                    </p>
+                  )}
                   <button
                     onClick={() => setShowSettingsModal(true)}
                     className="text-xs text-slate-400 hover:text-white flex items-center justify-center gap-1 mx-auto py-1"
