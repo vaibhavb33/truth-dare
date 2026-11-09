@@ -228,3 +228,4 @@ export const multiplayerRoomEngine = globalThis.__asteria_room_engine__;
 ```
 
 Dual-indexing on `roomsById` (UUID map) and `roomsByCode` (Uppercase 6-char map) ensures $O(1)$ constant time lookup for every incoming request.
+

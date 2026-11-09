@@ -183,3 +183,4 @@ export function normalizeLifecycleStatus(status: string): RoomLifecycleStatus {
 ```
 
 This guarantees that whether a component queries for `room.status === 'WAITING'` or `room.status === 'lobby'`, both checks are satisfied via normalized getters.
+

@@ -175,3 +175,4 @@ The fix was validated through automated multi-client Playwright tests across thr
   ✅ Step 5: Host session restored on refresh (Zero error): PASSED
 ```
 **Conclusion:** The contradictory error message has been completely eliminated. Active lobbies render cleanly with zero spurious warnings.
+
