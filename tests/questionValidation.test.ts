@@ -82,7 +82,7 @@ describe('Task 38: Custom Deck Question Validation & Error Handling Suite', () =
 
     it('Duplicate Check: Rejects duplicate questions within same deck (case & space insensitive)', () => {
       const existing = ['What is your biggest fear?', 'Sing the national anthem in opera style.'];
-      
+
       const exactDup = validateCustomQuestion('What is your biggest fear?', existing);
       expect(exactDup.isValid).toBe(false);
       expect(exactDup.error).toBe('This question is already in your deck.');
@@ -309,7 +309,7 @@ describe('Task 38: Custom Deck Question Validation & Error Handling Suite', () =
 
     it('Clears error state once user modifies or rectifies the input', () => {
       let currentError: string | null = 'Your question cannot contain only spaces.';
-      
+
       // User types a valid character
       const onInputChange = (newVal: string) => {
         if (newVal.trim().length > 0) {

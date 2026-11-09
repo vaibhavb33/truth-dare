@@ -14,6 +14,7 @@ export interface VoiceState {
   isSupported: boolean;
   isPlaying: boolean;
   isPaused: boolean;
+  isLoading: boolean;
   currentText: string | null;
   currentLanguage: string | null;
   rate: number;
@@ -62,6 +63,7 @@ export class SpeechService {
     typeof window !== 'undefined' &&
     typeof process !== 'undefined' &&
     !process.env.VITEST;
+  private isNeuralAvailable: boolean = false;
   private synth: SpeechSynthesis | null = null;
   private voices: SpeechSynthesisVoice[] = [];
   private activeUtterance: SpeechSynthesisUtterance | null = null; // GC reference shield
@@ -97,15 +99,16 @@ export class SpeechService {
       isSupported: isBrowserSynthSupported || typeof window !== 'undefined',
       isPlaying: false,
       isPaused: false,
+      isLoading: false,
       currentText: null,
       currentLanguage: null,
       rate: this.currentRate,
       availableVoices: [],
       selectedVoice: null,
       error: null,
-      engine: 'neural',
-      isNeuralAvailable: true,
-      providerName: 'Neural AI',
+      engine: 'browser',
+      isNeuralAvailable: false,
+      providerName: 'Browser Web Speech',
     };
 
     if (typeof window !== 'undefined') {
@@ -113,12 +116,31 @@ export class SpeechService {
         this.synth = window.speechSynthesis;
         this.loadVoices();
 
+        const handleVoices = () => {
+          this.loadVoices();
+        };
+
         if ('onvoiceschanged' in window.speechSynthesis) {
-          window.speechSynthesis.onvoiceschanged = () => {
-            this.loadVoices();
-          };
+          window.speechSynthesis.onvoiceschanged = handleVoices;
         }
+        if (typeof window.speechSynthesis.addEventListener === 'function') {
+          window.speechSynthesis.addEventListener('voiceschanged', handleVoices);
+        }
+
+        // Retry polling to capture late-registering voices on mobile Safari / Android Chrome
+        let attempts = 0;
+        const retryTimer = setInterval(() => {
+          attempts++;
+          if (this.voices.length > 0 || attempts > 6) {
+            clearInterval(retryTimer);
+          } else {
+            this.loadVoices();
+          }
+        }, 500);
       }
+
+      // Query neural capability asynchronously
+      this.checkNeuralAvailability();
 
       // Cleanup on page unload or visibility hide
       if (typeof window.addEventListener === 'function') {
@@ -133,6 +155,26 @@ export class SpeechService {
       SpeechService.instance = new SpeechService();
     }
     return SpeechService.instance;
+  }
+
+  private async checkNeuralAvailability() {
+    if (typeof window === 'undefined') return;
+    try {
+      const res = await fetch('/api/voice/synthesize');
+      if (res.ok) {
+        const data = await res.json();
+        const available = Boolean(data.available && data.provider !== 'mock');
+        this.isNeuralAvailable = available;
+        this.notifyState({
+          isNeuralAvailable: available,
+          engine: available ? 'neural' : 'browser',
+          providerName: available ? (data.provider || 'Neural AI') : 'Browser Web Speech',
+        });
+      }
+    } catch {
+      this.isNeuralAvailable = false;
+      this.notifyState({ isNeuralAvailable: false, engine: 'browser', providerName: 'Browser Web Speech' });
+    }
   }
 
   private loadVoices() {
@@ -225,11 +267,12 @@ export class SpeechService {
     const matching = this.getVoicesForLanguage(langCode);
     if (matching.length === 0) return null;
 
+    // Prioritize high-definition natural, enhanced, neural, Google, or Siri voices
+    const naturalVoice = matching.find((v) => /natural|premium|enhanced|neural|google|siri/i.test(v.name));
+    if (naturalVoice) return naturalVoice;
+
     const defaultVoice = matching.find((v) => v.default);
     if (defaultVoice) return defaultVoice;
-
-    const naturalVoice = matching.find((v) => /natural|premium|enhanced|google|siri/i.test(v.name));
-    if (naturalVoice) return naturalVoice;
 
     return matching[0];
   }
@@ -266,8 +309,8 @@ export class SpeechService {
 
   /**
    * Primary Entry Point: Speak Question
-   * 1. Attempts Server Neural TTS (/api/voice/synthesize)
-   * 2. Automatically falls back to Web Speech API if neural fails or forceBrowser is set
+   * 1. Attempts Server Neural TTS (/api/voice/synthesize) if available
+   * 2. Automatically falls back to Web Speech API if neural is offline or unavailable
    */
   public speak(params: SpeakParams): { success: boolean; error?: string } {
     const cleanText = params.text.trim();
@@ -280,8 +323,8 @@ export class SpeechService {
 
     const targetRate = params.rate ?? this.currentRate;
 
-    // If browser fallback is explicitly requested or neural disabled (e.g. test runner)
-    if (params.forceBrowser || !this.isNeuralEnabled) {
+    // If neural is disabled, unavailable, or browser fallback is forced
+    if (params.forceBrowser || !this.isNeuralEnabled || !this.isNeuralAvailable) {
       return this.speakWithBrowserFallback({ ...params, text: cleanText, rate: targetRate });
     }
 
@@ -303,7 +346,8 @@ export class SpeechService {
 
     try {
       this.notifyState({
-        isPlaying: true,
+        isLoading: true,
+        isPlaying: false,
         isPaused: false,
         currentText: params.text,
         currentLanguage: params.language,
@@ -347,6 +391,7 @@ export class SpeechService {
 
       audio.onplay = () => {
         this.notifyState({
+          isLoading: false,
           isPlaying: true,
           isPaused: false,
           currentText: params.text,
@@ -359,13 +404,14 @@ export class SpeechService {
 
       audio.onpause = () => {
         if (!audio.ended) {
-          this.notifyState({ isPlaying: false, isPaused: true });
+          this.notifyState({ isLoading: false, isPlaying: false, isPaused: true });
         }
       };
 
       audio.onended = () => {
         this.cleanupAudio();
         this.notifyState({
+          isLoading: false,
           isPlaying: false,
           isPaused: false,
           currentText: null,
@@ -394,11 +440,17 @@ export class SpeechService {
 
   /**
    * Browser Web Speech API Fallback
+   * Enforces:
+   * 1. Speech queue unsticking (synth.resume + synth.cancel)
+   * 2. Voice matching with target BCP-47 fallback (never fails if Hindi/Arabic voice object is absent)
+   * 3. Chrome GC reference shield
+   * 4. Chrome long-speech keepalive interval
    */
   private speakWithBrowserFallback(params: SpeakParams): { success: boolean; error?: string } {
     if (!this.synth) {
       const errMsg = 'Speech synthesis is not supported on this browser or device.';
       this.notifyState({
+        isLoading: false,
         isPlaying: false,
         isPaused: false,
         error: errMsg,
@@ -408,49 +460,81 @@ export class SpeechService {
       return { success: false, error: errMsg };
     }
 
-    const voiceToUse = params.voice || this.currentVoice || this.getBestVoiceForLanguage(params.language);
+    const mapping = LANGUAGE_LOCALE_MAP[params.language as SupportedLanguageCode];
+    const targetBcp47 = mapping ? mapping.bcp47 : (params.language || 'en-US');
 
-    if (!voiceToUse) {
-      const mapping = LANGUAGE_LOCALE_MAP[params.language as SupportedLanguageCode];
-      const langLabel = mapping ? mapping.label : params.language;
-      const errorMsg = `No native speech voice is available for ${langLabel} on this device.`;
+    // Strict rule: if voices are loaded and no voice matches the requested language,
+    // do not speak silently in an unrelated language (e.g. English speaking Hindi text).
+    const matching = this.getVoicesForLanguage(params.language);
+    if (this.isVoicesLoaded && this.voices.length > 0 && matching.length === 0) {
+      const errMsg = `No native speech voice is available for ${mapping?.label || params.language} on this device.`;
       this.notifyState({
-        error: errorMsg,
+        isLoading: false,
         isPlaying: false,
         isPaused: false,
-        engine: 'browser',
+        error: errMsg,
       });
-      params.onError?.(errorMsg);
-      return { success: false, error: errorMsg };
+      params.onError?.(errMsg);
+      return { success: false, error: errMsg };
     }
+
+    const voiceToUse = params.voice || this.currentVoice || this.getBestVoiceForLanguage(params.language);
 
     try {
       const utterance = new SpeechSynthesisUtterance(params.text);
       const targetRate = params.rate ?? this.currentRate;
 
-      utterance.voice = voiceToUse;
-      utterance.lang = voiceToUse.lang;
+      if (voiceToUse) {
+        utterance.voice = voiceToUse;
+        utterance.lang = voiceToUse.lang || targetBcp47;
+      } else {
+        utterance.lang = targetBcp47;
+      }
+
       utterance.rate = targetRate;
       utterance.pitch = 1.0;
+      utterance.volume = 1.0;
 
+      // Retain utterance globally to shield against Chromium / WebKit garbage collection bug
       this.activeUtterance = utterance;
+      if (typeof window !== 'undefined') {
+        (window as any).__asteria_speech_utterance__ = utterance;
+      }
+
+      let keepAliveInterval: any = null;
 
       utterance.onstart = () => {
         this.notifyState({
+          isLoading: false,
           isPlaying: true,
           isPaused: false,
           currentText: params.text,
           currentLanguage: params.language,
           engine: 'browser',
-          providerName: 'Browser HD',
+          providerName: voiceToUse ? voiceToUse.name : (mapping ? mapping.label : 'Browser HD'),
           error: null,
         });
         params.onStart?.();
+
+        // Chrome keep-alive: prevent 14-second audio freeze
+        keepAliveInterval = setInterval(() => {
+          if (!this.synth || !this.synth.speaking) {
+            if (keepAliveInterval) clearInterval(keepAliveInterval);
+            return;
+          }
+          this.synth.pause();
+          this.synth.resume();
+        }, 10000);
       };
 
       utterance.onend = () => {
+        if (keepAliveInterval) clearInterval(keepAliveInterval);
         this.activeUtterance = null;
+        if (typeof window !== 'undefined') {
+          (window as any).__asteria_speech_utterance__ = null;
+        }
         this.notifyState({
+          isLoading: false,
           isPlaying: false,
           isPaused: false,
           currentText: null,
@@ -460,9 +544,15 @@ export class SpeechService {
       };
 
       utterance.onerror = (event) => {
+        if (keepAliveInterval) clearInterval(keepAliveInterval);
+        this.activeUtterance = null;
+        if (typeof window !== 'undefined') {
+          (window as any).__asteria_speech_utterance__ = null;
+        }
+
         if (event.error === 'canceled' || event.error === 'interrupted') {
-          this.activeUtterance = null;
           this.notifyState({
+            isLoading: false,
             isPlaying: false,
             isPaused: false,
             currentText: null,
@@ -471,9 +561,13 @@ export class SpeechService {
           return;
         }
 
-        this.activeUtterance = null;
-        const errMsg = `Speech synthesis error: ${event.error}`;
+        const errMsg =
+          event.error === 'language-unavailable' || event.error === 'voice-unavailable'
+            ? `Your device does not have a native voice installed for ${mapping?.label || params.language}.`
+            : `Speech synthesis error: ${event.error}`;
+
         this.notifyState({
+          isLoading: false,
           isPlaying: false,
           isPaused: false,
           error: errMsg,
@@ -482,11 +576,11 @@ export class SpeechService {
       };
 
       utterance.onpause = () => {
-        this.notifyState({ isPlaying: false, isPaused: true });
+        this.notifyState({ isLoading: false, isPlaying: false, isPaused: true });
       };
 
       utterance.onresume = () => {
-        this.notifyState({ isPlaying: true, isPaused: false });
+        this.notifyState({ isLoading: false, isPlaying: true, isPaused: false });
       };
 
       this.synth.speak(utterance);
@@ -494,6 +588,7 @@ export class SpeechService {
     } catch (err: unknown) {
       const errMsg = err instanceof Error ? err.message : 'Unknown speech synthesis error';
       this.notifyState({
+        isLoading: false,
         isPlaying: false,
         isPaused: false,
         error: errMsg,
@@ -509,13 +604,13 @@ export class SpeechService {
   public pause(): boolean {
     if (this.audioElement && !this.audioElement.paused) {
       this.audioElement.pause();
-      this.notifyState({ isPaused: true, isPlaying: false });
+      this.notifyState({ isLoading: false, isPaused: true, isPlaying: false });
       return true;
     }
 
     if (this.synth && this.synth.speaking && !this.synth.paused) {
       this.synth.pause();
-      this.notifyState({ isPaused: true, isPlaying: false });
+      this.notifyState({ isLoading: false, isPaused: true, isPlaying: false });
       return true;
     }
 
@@ -528,13 +623,13 @@ export class SpeechService {
   public resume(): boolean {
     if (this.audioElement && this.audioElement.paused && this.audioElement.currentTime > 0) {
       this.audioElement.play().catch(console.warn);
-      this.notifyState({ isPaused: false, isPlaying: true });
+      this.notifyState({ isLoading: false, isPaused: false, isPlaying: true });
       return true;
     }
 
     if (this.synth && this.synth.paused) {
       this.synth.resume();
-      this.notifyState({ isPaused: false, isPlaying: true });
+      this.notifyState({ isLoading: false, isPaused: false, isPlaying: true });
       return true;
     }
 
@@ -554,9 +649,12 @@ export class SpeechService {
     // 2. Stop HTML5 audio
     this.cleanupAudio();
 
-    // 3. Stop browser speech synthesis
+    // 3. Stop browser speech synthesis and unstick queue
     if (this.synth) {
       try {
+        if (this.synth.paused) {
+          this.synth.resume();
+        }
         this.synth.cancel();
       } catch (e) {
         console.warn('Speech cancel error:', e);
@@ -564,7 +662,11 @@ export class SpeechService {
     }
 
     this.activeUtterance = null;
+    if (typeof window !== 'undefined') {
+      (window as any).__asteria_speech_utterance__ = null;
+    }
     this.notifyState({
+      isLoading: false,
       isPlaying: false,
       isPaused: false,
       currentText: null,

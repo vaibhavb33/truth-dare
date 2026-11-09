@@ -40,6 +40,7 @@ export function QuestionVoiceControls({
     isSupported,
     isPlaying,
     isPaused,
+    isLoading,
     currentText,
     rate,
     engine,
@@ -61,9 +62,11 @@ export function QuestionVoiceControls({
 
   const isCurrentCardPlaying = isPlaying && currentText === text;
   const isCurrentCardPaused = isPaused && currentText === text;
+  const isCurrentCardLoading = isLoading && currentText === text;
+  const hasCurrentCardError = Boolean(error && currentText === text);
 
   const matchingVoices = getVoicesForLanguage(currentLang);
-  const isPlaybackAvailable = isNeuralAvailable || matchingVoices.length > 0 || isSupported;
+  const isPlaybackAvailable = isSupported || isNeuralAvailable || typeof window !== 'undefined';
 
   // Close popover when clicking outside
   useEffect(() => {
@@ -137,8 +140,12 @@ export function QuestionVoiceControls({
           type="button"
           onClick={handlePlayToggle}
           aria-label={
-            isCurrentCardPlaying
+            isCurrentCardLoading
+              ? 'Loading speech...'
+              : isCurrentCardPlaying
               ? dict.voice.stop
+              : isCurrentCardPaused
+              ? dict.voice.resume
               : type === 'truth'
               ? dict.voice.listenTruth
               : type === 'dare'
@@ -146,23 +153,35 @@ export function QuestionVoiceControls({
               : dict.voice.listenQuestion
           }
           title={
-            !isPlaybackAvailable
+            isCurrentCardLoading
+              ? 'Loading speech...'
+              : !isPlaybackAvailable
               ? dict.voice.voiceUnavailableDesc
               : isCurrentCardPlaying
               ? dict.voice.stop
+              : isCurrentCardPaused
+              ? dict.voice.resume
               : dict.voice.play
           }
           className={cn(
             'p-2 rounded-xl border transition-all flex items-center justify-center shrink-0 min-w-[36px] min-h-[36px] active:scale-95',
             isCurrentCardPlaying
               ? 'bg-brand-500 text-white border-brand-400 shadow-glow-brand animate-pulse'
+              : isCurrentCardLoading
+              ? 'bg-brand-500/20 text-brand-300 border-brand-400/40'
+              : isCurrentCardPaused
+              ? 'bg-amber-500/20 text-amber-300 border-amber-400/40'
               : !isPlaybackAvailable
               ? 'bg-white/5 text-slate-500 border-white/5 hover:text-slate-400'
               : 'bg-white/5 hover:bg-white/10 text-slate-300 hover:text-white border-white/10'
           )}
         >
-          {isCurrentCardPlaying ? (
+          {isCurrentCardLoading ? (
+            <span className="w-3.5 h-3.5 border-2 border-white/30 border-t-brand-300 rounded-full animate-spin shrink-0" />
+          ) : isCurrentCardPlaying ? (
             <Square className="w-3.5 h-3.5 fill-current" />
+          ) : isCurrentCardPaused ? (
+            <Play className="w-3.5 h-3.5 fill-current text-emerald-400" />
           ) : !isPlaybackAvailable ? (
             <VolumeX className="w-3.5 h-3.5" />
           ) : (
@@ -170,9 +189,9 @@ export function QuestionVoiceControls({
           )}
         </button>
 
-        {unavailableNotice && (
+        {(unavailableNotice || hasCurrentCardError) && (
           <div className="absolute left-full ml-2 z-50 p-2 rounded-xl bg-slate-900/95 border border-amber-500/30 text-amber-300 text-[11px] shadow-elevation-3 whitespace-nowrap backdrop-blur-md">
-            {dict.voice.voiceUnavailableDesc}
+            {hasCurrentCardError ? error : dict.voice.voiceUnavailableDesc}
           </div>
         )}
       </div>
@@ -192,6 +211,10 @@ export function QuestionVoiceControls({
             'inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border text-xs font-bold transition-all active:scale-95 shadow-sm',
             isCurrentCardPlaying
               ? 'bg-brand-500 text-white border-brand-400 shadow-glow-brand animate-pulse'
+              : isCurrentCardLoading
+              ? 'bg-brand-500/20 text-brand-300 border-brand-400/40'
+              : isCurrentCardPaused
+              ? 'bg-amber-500/20 text-amber-300 border-amber-400/40'
               : type === 'truth'
               ? 'bg-truth-500/15 hover:bg-truth-500/25 text-truth-300 border-truth-400/30'
               : type === 'dare'
@@ -199,14 +222,22 @@ export function QuestionVoiceControls({
               : 'bg-white/10 hover:bg-white/15 text-slate-200 border-white/10'
           )}
         >
-          {isCurrentCardPlaying ? (
+          {isCurrentCardLoading ? (
+            <span className="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin shrink-0" />
+          ) : isCurrentCardPlaying ? (
             <Square className="w-3.5 h-3.5 fill-current" />
+          ) : isCurrentCardPaused ? (
+            <Play className="w-3.5 h-3.5 fill-current text-emerald-400" />
           ) : (
             <Volume2 className="w-3.5 h-3.5" />
           )}
           <span>
-            {isCurrentCardPlaying
+            {isCurrentCardLoading
+              ? 'Loading...'
+              : isCurrentCardPlaying
               ? dict.voice.stop
+              : isCurrentCardPaused
+              ? dict.voice.resume
               : type === 'truth'
               ? dict.voice.listenTruth
               : type === 'dare'
@@ -232,13 +263,18 @@ export function QuestionVoiceControls({
         className
       )}
     >
-      {/* Primary Play / Stop Button */}
+      {/* Primary Play / Stop / Resume Button */}
       <button
+        data-testid="voice-play-toggle"
         type="button"
         onClick={handlePlayToggle}
         aria-label={
-          isCurrentCardPlaying
+          isCurrentCardLoading
+            ? 'Loading speech...'
+            : isCurrentCardPlaying
             ? dict.voice.stop
+            : isCurrentCardPaused
+            ? dict.voice.resume
             : type === 'truth'
             ? dict.voice.listenTruth
             : type === 'dare'
@@ -249,15 +285,29 @@ export function QuestionVoiceControls({
           'inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-xl text-[11px] sm:text-xs font-bold uppercase tracking-wider transition-all min-h-[34px] active:scale-95',
           isCurrentCardPlaying
             ? 'bg-brand-500 text-white border border-brand-300 shadow-glow-brand'
+            : isCurrentCardLoading
+            ? 'bg-brand-500/20 text-brand-300 border border-brand-400/40'
+            : isCurrentCardPaused
+            ? 'bg-amber-500/20 text-amber-300 border border-amber-400/40'
             : type === 'truth'
             ? 'bg-truth-500/20 hover:bg-truth-500/30 text-truth-300 border border-truth-400/30'
             : 'bg-dare-500/20 hover:bg-dare-500/30 text-dare-300 border border-dare-400/30'
         )}
       >
-        {isCurrentCardPlaying ? (
+        {isCurrentCardLoading ? (
+          <>
+            <span className="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin shrink-0" />
+            <span>Loading...</span>
+          </>
+        ) : isCurrentCardPlaying ? (
           <>
             <Square className="w-3.5 h-3.5 fill-current" />
             <span>{dict.voice.stop}</span>
+          </>
+        ) : isCurrentCardPaused ? (
+          <>
+            <Play className="w-3.5 h-3.5 fill-current text-emerald-400" />
+            <span>{dict.voice.resume}</span>
           </>
         ) : (
           <>
@@ -308,6 +358,19 @@ export function QuestionVoiceControls({
           ) : (
             <Pause className="w-3.5 h-3.5 fill-current text-amber-300" />
           )}
+        </button>
+      )}
+
+      {/* Dedicated Stop Button when paused */}
+      {isCurrentCardPaused && (
+        <button
+          type="button"
+          onClick={handleStop}
+          aria-label={dict.voice.stop}
+          title={dict.voice.stop}
+          className="p-1.5 sm:p-2 rounded-xl bg-rose-500/20 hover:bg-rose-500/30 text-rose-300 transition-colors border border-rose-500/30 min-h-[34px] min-w-[34px] flex items-center justify-center active:scale-95"
+        >
+          <Square className="w-3.5 h-3.5 fill-current" />
         </button>
       )}
 
@@ -420,11 +483,11 @@ export function QuestionVoiceControls({
         </div>
       )}
 
-      {/* Helpful Toast when voice is unavailable */}
-      {unavailableNotice && (
+      {/* Helpful Toast when voice is unavailable or error occurs */}
+      {(unavailableNotice || hasCurrentCardError) && (
         <div className="absolute bottom-full mb-2 left-0 right-0 z-50 p-2.5 rounded-xl bg-[#1A1A32]/95 border border-amber-500/40 text-amber-300 text-[11px] shadow-elevation-3 backdrop-blur-md flex items-center gap-2">
           <AlertCircle className="w-4 h-4 text-amber-400 shrink-0" />
-          <span>{dict.voice.voiceUnavailableDesc}</span>
+          <span>{hasCurrentCardError ? error : dict.voice.voiceUnavailableDesc}</span>
         </div>
       )}
     </div>

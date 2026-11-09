@@ -93,3 +93,4 @@ When editing questions in the deck list:
 1. Each editing card manages its own localized `editError` state.
 2. If an edited prompt is empty, contains only spaces, or exceeds 250 characters, the error appears strictly inside that question's card.
 3. Cancelling the edit clears `editError` without disturbing any other part of the UI.
+

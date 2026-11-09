@@ -12,10 +12,9 @@ export function useVoice() {
       setState(nextState);
     });
 
-    // Cleanup on unmount (Stops speech when navigating away)
+    // Unsubscribe listener on unmount (Speech cancellation is handled globally on page unload)
     return () => {
       unsubscribe();
-      speechService.stop();
     };
   }, []);
 
