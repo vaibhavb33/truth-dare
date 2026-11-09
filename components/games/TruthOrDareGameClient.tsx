@@ -431,7 +431,13 @@ function TruthOrDareInner() {
 
           {/* Start CTA */}
           <div className="space-y-3 pt-1">
-            <Button variant="primary" size="xl" onClick={handleStartGame} className="w-full text-lg font-bold">
+            <Button
+              data-testid="launch-game-btn"
+              variant="primary"
+              size="xl"
+              onClick={handleStartGame}
+              className="w-full text-lg font-bold"
+            >
               {t('game.launchGame')} →
             </Button>
 

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
-import { speechService, VoiceState } from './speechService';
+import { speechService, VoiceState, SpeakParams } from './speechService';
 import { SupportedLanguageCode } from '@/types';
 
 export function useVoice() {
@@ -19,20 +19,9 @@ export function useVoice() {
     };
   }, []);
 
-  const speak = useCallback(
-    (params: {
-      text: string;
-      language: SupportedLanguageCode | string;
-      rate?: number;
-      voice?: SpeechSynthesisVoice;
-      onStart?: () => void;
-      onEnd?: () => void;
-      onError?: (error: string) => void;
-    }) => {
-      return speechService.speak(params);
-    },
-    []
-  );
+  const speak = useCallback((params: SpeakParams) => {
+    return speechService.speak(params);
+  }, []);
 
   const stop = useCallback(() => {
     speechService.stop();
@@ -69,4 +58,3 @@ export function useVoice() {
     getVoicesForLanguage,
   };
 }
-

@@ -8,7 +8,6 @@ import {
   Pause,
   Square,
   Settings2,
-  ChevronDown,
   AlertCircle,
   Sparkles,
 } from 'lucide-react';
@@ -23,6 +22,7 @@ interface QuestionVoiceControlsProps {
   language?: SupportedLanguageCode | string;
   type?: 'truth' | 'dare' | 'question';
   variant?: 'card' | 'compact' | 'pill';
+  isCustom?: boolean; // If true, prevents server caching of private deck questions
   className?: string;
 }
 
@@ -31,6 +31,7 @@ export function QuestionVoiceControls({
   language,
   type = 'question',
   variant = 'card',
+  isCustom = false,
   className,
 }: QuestionVoiceControlsProps) {
   const { dict, locale } = useTranslation();
@@ -41,6 +42,9 @@ export function QuestionVoiceControls({
     isPaused,
     currentText,
     rate,
+    engine,
+    isNeuralAvailable,
+    providerName,
     speak,
     stop,
     pause,
@@ -59,7 +63,7 @@ export function QuestionVoiceControls({
   const isCurrentCardPaused = isPaused && currentText === text;
 
   const matchingVoices = getVoicesForLanguage(currentLang);
-  const hasMatchingVoice = isSupported && matchingVoices.length > 0;
+  const isPlaybackAvailable = isNeuralAvailable || matchingVoices.length > 0 || isSupported;
 
   // Close popover when clicking outside
   useEffect(() => {
@@ -78,14 +82,14 @@ export function QuestionVoiceControls({
     e.stopPropagation();
     sound.triggerHaptic(15);
 
-    if (!isSupported || !hasMatchingVoice) {
+    if (!isPlaybackAvailable) {
       setUnavailableNotice(true);
       setTimeout(() => setUnavailableNotice(false), 4000);
       return;
     }
 
     if (isCurrentCardPlaying) {
-      // If currently playing this card, pausing or stopping
+      // If currently playing this card, stop
       stop();
     } else if (isCurrentCardPaused) {
       // Resume
@@ -96,6 +100,7 @@ export function QuestionVoiceControls({
         text,
         language: currentLang,
         rate,
+        isCustom,
         onError: () => {
           setUnavailableNotice(true);
           setTimeout(() => setUnavailableNotice(false), 4000);
@@ -141,7 +146,7 @@ export function QuestionVoiceControls({
               : dict.voice.listenQuestion
           }
           title={
-            !hasMatchingVoice
+            !isPlaybackAvailable
               ? dict.voice.voiceUnavailableDesc
               : isCurrentCardPlaying
               ? dict.voice.stop
@@ -151,14 +156,14 @@ export function QuestionVoiceControls({
             'p-2 rounded-xl border transition-all flex items-center justify-center shrink-0 min-w-[36px] min-h-[36px] active:scale-95',
             isCurrentCardPlaying
               ? 'bg-brand-500 text-white border-brand-400 shadow-glow-brand animate-pulse'
-              : !hasMatchingVoice
+              : !isPlaybackAvailable
               ? 'bg-white/5 text-slate-500 border-white/5 hover:text-slate-400'
               : 'bg-white/5 hover:bg-white/10 text-slate-300 hover:text-white border-white/10'
           )}
         >
           {isCurrentCardPlaying ? (
             <Square className="w-3.5 h-3.5 fill-current" />
-          ) : !hasMatchingVoice ? (
+          ) : !isPlaybackAvailable ? (
             <VolumeX className="w-3.5 h-3.5" />
           ) : (
             <Volume2 className="w-3.5 h-3.5" />
@@ -208,6 +213,9 @@ export function QuestionVoiceControls({
               ? dict.voice.listenDare
               : dict.voice.listenQuestion}
           </span>
+          {isNeuralAvailable && (
+            <Sparkles className="w-3 h-3 text-brand-300 ml-0.5" />
+          )}
         </button>
       </div>
     );
@@ -255,12 +263,36 @@ export function QuestionVoiceControls({
           <>
             <Volume2 className="w-3.5 h-3.5" />
             <span className="hidden xs:inline">
-              {type === 'truth' ? dict.voice.listenTruth : type === 'dare' ? dict.voice.listenDare : dict.voice.listenQuestion}
+              {type === 'truth'
+                ? dict.voice.listenTruth
+                : type === 'dare'
+                ? dict.voice.listenDare
+                : dict.voice.listenQuestion}
             </span>
             <span className="xs:hidden">{dict.voice.play}</span>
           </>
         )}
       </button>
+
+      {/* Engine Status Indicator Pill */}
+      <span
+        title={`Audio Engine: ${engine === 'neural' ? 'Natural Neural AI' : 'Browser Web Speech'}`}
+        className={cn(
+          'hidden xs:inline-flex items-center gap-1 px-1.5 py-0.5 rounded-md text-[9px] font-bold uppercase tracking-wider border select-none',
+          engine === 'neural'
+            ? 'bg-brand-500/20 text-brand-300 border-brand-400/30'
+            : 'bg-white/5 text-slate-400 border-white/10'
+        )}
+      >
+        {engine === 'neural' ? (
+          <>
+            <Sparkles className="w-2.5 h-2.5 text-brand-300" />
+            <span>Neural</span>
+          </>
+        ) : (
+          <span>HD</span>
+        )}
+      </span>
 
       {/* Pause / Resume Controls (Only visible when active) */}
       {(isCurrentCardPlaying || isCurrentCardPaused) && (
@@ -303,6 +335,30 @@ export function QuestionVoiceControls({
       {/* Speed & Voice Selection Popover */}
       {showSettings && (
         <div className="absolute bottom-full mb-2 left-0 sm:left-auto sm:right-0 z-50 w-64 p-3.5 rounded-2xl bg-[#121226]/95 border border-white/15 shadow-elevation-3 backdrop-blur-xl space-y-3 text-left animate-in fade-in zoom-in-95 duration-150">
+          {/* Audio Engine Info */}
+          <div className="flex items-center justify-between pb-1.5 border-b border-white/10">
+            <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
+              Audio Engine:
+            </span>
+            <span
+              className={cn(
+                'inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-md border',
+                engine === 'neural'
+                  ? 'bg-brand-500/20 text-brand-300 border-brand-400/40'
+                  : 'bg-white/5 text-slate-300 border-white/10'
+              )}
+            >
+              {engine === 'neural' ? (
+                <>
+                  <Sparkles className="w-2.5 h-2.5 text-brand-300" />
+                  <span>Neural AI ({providerName})</span>
+                </>
+              ) : (
+                <span>Browser Speech</span>
+              )}
+            </span>
+          </div>
+
           {/* Speaking Rate Controls */}
           <div className="space-y-1.5">
             <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
@@ -330,11 +386,11 @@ export function QuestionVoiceControls({
             </div>
           </div>
 
-          {/* Voice Selector */}
+          {/* Browser Voice Selector (When matching browser voices available) */}
           {matchingVoices.length > 0 && (
             <div className="space-y-1.5">
               <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
-                {dict.voice.selectVoice} ({matchingVoices.length}):
+                Fallback Voice ({matchingVoices.length}):
               </span>
               <select
                 aria-label={dict.voice.selectVoice}
@@ -355,7 +411,7 @@ export function QuestionVoiceControls({
             </div>
           )}
 
-          {!hasMatchingVoice && (
+          {!isPlaybackAvailable && (
             <div className="p-2.5 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-300 text-[11px] flex items-start gap-2">
               <AlertCircle className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
               <span>{dict.voice.voiceUnavailableDesc}</span>
@@ -374,4 +430,3 @@ export function QuestionVoiceControls({
     </div>
   );
 }
-

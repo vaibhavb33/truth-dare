@@ -759,6 +759,7 @@ export function CustomDeckClient() {
                             language={deckLanguage}
                             type={q.type}
                             variant="compact"
+                            isCustom={true}
                           />
 
                           {/* Preview Question Button */}
@@ -1153,6 +1154,7 @@ export function CustomDeckClient() {
                         language={deckLanguage}
                         type={currentCard?.type || 'truth'}
                         variant="card"
+                        isCustom={true}
                       />
                     </div>
 
@@ -1293,6 +1295,7 @@ export function CustomDeckClient() {
                   language={deckLanguage}
                   type={previewQuestion.type}
                   variant="card"
+                  isCustom={true}
                 />
               </div>
             </div>

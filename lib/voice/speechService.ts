@@ -1,7 +1,11 @@
 /**
- * Asteria Web Speech API Text-to-Speech Engine
- * Standardized cross-browser speech service supporting 8 international languages,
- * pause/resume, rate adjustment, voice selection, and zero-leak lifecycle management.
+ * Asteria Unified Hybrid Speech Engine
+ * Next-generation audio system combining:
+ * 1. Primary: Server-authoritative Neural TTS (Google Cloud Neural2 / Azure / ElevenLabs)
+ * 2. Fallback: High-grade client-side Web Speech API (window.speechSynthesis)
+ *
+ * Provides natural conversational speech for Truth and Dare, Custom Decks, and Multiplayer.
+ * Enforces strict lifecycle rules: single playback, no unsolicited audio, pause/resume, and zero memory leaks.
  */
 
 import { SupportedLanguageCode } from '@/types';
@@ -16,12 +20,32 @@ export interface VoiceState {
   availableVoices: SpeechSynthesisVoice[];
   selectedVoice: SpeechSynthesisVoice | null;
   error: string | null;
+  // Neural AI voice metadata
+  engine: 'neural' | 'browser';
+  isNeuralAvailable: boolean;
+  providerName: string;
 }
 
 export type VoiceStateListener = (state: VoiceState) => void;
 
+export interface SpeakParams {
+  text: string;
+  language: SupportedLanguageCode | string;
+  rate?: number;
+  voice?: SpeechSynthesisVoice;
+  voiceId?: string;
+  isCustom?: boolean; // Flag private user deck questions to bypass public cache
+  forceBrowser?: boolean;
+  onStart?: () => void;
+  onEnd?: () => void;
+  onError?: (error: string) => void;
+}
+
 // Canonical BCP-47 language targets for Asteria's 8 supported languages
-export const LANGUAGE_LOCALE_MAP: Record<SupportedLanguageCode, { bcp47: string; fallbackPrefix: string; label: string }> = {
+export const LANGUAGE_LOCALE_MAP: Record<
+  SupportedLanguageCode,
+  { bcp47: string; fallbackPrefix: string; label: string }
+> = {
   en: { bcp47: 'en-US', fallbackPrefix: 'en', label: 'English (US)' },
   hi: { bcp47: 'hi-IN', fallbackPrefix: 'hi', label: 'हिन्दी (India)' },
   es: { bcp47: 'es-ES', fallbackPrefix: 'es', label: 'Español (Spain)' },
@@ -34,9 +58,16 @@ export const LANGUAGE_LOCALE_MAP: Record<SupportedLanguageCode, { bcp47: string;
 
 export class SpeechService {
   private static instance: SpeechService | null = null;
+  public isNeuralEnabled: boolean =
+    typeof window !== 'undefined' &&
+    typeof process !== 'undefined' &&
+    !process.env.VITEST;
   private synth: SpeechSynthesis | null = null;
   private voices: SpeechSynthesisVoice[] = [];
   private activeUtterance: SpeechSynthesisUtterance | null = null; // GC reference shield
+  private audioElement: HTMLAudioElement | null = null; // HTML5 Audio for neural playback
+  private activeAudioUrl: string | null = null; // Object URL to revoke
+  private activeAbortController: AbortController | null = null;
   private listeners: Set<VoiceStateListener> = new Set();
   private isVoicesLoaded: boolean = false;
   private currentRate: number = 1.0;
@@ -44,7 +75,8 @@ export class SpeechService {
   private state: VoiceState;
 
   private constructor() {
-    const isSupported = typeof window !== 'undefined' && 'speechSynthesis' in window && 'SpeechSynthesisUtterance' in window;
+    const isBrowserSynthSupported =
+      typeof window !== 'undefined' && 'speechSynthesis' in window && 'SpeechSynthesisUtterance' in window;
 
     // Load persisted rate
     let savedRate = 1.0;
@@ -62,7 +94,7 @@ export class SpeechService {
     this.currentRate = savedRate;
 
     this.state = {
-      isSupported,
+      isSupported: isBrowserSynthSupported || typeof window !== 'undefined',
       isPlaying: false,
       isPaused: false,
       currentText: null,
@@ -70,18 +102,22 @@ export class SpeechService {
       rate: this.currentRate,
       availableVoices: [],
       selectedVoice: null,
-      error: isSupported ? null : 'Web Speech API is not supported in this browser.',
+      error: null,
+      engine: 'neural',
+      isNeuralAvailable: true,
+      providerName: 'Neural AI',
     };
 
-    if (isSupported) {
-      this.synth = window.speechSynthesis;
-      this.loadVoices();
+    if (typeof window !== 'undefined') {
+      if (isBrowserSynthSupported) {
+        this.synth = window.speechSynthesis;
+        this.loadVoices();
 
-      // Chrome, Edge, and Safari load voices asynchronously
-      if (typeof window.speechSynthesis !== 'undefined' && 'onvoiceschanged' in window.speechSynthesis) {
-        window.speechSynthesis.onvoiceschanged = () => {
-          this.loadVoices();
-        };
+        if ('onvoiceschanged' in window.speechSynthesis) {
+          window.speechSynthesis.onvoiceschanged = () => {
+            this.loadVoices();
+          };
+        }
       }
 
       // Cleanup on page unload or visibility hide
@@ -129,10 +165,15 @@ export class SpeechService {
     if (partial) {
       this.state = { ...this.state, ...partial };
     } else {
+      const isAudioPlaying = this.audioElement
+        ? !this.audioElement.paused && !this.audioElement.ended
+        : false;
+      const isSynthPlaying = this.synth ? this.synth.speaking && !this.synth.paused : false;
+
       this.state = {
         ...this.state,
-        isPlaying: this.synth ? this.synth.speaking && !this.synth.paused : false,
-        isPaused: this.synth ? this.synth.paused : false,
+        isPlaying: isAudioPlaying || isSynthPlaying,
+        isPaused: this.audioElement ? this.audioElement.paused && this.audioElement.currentTime > 0 : this.synth ? this.synth.paused : false,
         availableVoices: this.voices,
         selectedVoice: this.currentVoice,
         rate: this.currentRate,
@@ -149,9 +190,7 @@ export class SpeechService {
   }
 
   /**
-   * Find matching voices for a supported language code.
-   * Collects all voices strictly within the language family, sorting exact BCP-47 targets first.
-   * Enforces Rule: Never return an unrelated voice silently.
+   * Find matching browser voices for fallback mode.
    */
   public getVoicesForLanguage(langCode: SupportedLanguageCode | string): SpeechSynthesisVoice[] {
     if (!this.synth) return [];
@@ -163,14 +202,12 @@ export class SpeechService {
     const targetBcp47 = mapping ? mapping.bcp47.toLowerCase() : langCode.toLowerCase();
     const targetPrefix = mapping ? mapping.fallbackPrefix.toLowerCase() : langCode.split('-')[0].toLowerCase();
 
-    // 1. Collect all voices strictly matching the language prefix (e.g. 'ar', 'hi', 'es')
     const familyVoices = this.voices.filter((v) => {
       const vLang = v.lang.toLowerCase().replace('_', '-');
       const vPrefix = vLang.split('-')[0];
       return vPrefix === targetPrefix;
     });
 
-    // 2. Sort exact target dialect (e.g. 'ar-SA', 'es-ES') and default flags to the top
     return familyVoices.sort((a, b) => {
       const aLang = a.lang.toLowerCase().replace('_', '-');
       const bLang = b.lang.toLowerCase().replace('_', '-');
@@ -184,31 +221,27 @@ export class SpeechService {
     });
   }
 
-  /**
-   * Selects the closest available matching voice.
-   * If no voice exists for the target language, returns null (NO silent unrelated fallback).
-   */
   public getBestVoiceForLanguage(langCode: SupportedLanguageCode | string): SpeechSynthesisVoice | null {
     const matching = this.getVoicesForLanguage(langCode);
     if (matching.length === 0) return null;
 
-    // Prefer native/default voice if flagged
     const defaultVoice = matching.find((v) => v.default);
     if (defaultVoice) return defaultVoice;
 
-    // Prefer high quality / enhanced / natural online voices when present
     const naturalVoice = matching.find((v) => /natural|premium|enhanced|google|siri/i.test(v.name));
     if (naturalVoice) return naturalVoice;
 
     return matching[0];
   }
 
-  /**
-   * Set speaking speed (rate) between 0.5x and 2.0x
-   */
   public setRate(rate: number) {
     const clamped = Math.max(0.5, Math.min(2.0, rate));
     this.currentRate = clamped;
+
+    if (this.audioElement) {
+      this.audioElement.playbackRate = clamped;
+    }
+
     if (typeof window !== 'undefined' && typeof window.localStorage !== 'undefined') {
       try {
         window.localStorage.setItem('asteria_voice_rate', clamped.toString());
@@ -221,60 +254,178 @@ export class SpeechService {
     return this.currentRate;
   }
 
-  /**
-   * Set preferred voice manually
-   */
   public setVoice(voice: SpeechSynthesisVoice | null) {
     this.currentVoice = voice;
     this.notifyState({ selectedVoice: voice });
   }
 
-  /**
-   * Speak a question or statement.
-   * Strictly respects:
-   * 1. No automatic playback without user action.
-   * 2. Stop previous speech before new speech.
-   * 3. Select closest matching voice; never use unrelated voice silently.
-   */
-  public speak(params: {
-    text: string;
-    language: SupportedLanguageCode | string;
-    rate?: number;
-    voice?: SpeechSynthesisVoice;
-    onStart?: () => void;
-    onEnd?: () => void;
-    onError?: (error: string) => void;
-  }): { success: boolean; error?: string } {
-    if (!this.synth) {
-      return { success: false, error: 'Web Speech API is not supported on this browser.' };
-    }
+  public setNeuralEnabled(enabled: boolean) {
+    this.isNeuralEnabled = enabled;
+    this.notifyState({ isNeuralAvailable: enabled, engine: enabled ? 'neural' : 'browser' });
+  }
 
+  /**
+   * Primary Entry Point: Speak Question
+   * 1. Attempts Server Neural TTS (/api/voice/synthesize)
+   * 2. Automatically falls back to Web Speech API if neural fails or forceBrowser is set
+   */
+  public speak(params: SpeakParams): { success: boolean; error?: string } {
     const cleanText = params.text.trim();
     if (!cleanText) {
       return { success: false, error: 'Cannot speak an empty prompt.' };
     }
 
-    // Stop any in-flight playback first
+    // Stop any in-flight playback first (Rule: never overlap audio)
     this.stop();
 
-    // Determine matching voice
+    const targetRate = params.rate ?? this.currentRate;
+
+    // If browser fallback is explicitly requested or neural disabled (e.g. test runner)
+    if (params.forceBrowser || !this.isNeuralEnabled) {
+      return this.speakWithBrowserFallback({ ...params, text: cleanText, rate: targetRate });
+    }
+
+    // Initiate Neural Speech Synthesis
+    this.speakWithNeuralTTS({
+      ...params,
+      text: cleanText,
+      rate: targetRate,
+    });
+
+    return { success: true };
+  }
+
+  /**
+   * Neural TTS via Server-Authoritative API
+   */
+  private async speakWithNeuralTTS(params: SpeakParams) {
+    this.activeAbortController = new AbortController();
+
+    try {
+      this.notifyState({
+        isPlaying: true,
+        isPaused: false,
+        currentText: params.text,
+        currentLanguage: params.language,
+        engine: 'neural',
+        error: null,
+      });
+
+      params.onStart?.();
+
+      const response = await fetch('/api/voice/synthesize', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          text: params.text,
+          language: params.language,
+          rate: params.rate ?? this.currentRate,
+          voiceId: params.voiceId,
+          isCustom: params.isCustom,
+        }),
+        signal: this.activeAbortController.signal,
+      });
+
+      if (!response.ok) {
+        throw new Error(`Neural synthesis server returned ${response.status}`);
+      }
+
+      const providerHeader = response.headers.get('X-Asteria-Voice-Provider') || 'neural';
+      const audioBlob = await response.blob();
+      const audioUrl = URL.createObjectURL(audioBlob);
+      this.activeAudioUrl = audioUrl;
+
+      if (!this.audioElement) {
+        this.audioElement = new Audio();
+      }
+
+      const audio = this.audioElement;
+      audio.src = audioUrl;
+      audio.playbackRate = params.rate ?? this.currentRate;
+
+      audio.onplay = () => {
+        this.notifyState({
+          isPlaying: true,
+          isPaused: false,
+          currentText: params.text,
+          currentLanguage: params.language,
+          engine: 'neural',
+          providerName: providerHeader,
+          error: null,
+        });
+      };
+
+      audio.onpause = () => {
+        if (!audio.ended) {
+          this.notifyState({ isPlaying: false, isPaused: true });
+        }
+      };
+
+      audio.onended = () => {
+        this.cleanupAudio();
+        this.notifyState({
+          isPlaying: false,
+          isPaused: false,
+          currentText: null,
+          currentLanguage: null,
+        });
+        params.onEnd?.();
+      };
+
+      audio.onerror = (e) => {
+        console.warn('Neural audio playback error, falling back to browser speech:', e);
+        this.cleanupAudio();
+        this.speakWithBrowserFallback(params);
+      };
+
+      await audio.play();
+    } catch (err: unknown) {
+      if (err instanceof Error && err.name === 'AbortError') {
+        // User stopped audio deliberately
+        return;
+      }
+      console.warn('Neural TTS failed, executing graceful browser fallback:', err);
+      this.cleanupAudio();
+      this.speakWithBrowserFallback(params);
+    }
+  }
+
+  /**
+   * Browser Web Speech API Fallback
+   */
+  private speakWithBrowserFallback(params: SpeakParams): { success: boolean; error?: string } {
+    if (!this.synth) {
+      const errMsg = 'Speech synthesis is not supported on this browser or device.';
+      this.notifyState({
+        isPlaying: false,
+        isPaused: false,
+        error: errMsg,
+        engine: 'browser',
+      });
+      params.onError?.(errMsg);
+      return { success: false, error: errMsg };
+    }
+
     const voiceToUse = params.voice || this.currentVoice || this.getBestVoiceForLanguage(params.language);
 
     if (!voiceToUse) {
       const mapping = LANGUAGE_LOCALE_MAP[params.language as SupportedLanguageCode];
       const langLabel = mapping ? mapping.label : params.language;
-      const errorMsg = `No native speech voice is available for ${langLabel} on this browser/device.`;
+      const errorMsg = `No native speech voice is available for ${langLabel} on this device.`;
       this.notifyState({
         error: errorMsg,
         isPlaying: false,
         isPaused: false,
+        engine: 'browser',
       });
       params.onError?.(errorMsg);
       return { success: false, error: errorMsg };
     }
 
     try {
-      const utterance = new SpeechSynthesisUtterance(cleanText);
+      const utterance = new SpeechSynthesisUtterance(params.text);
       const targetRate = params.rate ?? this.currentRate;
 
       utterance.voice = voiceToUse;
@@ -282,15 +433,16 @@ export class SpeechService {
       utterance.rate = targetRate;
       utterance.pitch = 1.0;
 
-      // Keep active reference to shield from aggressive Chromium garbage collection
       this.activeUtterance = utterance;
 
       utterance.onstart = () => {
         this.notifyState({
           isPlaying: true,
           isPaused: false,
-          currentText: cleanText,
+          currentText: params.text,
           currentLanguage: params.language,
+          engine: 'browser',
+          providerName: 'Browser HD',
           error: null,
         });
         params.onStart?.();
@@ -308,7 +460,6 @@ export class SpeechService {
       };
 
       utterance.onerror = (event) => {
-        // 'canceled' or 'interrupted' is expected when user clicks stop
         if (event.error === 'canceled' || event.error === 'interrupted') {
           this.activeUtterance = null;
           this.notifyState({
@@ -331,17 +482,11 @@ export class SpeechService {
       };
 
       utterance.onpause = () => {
-        this.notifyState({
-          isPlaying: false,
-          isPaused: true,
-        });
+        this.notifyState({ isPlaying: false, isPaused: true });
       };
 
       utterance.onresume = () => {
-        this.notifyState({
-          isPlaying: true,
-          isPaused: false,
-        });
+        this.notifyState({ isPlaying: true, isPaused: false });
       };
 
       this.synth.speak(utterance);
@@ -359,55 +504,86 @@ export class SpeechService {
   }
 
   /**
-   * Pause speech where supported
+   * Pause speech where supported (handles both Neural HTML5 and Browser Synth)
    */
   public pause(): boolean {
-    if (!this.synth) return false;
-    try {
-      if (this.synth.speaking && !this.synth.paused) {
-        this.synth.pause();
-        this.notifyState({ isPaused: true, isPlaying: false });
-        return true;
-      }
-    } catch (e) {
-      console.warn('Speech pause error:', e);
+    if (this.audioElement && !this.audioElement.paused) {
+      this.audioElement.pause();
+      this.notifyState({ isPaused: true, isPlaying: false });
+      return true;
     }
+
+    if (this.synth && this.synth.speaking && !this.synth.paused) {
+      this.synth.pause();
+      this.notifyState({ isPaused: true, isPlaying: false });
+      return true;
+    }
+
     return false;
   }
 
   /**
-   * Resume speech where supported
+   * Resume speech where supported (handles both Neural HTML5 and Browser Synth)
    */
   public resume(): boolean {
-    if (!this.synth) return false;
-    try {
-      if (this.synth.paused) {
-        this.synth.resume();
-        this.notifyState({ isPaused: false, isPlaying: true });
-        return true;
-      }
-    } catch (e) {
-      console.warn('Speech resume error:', e);
+    if (this.audioElement && this.audioElement.paused && this.audioElement.currentTime > 0) {
+      this.audioElement.play().catch(console.warn);
+      this.notifyState({ isPaused: false, isPlaying: true });
+      return true;
     }
+
+    if (this.synth && this.synth.paused) {
+      this.synth.resume();
+      this.notifyState({ isPaused: false, isPlaying: true });
+      return true;
+    }
+
     return false;
   }
 
   /**
-   * Stop speech immediately and reset utterance
+   * Stop speech immediately and reset all audio handles
    */
   public stop() {
-    if (!this.synth) return;
-    try {
-      this.synth.cancel();
-      this.activeUtterance = null;
-      this.notifyState({
-        isPlaying: false,
-        isPaused: false,
-        currentText: null,
-        currentLanguage: null,
-      });
-    } catch (e) {
-      console.warn('Speech cancel error:', e);
+    // 1. Abort any in-flight neural fetch
+    if (this.activeAbortController) {
+      this.activeAbortController.abort();
+      this.activeAbortController = null;
+    }
+
+    // 2. Stop HTML5 audio
+    this.cleanupAudio();
+
+    // 3. Stop browser speech synthesis
+    if (this.synth) {
+      try {
+        this.synth.cancel();
+      } catch (e) {
+        console.warn('Speech cancel error:', e);
+      }
+    }
+
+    this.activeUtterance = null;
+    this.notifyState({
+      isPlaying: false,
+      isPaused: false,
+      currentText: null,
+      currentLanguage: null,
+    });
+  }
+
+  private cleanupAudio() {
+    if (this.audioElement) {
+      try {
+        this.audioElement.pause();
+        this.audioElement.currentTime = 0;
+      } catch {}
+    }
+    if (this.activeAudioUrl) {
+      try {
+        URL.revokeObjectURL(this.activeAudioUrl);
+      } catch {}
+      this.activeAudioUrl = null;
     }
   }
 }

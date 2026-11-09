@@ -95,6 +95,7 @@ export function Card3D({
           <div className="relative z-10 w-full grid grid-cols-2 gap-2 xs:gap-2.5 sm:gap-3 items-stretch shrink-0">
             {/* TRUTH SELECTION BUTTON */}
             <button
+              data-testid="truth-btn"
               type="button"
               onClick={() => {
                 sound.triggerHaptic(20);
@@ -118,6 +119,7 @@ export function Card3D({
 
             {/* DARE SELECTION BUTTON */}
             <button
+              data-testid="dare-btn"
               type="button"
               onClick={() => {
                 sound.triggerHaptic(20);
@@ -233,6 +235,7 @@ export function Card3D({
                   language={question.language_code}
                   type={isDare ? 'dare' : 'truth'}
                   variant="card"
+                  isCustom={Boolean((question as any)?.is_custom || (question as any)?.deck_id)}
                 />
               )}
               <button
