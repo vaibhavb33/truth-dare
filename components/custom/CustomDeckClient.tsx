@@ -15,7 +15,6 @@ import {
   Eye,
   RotateCcw,
   Users,
-  ArrowRight,
   Share2,
   ShieldAlert,
   History,
@@ -23,10 +22,12 @@ import {
   Globe,
   X,
   Trophy,
-  Volume2,
   Save,
   Lock,
   Compass,
+  ChevronDown,
+  ChevronUp,
+  Settings2,
 } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { sound } from '@/lib/audio/soundSynthesizer';
@@ -35,10 +36,12 @@ import { CustomDeck, CustomQuestion, SupportedLanguageCode, CategoryId } from '@
 import { useTranslation } from '@/lib/i18n/LanguageContext';
 import { QuestionVoiceControls } from '@/components/voice/QuestionVoiceControls';
 import { deckStorage, getCreatorId } from '@/lib/custom/deckStorage';
-import { validateCustomQuestion, validateQuestionSafety } from '@/lib/custom/safetyFilter';
-import { SUPPORTED_LOCALES, Locale } from '@/lib/i18n/config';
+import { validateCustomQuestion } from '@/lib/custom/safetyFilter';
+import { SUPPORTED_LOCALES } from '@/lib/i18n/config';
 
 type TabView = 'editor' | 'library' | 'play';
+
+const DRAFT_STORAGE_KEY = 'asteria_custom_deck_draft';
 
 export function CustomDeckClient() {
   const router = useRouter();
@@ -51,30 +54,35 @@ export function CustomDeckClient() {
   const [decks, setDecks] = useState<CustomDeck[]>([]);
   const [currentDeckId, setCurrentDeckId] = useState<string | null>(null);
 
-  // Deck Editor State (Phase 1 & 2)
+  // Deck Core Settings (Phase 1 & Phase 2: Visible Only Deck Name & Language)
   const [deckName, setDeckName] = useState('Party Inside Jokes');
-  const [deckDescription, setDeckDescription] = useState('Custom icebreakers, group secrets, and dares for close friend circles.');
   const [deckLanguage, setDeckLanguage] = useState<SupportedLanguageCode>(locale);
+
+  // Deck Advanced Settings (Phase 2: Collapsed by default)
+  const [showAdvancedSettings, setShowAdvancedSettings] = useState(false);
+  const [deckDescription, setDeckDescription] = useState('');
   const [deckCategory, setDeckCategory] = useState<CategoryId>('classic-party');
-  const [deckVisibility, setDeckVisibility] = useState<'private' | 'unlisted' | 'public'>('private');
+  const [deckVisibility, setDeckVisibility] = useState<'private' | 'unlisted' | 'public'>('public');
+
+  // Question List State
   const [questions, setQuestions] = useState<CustomQuestion[]>([]);
 
-  // Add Question Input Form State
+  // Simple Question Editor Form State (Phase 3)
   const [newPromptText, setNewPromptText] = useState('');
   const [newPromptType, setNewPromptType] = useState<'truth' | 'dare'>('truth');
   const [inputError, setInputError] = useState<string | null>(null);
+  const [addedSuccess, setAddedSuccess] = useState<string | null>(null);
   const [savedSuccess, setSavedSuccess] = useState(false);
 
-  // Question Editing State
+  // Inline Question Editing State
   const [editingQuestionId, setEditingQuestionId] = useState<string | null>(null);
   const [editingText, setEditingText] = useState('');
   const [editingType, setEditingType] = useState<'truth' | 'dare'>('truth');
 
   // Preview Modal State
   const [previewQuestion, setPreviewQuestion] = useState<CustomQuestion | null>(null);
-  const [previewFlipped, setPreviewFlipped] = useState(false);
 
-  // Single-Device Play State (Phase 4)
+  // Single-Device Play State
   const [playPlayers, setPlayPlayers] = useState<Array<{ id: string; name: string; score: number; skips: number; avatarColor: string }>>([
     { id: 'p1', name: 'Player 1', score: 0, skips: 0, avatarColor: '#8B5CF6' },
     { id: 'p2', name: 'Player 2', score: 0, skips: 0, avatarColor: '#06B6D4' },
@@ -90,7 +98,7 @@ export function CustomDeckClient() {
   const [showGameOverModal, setShowGameOverModal] = useState(false);
   const [drawnQuestionIds, setDrawnQuestionIds] = useState<string[]>([]);
 
-  // Load Decks from Local Storage on mount
+  // Load Decks from Storage on mount
   useEffect(() => {
     const loadedDecks = deckStorage.getDecks();
     setDecks(loadedDecks);
@@ -102,23 +110,63 @@ export function CustomDeckClient() {
       setDeckDescription(initial.description || '');
       setDeckLanguage(initial.language || locale);
       setDeckCategory(initial.category || 'classic-party');
-      setDeckVisibility(initial.visibility || 'private');
+      setDeckVisibility(initial.visibility || 'public');
       setQuestions(initial.questions || []);
+    } else {
+      // Check for unsaved draft
+      if (typeof window !== 'undefined') {
+        try {
+          const draft = localStorage.getItem(DRAFT_STORAGE_KEY);
+          if (draft) {
+            const parsed = JSON.parse(draft);
+            if (parsed.name) setDeckName(parsed.name);
+            if (parsed.language) setDeckLanguage(parsed.language);
+            if (Array.isArray(parsed.questions) && parsed.questions.length > 0) {
+              setQuestions(parsed.questions);
+            }
+          }
+        } catch {}
+      }
     }
   }, [locale]);
+
+  // Auto-save draft so questions are never lost during ordinary UI changes
+  useEffect(() => {
+    if (typeof window !== 'undefined' && questions.length > 0) {
+      try {
+        localStorage.setItem(
+          DRAFT_STORAGE_KEY,
+          JSON.stringify({
+            name: deckName,
+            language: deckLanguage,
+            questions,
+          })
+        );
+      } catch {}
+    }
+  }, [deckName, deckLanguage, questions]);
 
   // Question Counts
   const truthCount = useMemo(() => questions.filter((q) => q.type === 'truth').length, [questions]);
   const dareCount = useMemo(() => questions.filter((q) => q.type === 'dare').length, [questions]);
   const totalCount = questions.length;
 
-  // Add Question Handler with Validation (Empty, Duplicate, Length, Safety)
-  const handleAddQuestion = (e: React.FormEvent) => {
-    e.preventDefault();
+  // Question validation state for Add button
+  const isInputValidToAdd = useMemo(() => {
+    const trimmed = newPromptText.trim();
+    return trimmed.length > 0 && trimmed.length <= 250;
+  }, [newPromptText]);
+
+  // PHASE 3: ADD QUESTION HANDLER
+  const handleAddQuestion = (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
     setInputError(null);
 
+    const clean = newPromptText.trim();
+    if (!clean) return;
+
     const validation = validateCustomQuestion(
-      newPromptText,
+      clean,
       questions.map((q) => q.prompt),
       250
     );
@@ -132,12 +180,22 @@ export function CustomDeckClient() {
     const newQuestion: CustomQuestion = {
       id: 'cq-' + Date.now() + '-' + Math.random().toString(36).substring(2, 6),
       type: newPromptType,
-      prompt: newPromptText.trim(),
+      prompt: clean,
       intensity: 3,
     };
 
-    setQuestions([...questions, newQuestion]);
+    // Update list: add to deck
+    setQuestions((prev) => [...prev, newQuestion]);
+
+    // 1. Clear input
     setNewPromptText('');
+    // 2. Keep selected question type (newPromptType remains unchanged)
+    // 3. Display small success message
+    const typeLabel = newPromptType === 'truth' ? 'Truth' : 'Dare';
+    setAddedSuccess(`✓ ${typeLabel} added! (${questions.length + 1} total)`);
+    setTimeout(() => setAddedSuccess(null), 2500);
+
+    sound.playChime();
     sound.triggerHaptic(15);
   };
 
@@ -156,8 +214,15 @@ export function CustomDeckClient() {
 
   // Save Inline Question Edit
   const handleSaveEdit = (id: string) => {
+    const clean = editingText.trim();
+    if (!clean) {
+      setInputError('Question cannot be empty.');
+      sound.playBuzzer();
+      return;
+    }
+
     const validation = validateCustomQuestion(
-      editingText,
+      clean,
       questions.filter((q) => q.id !== id).map((q) => q.prompt),
       250
     );
@@ -170,7 +235,7 @@ export function CustomDeckClient() {
 
     setQuestions(
       questions.map((q) =>
-        q.id === id ? { ...q, prompt: editingText.trim(), type: editingType } : q
+        q.id === id ? { ...q, prompt: clean, type: editingType } : q
       )
     );
     setEditingQuestionId(null);
@@ -178,12 +243,20 @@ export function CustomDeckClient() {
     sound.triggerHaptic(15);
   };
 
-  // Save Deck to Library & Local Storage
-  const handleSaveDeck = () => {
+  // PHASE 5: SAVE DECK
+  const handleSaveDeck = (): boolean => {
     setInputError(null);
+    const cleanName = deckName.trim() || 'My Custom Deck';
+
+    if (questions.length === 0) {
+      setInputError('Please add at least one question before saving.');
+      sound.playBuzzer();
+      return false;
+    }
+
     const saveResult = deckStorage.saveDeck({
       id: currentDeckId || undefined,
-      name: deckName,
+      name: cleanName,
       description: deckDescription,
       language: deckLanguage,
       category: deckCategory,
@@ -194,7 +267,7 @@ export function CustomDeckClient() {
     if (!saveResult.success) {
       setInputError(saveResult.error || 'Failed to save deck.');
       sound.playBuzzer();
-      return;
+      return false;
     }
 
     if (saveResult.deck) {
@@ -217,17 +290,35 @@ export function CustomDeckClient() {
     setSavedSuccess(true);
     sound.playVictory();
     setTimeout(() => setSavedSuccess(false), 2500);
+    return true;
+  };
+
+  // PHASE 5: SAVE DECK & PLAY
+  const handleSaveAndPlay = () => {
+    if (questions.length < 2) {
+      setInputError('Add at least 2 questions to start playing!');
+      sound.playBuzzer();
+      return;
+    }
+
+    const saved = handleSaveDeck();
+    if (saved) {
+      setActiveTab('play');
+      sound.triggerHaptic(20);
+    }
   };
 
   // Create New Deck in Editor
   const handleCreateNewDeck = () => {
     setCurrentDeckId(null);
-    setDeckName('New Custom Deck');
+    setDeckName('My Custom Deck');
     setDeckDescription('');
     setDeckLanguage(locale);
     setDeckCategory('classic-party');
-    setDeckVisibility('private');
+    setDeckVisibility('public');
     setQuestions([]);
+    setNewPromptText('');
+    setInputError(null);
     setActiveTab('editor');
     sound.triggerHaptic(15);
   };
@@ -239,8 +330,10 @@ export function CustomDeckClient() {
     setDeckDescription(deck.description || '');
     setDeckLanguage(deck.language || locale);
     setDeckCategory(deck.category || 'classic-party');
-    setDeckVisibility(deck.visibility || 'private');
+    setDeckVisibility(deck.visibility || 'public');
     setQuestions(deck.questions || []);
+    setNewPromptText('');
+    setInputError(null);
     setActiveTab('editor');
     sound.triggerHaptic(15);
   };
@@ -271,13 +364,15 @@ export function CustomDeckClient() {
     }
   };
 
-  // Host Multiplayer Room with this Custom Deck Snapshot (Phase 5)
+  // Host Multiplayer Room with this Custom Deck Snapshot
   const handleHostMultiplayerRoom = async () => {
     if (questions.length < 2) {
-      setInputError('A custom deck must contain at least 2 cards to host a multiplayer room.');
+      setInputError('Add at least 2 questions to host a multiplayer room.');
       sound.playBuzzer();
       return;
     }
+
+    handleSaveDeck();
 
     try {
       const creator = getCreatorId();
@@ -327,14 +422,10 @@ export function CustomDeckClient() {
     }
   };
 
-  // ========================================================
-  // SINGLE-DEVICE PASS-AND-PLAY GAMEPLAY (Phase 4)
-  // ========================================================
-
+  // Single-Device Play Helpers
   const handleAddPlayer = () => {
     const clean = newPlayerName.trim();
-    if (!clean) return;
-    if (playPlayers.length >= 20) return;
+    if (!clean || playPlayers.length >= 20) return;
 
     const colors = ['#8B5CF6', '#06B6D4', '#EC4899', '#10B981', '#F59E0B', '#6366F1'];
     const newPlayer = {
@@ -356,8 +447,8 @@ export function CustomDeckClient() {
   };
 
   const handleStartPassAndPlay = () => {
-    if (questions.length < 3) {
-      setInputError('Add at least 3 cards to start playing!');
+    if (questions.length < 2) {
+      setInputError('Add at least 2 questions to start playing!');
       return;
     }
     if (playPlayers.length < 2) {
@@ -379,7 +470,6 @@ export function CustomDeckClient() {
     const pool = questions.filter((q) => q.type === type);
     const eligible = pool.filter((q) => !drawnQuestionIds.includes(q.id));
 
-    // Reset drawn IDs if all cards of this type were exhausted
     let chosen: CustomQuestion;
     if (eligible.length > 0) {
       chosen = eligible[Math.floor(Math.random() * eligible.length)];
@@ -388,7 +478,6 @@ export function CustomDeckClient() {
       chosen = pool[Math.floor(Math.random() * pool.length)];
       setDrawnQuestionIds([chosen.id]);
     } else {
-      // Fallback if deck has 0 cards of this type
       chosen = questions[Math.floor(Math.random() * questions.length)];
     }
 
@@ -399,7 +488,6 @@ export function CustomDeckClient() {
 
   const handleCompleteDare = () => {
     if (!currentCard) return;
-
     const activeP = playPlayers[activePlayerIndex];
     activeP.score += 1;
 
@@ -414,7 +502,6 @@ export function CustomDeckClient() {
 
   const handleSkipTurn = () => {
     if (!currentCard) return;
-
     const activeP = playPlayers[activePlayerIndex];
     activeP.skips += 1;
 
@@ -450,276 +537,350 @@ export function CustomDeckClient() {
   };
 
   return (
-    <div className="w-full max-w-4xl lg:max-w-5xl mx-auto px-3 sm:px-4 md:px-8 py-6 sm:py-8 md:py-12 space-y-6 sm:space-y-8 flex-1">
-      {/* Header Banner */}
-      <div className="space-y-2 text-center md:text-left px-1">
-        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-brand-500/10 border border-brand-500/20 text-xs font-bold uppercase tracking-wider text-brand-300">
-          <Sparkles className="w-3.5 h-3.5 text-brand-400" />
-          <span>{dict.customDeck.badge}</span>
+    <div className="w-full max-w-3xl lg:max-w-4xl mx-auto px-3 sm:px-4 md:px-6 py-4 sm:py-6 md:py-8 space-y-4 sm:space-y-6 flex-1">
+      {/* Header Banner - Compact & Welcoming */}
+      <div className="space-y-1 text-center md:text-left px-1">
+        <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-brand-500/10 border border-brand-500/20 text-[11px] font-bold uppercase tracking-wider text-brand-300">
+          <Sparkles className="w-3 h-3 text-brand-400" />
+          <span>{dict.customDeck.badge || 'Deck Creator'}</span>
         </div>
-        <h1 className="font-display font-extrabold text-2xl sm:text-3xl md:text-5xl text-white tracking-tight">
-          {dict.customDeck.title}
+        <h1 className="font-display font-black text-2xl sm:text-3xl md:text-4xl text-white tracking-tight">
+          {dict.customDeck.title || 'Custom Deck Studio'}
         </h1>
-        <p className="text-xs md:text-sm text-slate-400 max-w-xl">
-          Build and play personalized Truth or Dare decks with friends on this device or inside private multiplayer rooms.
+        <p className="text-xs sm:text-sm text-slate-400 max-w-xl">
+          Create your own Truth or Dare deck in seconds. Add questions, save, and play instantly.
         </p>
       </div>
 
       {/* Navigation View Switcher */}
-      <div className="flex items-center gap-2 p-1.5 rounded-2xl bg-surface-elevated/90 border border-white/10 backdrop-blur-md">
+      <div className="flex items-center gap-1.5 p-1 rounded-2xl bg-surface-elevated/90 border border-white/10 backdrop-blur-md">
         <button
+          type="button"
           onClick={() => {
             setActiveTab('editor');
             sound.triggerHaptic(10);
           }}
-          className={`flex-1 flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl text-xs sm:text-sm font-bold transition-all ${
+          className={`flex-1 flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl text-xs sm:text-sm font-bold transition-all ${
             activeTab === 'editor'
               ? 'bg-brand-500 text-white shadow-glow-brand'
               : 'text-slate-400 hover:text-white hover:bg-white/5'
           }`}
         >
-          <Edit2 className="w-4 h-4" />
-          <span>Deck Studio</span>
+          <Edit2 className="w-3.5 h-3.5" />
+          <span>Deck Editor</span>
         </button>
 
         <button
+          type="button"
           onClick={() => {
             setActiveTab('library');
             sound.triggerHaptic(10);
           }}
-          className={`flex-1 flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl text-xs sm:text-sm font-bold transition-all ${
+          className={`flex-1 flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl text-xs sm:text-sm font-bold transition-all ${
             activeTab === 'library'
               ? 'bg-brand-500 text-white shadow-glow-brand'
               : 'text-slate-400 hover:text-white hover:bg-white/5'
           }`}
         >
-          <FolderHeart className="w-4 h-4" />
-          <span>My Library ({decks.length})</span>
+          <FolderHeart className="w-3.5 h-3.5" />
+          <span>My Decks ({decks.length})</span>
         </button>
 
         <button
+          type="button"
           onClick={() => {
             setActiveTab('play');
             sound.triggerHaptic(10);
           }}
-          className={`flex-1 flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl text-xs sm:text-sm font-bold transition-all ${
+          className={`flex-1 flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl text-xs sm:text-sm font-bold transition-all ${
             activeTab === 'play'
               ? 'bg-gradient-to-r from-truth-500 to-dare-500 text-white shadow-glow-dare'
               : 'text-slate-400 hover:text-white hover:bg-white/5'
           }`}
         >
-          <Play className="w-4 h-4 fill-current" />
+          <Play className="w-3.5 h-3.5 fill-current" />
           <span>Pass & Play</span>
         </button>
       </div>
 
       {/* Global Validation Error Notice */}
       {inputError && (
-        <div className="p-3.5 sm:p-4 rounded-2xl bg-rose-500/15 border border-rose-500/30 flex items-start gap-3 text-rose-300 text-xs sm:text-sm animate-shake">
-          <ShieldAlert className="w-5 h-5 shrink-0 text-rose-400 mt-0.5" />
+        <div className="p-3 rounded-2xl bg-rose-500/15 border border-rose-500/30 flex items-start gap-2.5 text-rose-300 text-xs sm:text-sm animate-shake">
+          <ShieldAlert className="w-4 h-4 shrink-0 text-rose-400 mt-0.5" />
           <div className="flex-1">
-            <p className="font-bold">Notice</p>
+            <p className="font-bold">Attention</p>
             <p className="text-rose-200/90 leading-relaxed">{inputError}</p>
           </div>
-          <button onClick={() => setInputError(null)} className="text-rose-400 hover:text-white">
+          <button
+            type="button"
+            onClick={() => setInputError(null)}
+            className="text-rose-400 hover:text-white p-0.5"
+            aria-label="Dismiss error"
+          >
             <X className="w-4 h-4" />
           </button>
         </div>
       )}
 
       {/* ========================================================
-          TAB 1: DECK STUDIO (PHASES 1, 2, 6, 7)
+          TAB 1: SIMPLIFIED DECK EDITOR
          ======================================================== */}
       {activeTab === 'editor' && (
-        <div className="space-y-6">
-          {/* Deck Configuration Card (Phase 1) */}
-          <div className="p-4 sm:p-6 md:p-8 rounded-3xl bg-surface-elevated/90 border border-white/10 space-y-4 backdrop-blur-sm shadow-elevation-1">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-white/10 pb-4">
-              <div>
-                <h3 className="font-display font-extrabold text-lg text-white">Deck Configuration</h3>
-                <p className="text-xs text-slate-400">Set deck metadata, shared question language, and category.</p>
-              </div>
+        <div className="space-y-4 sm:space-y-5">
+          {/* STEP 1: DECK ESSENTIALS (PHASE 2: Visible Only Deck Name & Language) */}
+          <div className="p-4 sm:p-5 rounded-2xl sm:rounded-3xl bg-surface-elevated/90 border border-white/10 space-y-3 backdrop-blur-sm shadow-elevation-1">
+            <div className="flex items-center justify-between border-b border-white/10 pb-2.5">
               <div className="flex items-center gap-2">
-                <span className="px-3 py-1 rounded-lg bg-truth-500/15 text-truth-300 border border-truth-400/30 text-xs font-bold">
+                <span className="w-5 h-5 rounded-full bg-brand-500/20 text-brand-300 text-xs font-black flex items-center justify-center border border-brand-400/40">
+                  1
+                </span>
+                <h2 className="font-display font-extrabold text-sm sm:text-base text-white">
+                  Deck Details
+                </h2>
+              </div>
+              <div className="flex items-center gap-1.5 text-xs">
+                <span className="px-2 py-0.5 rounded-md bg-truth-500/15 text-truth-300 border border-truth-400/30 font-bold text-[11px]">
                   {truthCount} Truths
                 </span>
-                <span className="px-3 py-1 rounded-lg bg-dare-500/15 text-dare-300 border border-dare-400/30 text-xs font-bold">
+                <span className="px-2 py-0.5 rounded-md bg-dare-500/15 text-dare-300 border border-dare-400/30 font-bold text-[11px]">
                   {dareCount} Dares
-                </span>
-                <span className="px-3 py-1 rounded-lg bg-white/5 text-slate-300 border border-white/10 text-xs font-bold">
-                  {totalCount} Total
                 </span>
               </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {/* Deck Name */}
-              <div className="space-y-1.5">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              {/* Deck Name (Essential) */}
+              <div className="space-y-1 sm:col-span-2">
                 <label className="text-xs font-bold uppercase tracking-wider text-slate-300">
-                  {dict.customDeck.deckNameLabel}
+                  Deck Name <span className="text-brand-400">*</span>
                 </label>
                 <input
                   type="text"
                   value={deckName}
                   onChange={(e) => setDeckName(e.target.value)}
                   maxLength={60}
-                  placeholder={dict.customDeck.deckNamePlaceholder}
-                  className="w-full h-11 px-3.5 rounded-xl bg-canvas-base border border-white/10 text-sm font-bold text-white focus:outline-none focus:border-brand-400 transition-colors"
+                  placeholder="e.g., Friday Night Party, Dorm Secrets..."
+                  className="w-full h-11 px-3 rounded-xl bg-canvas-base border border-white/10 text-sm font-bold text-white focus:outline-none focus:border-brand-400 transition-colors"
                 />
               </div>
 
-              {/* Language Selector */}
-              <div className="space-y-1.5">
-                <label className="text-xs font-bold uppercase tracking-wider text-slate-300 flex items-center gap-1.5">
+              {/* Language Selector (Essential) */}
+              <div className="space-y-1">
+                <label className="text-xs font-bold uppercase tracking-wider text-slate-300 flex items-center gap-1">
                   <Globe className="w-3.5 h-3.5 text-brand-400" />
-                  <span>Question Language:</span>
+                  <span>Language</span>
                 </label>
                 <select
                   value={deckLanguage}
                   onChange={(e) => setDeckLanguage(e.target.value as SupportedLanguageCode)}
-                  className="w-full h-11 px-3.5 rounded-xl bg-canvas-base border border-white/10 text-sm font-semibold text-white focus:outline-none focus:border-brand-400 transition-colors"
+                  className="w-full h-11 px-3 rounded-xl bg-canvas-base border border-white/10 text-xs sm:text-sm font-semibold text-white focus:outline-none focus:border-brand-400 transition-colors"
                 >
                   {Object.entries(SUPPORTED_LOCALES).map(([code, meta]) => (
                     <option key={code} value={code} className="bg-canvas-deep text-white">
-                      {meta.flag} {meta.nativeName} ({meta.name})
+                      {meta.flag} {meta.nativeName}
                     </option>
                   ))}
                 </select>
               </div>
+            </div>
 
-              {/* Description */}
-              <div className="space-y-1.5 md:col-span-2">
-                <label className="text-xs font-bold uppercase tracking-wider text-slate-300">
-                  Description (Optional):
-                </label>
-                <input
-                  type="text"
-                  value={deckDescription}
-                  onChange={(e) => setDeckDescription(e.target.value)}
-                  maxLength={250}
-                  placeholder="e.g. Inside jokes, road trip secrets, and spicy college questions..."
-                  className="w-full h-11 px-3.5 rounded-xl bg-canvas-base border border-white/10 text-xs sm:text-sm text-white placeholder:text-slate-500 focus:outline-none focus:border-brand-400 transition-colors"
-                />
-              </div>
+            {/* Collapsed Advanced Settings (Phase 2) */}
+            <div className="pt-1">
+              <button
+                type="button"
+                onClick={() => setShowAdvancedSettings(!showAdvancedSettings)}
+                className="inline-flex items-center gap-1.5 text-xs font-medium text-slate-400 hover:text-brand-300 transition-colors py-1"
+                aria-expanded={showAdvancedSettings}
+              >
+                <Settings2 className="w-3.5 h-3.5 text-slate-400" />
+                <span>Advanced Settings (Description, Category, Visibility)</span>
+                {showAdvancedSettings ? (
+                  <ChevronUp className="w-3.5 h-3.5 text-brand-400" />
+                ) : (
+                  <ChevronDown className="w-3.5 h-3.5 text-slate-400" />
+                )}
+              </button>
 
-              {/* Category */}
-              <div className="space-y-1.5">
-                <label className="text-xs font-bold uppercase tracking-wider text-slate-300 flex items-center gap-1.5">
-                  <Compass className="w-3.5 h-3.5 text-truth-400" />
-                  <span>Category Tag:</span>
-                </label>
-                <select
-                  value={deckCategory}
-                  onChange={(e) => setDeckCategory(e.target.value as CategoryId)}
-                  className="w-full h-11 px-3.5 rounded-xl bg-canvas-base border border-white/10 text-xs sm:text-sm font-semibold text-white focus:outline-none focus:border-brand-400 transition-colors"
-                >
-                  <option value="classic-party" className="bg-canvas-deep">🎉 Classic Party</option>
-                  <option value="couples-flirty" className="bg-canvas-deep">❤️ Couples & Flirty</option>
-                  <option value="deep-secrets" className="bg-canvas-deep">🤫 Deep Secrets</option>
-                  <option value="wild-party" className="bg-canvas-deep">⚡ Wild Party</option>
-                  <option value="icebreaker" className="bg-canvas-deep">🧊 Icebreakers</option>
-                  <option value="family-kids" className="bg-canvas-deep">👨‍👩‍👧 Clean Family</option>
-                  <option value="extreme" className="bg-canvas-deep">🔥 Extreme Dares</option>
-                  <option value="teens-hangout" className="bg-canvas-deep">🍕 Teens Hangout</option>
-                </select>
-              </div>
+              {showAdvancedSettings && (
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-3 mt-2 border-t border-white/5 animate-fade-in">
+                  {/* Optional Description */}
+                  <div className="space-y-1 sm:col-span-3">
+                    <label className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
+                      Description (Optional)
+                    </label>
+                    <input
+                      type="text"
+                      value={deckDescription}
+                      onChange={(e) => setDeckDescription(e.target.value)}
+                      maxLength={250}
+                      placeholder="Add an optional note or theme description..."
+                      className="w-full h-10 px-3 rounded-xl bg-canvas-base border border-white/10 text-xs text-white placeholder:text-slate-500 focus:outline-none focus:border-brand-400"
+                    />
+                  </div>
 
-              {/* Visibility */}
-              <div className="space-y-1.5">
-                <label className="text-xs font-bold uppercase tracking-wider text-slate-300 flex items-center gap-1.5">
-                  <Lock className="w-3.5 h-3.5 text-dare-400" />
-                  <span>Visibility:</span>
-                </label>
-                <select
-                  value={deckVisibility}
-                  onChange={(e) => setDeckVisibility(e.target.value as any)}
-                  className="w-full h-11 px-3.5 rounded-xl bg-canvas-base border border-white/10 text-xs sm:text-sm font-semibold text-white focus:outline-none focus:border-brand-400 transition-colors"
-                >
-                  <option value="private" className="bg-canvas-deep">🔒 Private (Only Me & Invited Rooms)</option>
-                  <option value="unlisted" className="bg-canvas-deep">🔗 Unlisted (Anyone with direct link)</option>
-                  <option value="public" className="bg-canvas-deep">🌍 Public (Community Showcase)</option>
-                </select>
-              </div>
+                  {/* Optional Category */}
+                  <div className="space-y-1 sm:col-span-2">
+                    <label className="text-[11px] font-bold uppercase tracking-wider text-slate-400 flex items-center gap-1">
+                      <Compass className="w-3 h-3 text-truth-400" />
+                      <span>Category</span>
+                    </label>
+                    <select
+                      value={deckCategory}
+                      onChange={(e) => setDeckCategory(e.target.value as CategoryId)}
+                      className="w-full h-10 px-3 rounded-xl bg-canvas-base border border-white/10 text-xs font-semibold text-white focus:outline-none focus:border-brand-400"
+                    >
+                      <option value="classic-party" className="bg-canvas-deep">🎉 Classic Party</option>
+                      <option value="couples-flirty" className="bg-canvas-deep">❤️ Couples & Flirty</option>
+                      <option value="deep-secrets" className="bg-canvas-deep">🤫 Deep Secrets</option>
+                      <option value="wild-party" className="bg-canvas-deep">⚡ Wild Party</option>
+                      <option value="icebreaker" className="bg-canvas-deep">🧊 Icebreakers</option>
+                      <option value="family-kids" className="bg-canvas-deep">👨‍👩‍👧 Clean Family</option>
+                      <option value="extreme" className="bg-canvas-deep">🔥 Extreme Dares</option>
+                      <option value="teens-hangout" className="bg-canvas-deep">🍕 Teens Hangout</option>
+                    </select>
+                  </div>
+
+                  {/* Optional Visibility */}
+                  <div className="space-y-1">
+                    <label className="text-[11px] font-bold uppercase tracking-wider text-slate-400 flex items-center gap-1">
+                      <Lock className="w-3 h-3 text-dare-400" />
+                      <span>Visibility</span>
+                    </label>
+                    <select
+                      value={deckVisibility}
+                      onChange={(e) => setDeckVisibility(e.target.value as any)}
+                      className="w-full h-10 px-3 rounded-xl bg-canvas-base border border-white/10 text-xs font-semibold text-white focus:outline-none focus:border-brand-400"
+                    >
+                      <option value="public" className="bg-canvas-deep">🌍 Public</option>
+                      <option value="private" className="bg-canvas-deep">🔒 Private</option>
+                      <option value="unlisted" className="bg-canvas-deep">🔗 Unlisted</option>
+                    </select>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
 
-          {/* Add Question Form (Phase 2 & Phase 7) */}
+          {/* STEP 2: QUESTION CREATION (PHASE 3: Simple Question Editor) */}
           <form
             onSubmit={handleAddQuestion}
-            className="p-4 sm:p-6 md:p-8 rounded-3xl bg-surface-elevated/90 border border-white/10 space-y-4 backdrop-blur-sm shadow-elevation-1"
+            className="p-4 sm:p-5 rounded-2xl sm:rounded-3xl bg-surface-elevated/90 border border-white/10 space-y-3.5 backdrop-blur-sm shadow-elevation-1"
           >
-            <div className="flex items-center justify-between">
-              <label className="text-xs font-bold uppercase tracking-wider text-slate-300">
-                {dict.customDeck.addCardTitle}:
-              </label>
+            <div className="flex items-center justify-between border-b border-white/10 pb-2.5">
+              <div className="flex items-center gap-2">
+                <span className="w-5 h-5 rounded-full bg-brand-500/20 text-brand-300 text-xs font-black flex items-center justify-center border border-brand-400/40">
+                  2
+                </span>
+                <h2 className="font-display font-extrabold text-sm sm:text-base text-white">
+                  Add a Question
+                </h2>
+              </div>
               <span className={`text-[11px] font-mono ${newPromptText.length > 240 ? 'text-amber-400 font-bold' : 'text-slate-500'}`}>
-                {newPromptText.length}/250 chars
+                {newPromptText.length}/250
               </span>
             </div>
 
-            <div className="flex gap-2">
+            {/* Type Switcher Buttons (Truth / Dare) */}
+            <div className="flex items-center gap-2">
               <button
                 type="button"
                 onClick={() => {
                   setNewPromptType('truth');
                   sound.triggerHaptic(10);
                 }}
-                className={`px-3.5 py-2 rounded-xl text-xs font-black uppercase tracking-wider border transition-all flex items-center gap-1.5 ${
+                className={`flex-1 sm:flex-none px-4 py-2 rounded-xl text-xs font-black uppercase tracking-wider border transition-all flex items-center justify-center gap-2 ${
                   newPromptType === 'truth'
-                    ? 'bg-truth-500/20 border-truth-400 text-truth-300 shadow-glow-truth'
+                    ? 'bg-truth-500/25 border-truth-400 text-truth-300 shadow-glow-truth'
                     : 'bg-canvas-base border-white/10 text-slate-400 hover:text-white'
                 }`}
               >
-                <HelpCircle className="w-3.5 h-3.5" />
-                <span>{dict.customDeck.cardTypeTruth}</span>
+                <HelpCircle className="w-4 h-4" />
+                <span>TRUTH</span>
               </button>
+
               <button
                 type="button"
                 onClick={() => {
                   setNewPromptType('dare');
                   sound.triggerHaptic(10);
                 }}
-                className={`px-3.5 py-2 rounded-xl text-xs font-black uppercase tracking-wider border transition-all flex items-center gap-1.5 ${
+                className={`flex-1 sm:flex-none px-4 py-2 rounded-xl text-xs font-black uppercase tracking-wider border transition-all flex items-center justify-center gap-2 ${
                   newPromptType === 'dare'
-                    ? 'bg-dare-500/20 border-dare-400 text-dare-300 shadow-glow-dare'
+                    ? 'bg-dare-500/25 border-dare-400 text-dare-300 shadow-glow-dare'
                     : 'bg-canvas-base border-white/10 text-slate-400 hover:text-white'
                 }`}
               >
-                <Flame className="w-3.5 h-3.5 fill-current" />
-                <span>{dict.customDeck.cardTypeDare}</span>
+                <Flame className="w-4 h-4 fill-current" />
+                <span>DARE</span>
               </button>
             </div>
 
+            {/* Question Text Input & Add Button */}
             <div className="flex flex-col sm:flex-row gap-2.5">
               <input
                 type="text"
-                placeholder={dict.customDeck.promptPlaceholder}
+                placeholder={
+                  newPromptType === 'truth'
+                    ? 'Type a truth question (e.g. What is your most embarrassing secret?)...'
+                    : 'Type a dare challenge (e.g. Do your best impression of someone in this room!)...'
+                }
                 value={newPromptText}
-                onChange={(e) => setNewPromptText(e.target.value)}
+                onChange={(e) => {
+                  setNewPromptText(e.target.value);
+                  if (inputError) setInputError(null);
+                }}
                 maxLength={250}
-                className="flex-1 min-w-0 h-11 sm:h-12 px-3 sm:px-4 rounded-xl bg-canvas-base border border-white/10 text-xs md:text-sm text-white placeholder:text-slate-500 focus:outline-none focus:border-brand-400 transition-colors"
+                className="flex-1 min-w-0 h-11 sm:h-12 px-3.5 rounded-xl bg-canvas-base border border-white/10 text-xs sm:text-sm text-white placeholder:text-slate-500 focus:outline-none focus:border-brand-400 transition-colors"
               />
-              <Button type="submit" variant="primary" size="md" className="gap-1.5 shrink-0 h-11 sm:h-12 px-5">
-                <Plus className="w-4 h-4" /> {dict.customDeck.addCardButton}
+
+              {/* Add Question Button: Explicitly Disabled When Input is Empty (Problem 4 Fixed) */}
+              <Button
+                type="submit"
+                variant="primary"
+                size="md"
+                disabled={!isInputValidToAdd}
+                className={`gap-1.5 shrink-0 h-11 sm:h-12 px-5 font-bold transition-all ${
+                  !isInputValidToAdd
+                    ? 'opacity-40 cursor-not-allowed bg-slate-800 text-slate-500 border border-white/5'
+                    : 'shadow-glow-brand'
+                }`}
+              >
+                <Plus className="w-4 h-4" />
+                <span>Add Question</span>
               </Button>
             </div>
+
+            {/* Small Success Notice after adding question (Phase 3 Requirement) */}
+            {addedSuccess && (
+              <div className="flex items-center gap-2 p-2.5 rounded-xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 text-xs font-semibold animate-fade-in">
+                <Check className="w-4 h-4 text-emerald-400 shrink-0" />
+                <span>{addedSuccess}</span>
+              </div>
+            )}
           </form>
 
-          {/* Cards List in Deck (Phase 2 & 6) */}
-          <div className="p-4 sm:p-6 md:p-8 rounded-3xl bg-surface-elevated/90 border border-white/10 space-y-4 backdrop-blur-sm shadow-elevation-1">
-            <div className="flex items-center justify-between">
-              <h3 className="font-display font-bold text-xs sm:text-sm text-white uppercase tracking-wider">
-                {t('customDeck.cardsInDeck', { count: questions.length })}
-              </h3>
-              <span className="text-[11px] sm:text-xs text-slate-400">Min 3 cards recommended</span>
+          {/* STEP 3: QUESTION LIST (PHASE 4: Simple Cards, Counters, Edit, Delete, Listen) */}
+          <div className="p-4 sm:p-5 rounded-2xl sm:rounded-3xl bg-surface-elevated/90 border border-white/10 space-y-3.5 backdrop-blur-sm shadow-elevation-1">
+            <div className="flex items-center justify-between border-b border-white/10 pb-2.5">
+              <div className="flex items-center gap-2">
+                <span className="w-5 h-5 rounded-full bg-brand-500/20 text-brand-300 text-xs font-black flex items-center justify-center border border-brand-400/40">
+                  3
+                </span>
+                <h3 className="font-display font-bold text-xs sm:text-sm text-white uppercase tracking-wider">
+                  Deck Questions ({totalCount})
+                </h3>
+              </div>
+              <span className="text-[11px] text-slate-400">
+                {totalCount < 2 ? '⚠️ Add at least 2 questions to play' : 'Ready to play!'}
+              </span>
             </div>
 
             {questions.length > 0 ? (
-              <div className="space-y-2.5 max-h-96 overflow-y-auto pr-1 custom-scrollbar">
+              <div className="space-y-2 max-h-[380px] overflow-y-auto pr-1 custom-scrollbar">
                 {questions.map((q, idx) => (
                   <div
                     key={q.id}
-                    className="p-3 sm:p-3.5 rounded-2xl bg-surface-highlight border border-white/5 hover:border-white/15 transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 text-xs"
+                    className="p-3 rounded-2xl bg-surface-highlight border border-white/5 hover:border-white/15 transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 text-xs"
                   >
                     {editingQuestionId === q.id ? (
                       /* Inline Edit Form */
@@ -728,8 +889,10 @@ export function CustomDeckClient() {
                           <button
                             type="button"
                             onClick={() => setEditingType('truth')}
-                            className={`px-2 py-1 rounded text-[10px] font-bold uppercase ${
-                              editingType === 'truth' ? 'bg-truth-500 text-white' : 'bg-canvas-base text-slate-400'
+                            className={`px-2.5 py-1 rounded-lg text-[10px] font-bold uppercase transition-colors ${
+                              editingType === 'truth'
+                                ? 'bg-truth-500 text-white shadow-glow-truth'
+                                : 'bg-canvas-base text-slate-400 border border-white/10'
                             }`}
                           >
                             Truth
@@ -737,8 +900,10 @@ export function CustomDeckClient() {
                           <button
                             type="button"
                             onClick={() => setEditingType('dare')}
-                            className={`px-2 py-1 rounded text-[10px] font-bold uppercase ${
-                              editingType === 'dare' ? 'bg-dare-500 text-white' : 'bg-canvas-base text-slate-400'
+                            className={`px-2.5 py-1 rounded-lg text-[10px] font-bold uppercase transition-colors ${
+                              editingType === 'dare'
+                                ? 'bg-dare-500 text-white shadow-glow-dare'
+                                : 'bg-canvas-base text-slate-400 border border-white/10'
                             }`}
                           >
                             Dare
@@ -749,30 +914,32 @@ export function CustomDeckClient() {
                           value={editingText}
                           onChange={(e) => setEditingText(e.target.value)}
                           maxLength={250}
-                          className="w-full h-9 px-3 rounded-lg bg-canvas-base border border-white/15 text-white text-xs focus:outline-none focus:border-brand-400"
+                          className="w-full h-10 px-3 rounded-xl bg-canvas-base border border-white/15 text-white text-xs focus:outline-none focus:border-brand-400"
                         />
-                        <div className="flex items-center gap-2">
-                          <Button size="sm" variant="primary" onClick={() => handleSaveEdit(q.id)}>
-                            Save
+                        <div className="flex items-center gap-2 pt-1">
+                          <Button size="sm" variant="primary" onClick={() => handleSaveEdit(q.id)} className="h-8 text-xs">
+                            Save Changes
                           </Button>
-                          <Button size="sm" variant="secondary" onClick={() => setEditingQuestionId(null)}>
+                          <Button size="sm" variant="secondary" onClick={() => setEditingQuestionId(null)} className="h-8 text-xs">
                             Cancel
                           </Button>
                         </div>
                       </div>
                     ) : (
-                      /* Display Row */
+                      /* Display Card */
                       <>
                         <div className="flex items-center gap-2.5 min-w-0 flex-1">
-                          <span className="text-slate-500 font-mono text-[11px] w-5 text-right">{idx + 1}.</span>
+                          <span className="text-slate-500 font-mono text-[11px] w-5 text-right shrink-0">
+                            {idx + 1}.
+                          </span>
                           <span
-                            className={`px-2 sm:px-2.5 py-1 rounded-lg font-black text-[10px] uppercase tracking-wider border shrink-0 ${
+                            className={`px-2 py-0.5 rounded-lg font-black text-[10px] uppercase tracking-wider border shrink-0 ${
                               q.type === 'truth'
                                 ? 'bg-truth-500/15 text-truth-300 border-truth-400/30'
                                 : 'bg-dare-500/15 text-dare-300 border-dare-400/30'
                             }`}
                           >
-                            {q.type === 'truth' ? dict.customDeck.cardTypeTruth : dict.customDeck.cardTypeDare}
+                            {q.type.toUpperCase()}
                           </span>
                           <span className="text-white font-medium text-xs sm:text-sm leading-relaxed break-words min-w-0">
                             {q.prompt}
@@ -780,7 +947,7 @@ export function CustomDeckClient() {
                         </div>
 
                         <div className="flex items-center gap-1 shrink-0 self-end sm:self-center">
-                          {/* Voice Playback (Phase 6) */}
+                          {/* Optional Listen Button (Phase 4) */}
                           <QuestionVoiceControls
                             text={q.prompt}
                             language={deckLanguage}
@@ -791,10 +958,8 @@ export function CustomDeckClient() {
 
                           {/* Preview Question Button */}
                           <button
-                            onClick={() => {
-                              setPreviewQuestion(q);
-                              setPreviewFlipped(false);
-                            }}
+                            type="button"
+                            onClick={() => setPreviewQuestion(q)}
                             className="text-slate-400 hover:text-truth-300 p-1.5 transition-colors rounded-xl hover:bg-white/5"
                             title="Preview Card"
                             aria-label="Preview Card"
@@ -802,22 +967,24 @@ export function CustomDeckClient() {
                             <Eye className="w-4 h-4" />
                           </button>
 
-                          {/* Edit Question Button */}
+                          {/* Edit Question Button (Phase 4) */}
                           <button
+                            type="button"
                             onClick={() => handleStartEdit(q)}
                             className="text-slate-400 hover:text-brand-300 p-1.5 transition-colors rounded-xl hover:bg-white/5"
-                            title="Edit Card"
-                            aria-label="Edit Card"
+                            title="Edit Question"
+                            aria-label="Edit Question"
                           >
                             <Edit2 className="w-4 h-4" />
                           </button>
 
-                          {/* Delete Question Button */}
+                          {/* Delete Question Button (Phase 4) */}
                           <button
+                            type="button"
                             onClick={() => handleDeleteQuestion(q.id)}
                             className="text-slate-400 hover:text-rose-400 p-1.5 transition-colors rounded-xl hover:bg-white/5"
-                            title={dict.customDeck.deleteCard}
-                            aria-label={dict.customDeck.deleteCard}
+                            title="Delete Question"
+                            aria-label="Delete Question"
                           >
                             <Trash2 className="w-4 h-4" />
                           </button>
@@ -828,79 +995,99 @@ export function CustomDeckClient() {
                 ))}
               </div>
             ) : (
-              <EmptyState
-                title={dict.customDeck.emptyDeckTitle}
-                description={dict.customDeck.emptyDeckDesc}
-              />
+              <div className="p-6 text-center space-y-2 rounded-2xl bg-canvas-base border border-white/5">
+                <HelpCircle className="w-8 h-8 mx-auto text-slate-500" />
+                <p className="font-bold text-sm text-white">Your deck is currently empty</p>
+                <p className="text-xs text-slate-400 max-w-sm mx-auto">
+                  Pick Truth or Dare above, write your first question, and click &ldquo;Add Question&rdquo; to build your deck!
+                </p>
+              </div>
             )}
           </div>
 
-          {/* Action Controls Row (Save, Single-Device, Multiplayer) */}
-          <div className="flex flex-col sm:flex-row items-center gap-2.5 sm:gap-3 pt-2">
-            <Button
-              variant="primary"
-              size="lg"
-              onClick={handleSaveDeck}
-              className="w-full sm:flex-1 font-bold gap-2 min-h-[48px]"
-            >
-              {savedSuccess ? (
-                <>
-                  <Check className="w-4 h-4 text-emerald-300" />
-                  <span>{dict.customDeck.deckSaved}</span>
-                </>
-              ) : (
-                <>
-                  <Save className="w-4 h-4" />
-                  <span>{dict.customDeck.saveDeck}</span>
-                </>
-              )}
-            </Button>
+          {/* STEP 4: SAVE & PLAY ACTIONS (PHASE 5: Save Deck & Save Deck & Play) */}
+          <div className="p-4 sm:p-5 rounded-2xl sm:rounded-3xl bg-surface-elevated/95 border border-white/10 backdrop-blur-md shadow-elevation-2 space-y-3">
+            <div className="flex flex-col sm:flex-row items-center gap-2.5 sm:gap-3">
+              {/* Primary Action 1: Save Deck */}
+              <Button
+                type="button"
+                variant="primary"
+                size="lg"
+                onClick={handleSaveDeck}
+                className="w-full sm:flex-1 font-bold gap-2 min-h-[46px] shadow-glow-brand"
+              >
+                {savedSuccess ? (
+                  <>
+                    <Check className="w-4 h-4 text-emerald-300" />
+                    <span>✓ Deck Saved Successfully!</span>
+                  </>
+                ) : (
+                  <>
+                    <Save className="w-4 h-4" />
+                    <span>Save Deck</span>
+                  </>
+                )}
+              </Button>
 
-            <Button
-              variant="secondary"
-              size="lg"
-              onClick={() => {
-                handleSaveDeck();
-                setActiveTab('play');
-              }}
-              disabled={questions.length < 3}
-              className="w-full sm:w-auto gap-2 min-h-[48px]"
-            >
-              <Users className="w-4 h-4 text-truth-400" />
-              <span>Pass & Play</span>
-            </Button>
+              {/* Primary Action 2: Save Deck & Play (Phase 5) */}
+              <Button
+                type="button"
+                variant="dare"
+                size="lg"
+                onClick={handleSaveAndPlay}
+                disabled={questions.length < 2}
+                className={`w-full sm:flex-1 gap-2 min-h-[46px] font-black text-white bg-gradient-to-r from-truth-500 to-dare-500 hover:from-truth-400 hover:to-dare-400 shadow-glow-dare transition-all ${
+                  questions.length < 2 ? 'opacity-40 cursor-not-allowed' : ''
+                }`}
+              >
+                <Play className="w-4 h-4 fill-current" />
+                <span>Save Deck & Play</span>
+              </Button>
 
-            <Button
-              variant="dare"
-              size="lg"
-              onClick={handleHostMultiplayerRoom}
-              disabled={questions.length < 3}
-              className="w-full sm:w-auto gap-2 min-h-[48px]"
-            >
-              <Share2 className="w-4 h-4" />
-              <span>Host Party Room</span>
-            </Button>
+              {/* Secondary Action: Host Party Room */}
+              <Button
+                type="button"
+                variant="secondary"
+                size="lg"
+                onClick={handleHostMultiplayerRoom}
+                disabled={questions.length < 2}
+                className="w-full sm:w-auto gap-2 min-h-[46px] text-xs font-semibold"
+                title="Create a live multiplayer room with this custom deck"
+              >
+                <Share2 className="w-4 h-4 text-brand-300" />
+                <span>Host Room</span>
+              </Button>
+            </div>
+
+            <p className="text-[11px] text-slate-500 text-center">
+              💾 Decks are stored safely in your browser and automatically synchronized with private multiplayer rooms.
+            </p>
           </div>
         </div>
       )}
 
       {/* ========================================================
-          TAB 2: DECK LIBRARY (PHASE 3)
+          TAB 2: DECK LIBRARY (PHASE 7: PRESERVE EXISTING DECKS)
          ======================================================== */}
       {activeTab === 'library' && (
-        <div className="space-y-6">
-          <div className="flex items-center justify-between">
+        <div className="space-y-4 sm:space-y-6">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div>
-              <h2 className="font-display font-extrabold text-xl text-white">Your Custom Deck Library</h2>
-              <p className="text-xs text-slate-400">All decks created in this browser. Only you can manage your decks.</p>
+              <h2 className="font-display font-extrabold text-xl text-white">Your Saved Decks</h2>
+              <p className="text-xs text-slate-400">All custom decks created on this device.</p>
             </div>
-            <Button variant="primary" size="sm" onClick={handleCreateNewDeck} className="gap-1.5">
-              <Plus className="w-4 h-4" /> Create Deck
+            <Button
+              variant="primary"
+              size="sm"
+              onClick={handleCreateNewDeck}
+              className="gap-1.5 self-start sm:self-auto"
+            >
+              <Plus className="w-4 h-4" /> New Deck
             </Button>
           </div>
 
           {decks.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
               {decks.map((deck) => {
                 const isSelected = currentDeckId === deck.id;
                 const truths = deck.questions.filter((q) => q.type === 'truth').length;
@@ -909,7 +1096,7 @@ export function CustomDeckClient() {
                 return (
                   <div
                     key={deck.id}
-                    className={`p-5 rounded-3xl bg-surface-elevated/90 border transition-all flex flex-col justify-between gap-4 backdrop-blur-sm ${
+                    className={`p-4 sm:p-5 rounded-2xl sm:rounded-3xl bg-surface-elevated/90 border transition-all flex flex-col justify-between gap-3.5 backdrop-blur-sm ${
                       isSelected ? 'border-brand-400/60 shadow-glow-brand' : 'border-white/10 hover:border-white/20'
                     }`}
                   >
@@ -918,8 +1105,8 @@ export function CustomDeckClient() {
                         <h3 className="font-display font-bold text-base text-white break-words">
                           {deck.name}
                         </h3>
-                        <span className="px-2 py-0.5 rounded-full bg-white/5 border border-white/10 text-[10px] font-mono uppercase text-slate-400">
-                          {deck.visibility}
+                        <span className="px-2 py-0.5 rounded-full bg-white/5 border border-white/10 text-[10px] font-mono uppercase text-slate-400 shrink-0">
+                          {deck.visibility || 'public'}
                         </span>
                       </div>
 
@@ -930,13 +1117,13 @@ export function CustomDeckClient() {
                       )}
 
                       <div className="flex flex-wrap items-center gap-2 pt-1 text-xs">
-                        <span className="px-2 py-1 rounded-lg bg-truth-500/15 text-truth-300 text-[11px] font-bold">
+                        <span className="px-2 py-0.5 rounded-md bg-truth-500/15 text-truth-300 text-[11px] font-bold">
                           {truths} Truths
                         </span>
-                        <span className="px-2 py-1 rounded-lg bg-dare-500/15 text-dare-300 text-[11px] font-bold">
+                        <span className="px-2 py-0.5 rounded-md bg-dare-500/15 text-dare-300 text-[11px] font-bold">
                           {dares} Dares
                         </span>
-                        <span className="px-2 py-1 rounded-lg bg-white/5 text-slate-300 text-[11px] font-mono">
+                        <span className="px-2 py-0.5 rounded-md bg-white/5 text-slate-300 text-[11px] font-mono">
                           {SUPPORTED_LOCALES[deck.language]?.flag || '🌐'} {deck.language.toUpperCase()}
                         </span>
                       </div>
@@ -944,7 +1131,7 @@ export function CustomDeckClient() {
 
                     <div className="flex items-center justify-between border-t border-white/10 pt-3 gap-2">
                       <div className="text-[10px] text-slate-500">
-                        Updated {new Date(deck.updatedAt).toLocaleDateString()}
+                        {deck.questions.length} cards
                       </div>
 
                       <div className="flex items-center gap-1.5">
@@ -964,14 +1151,15 @@ export function CustomDeckClient() {
                           variant="ghost"
                           size="sm"
                           onClick={() => handleLoadDeckToEdit(deck)}
-                          className="gap-1 px-2.5 text-xs"
+                          className="gap-1 px-2.5 text-xs text-slate-300 hover:text-white"
                         >
                           <Edit2 className="w-3.5 h-3.5" /> Edit
                         </Button>
 
                         <button
+                          type="button"
                           onClick={() => {
-                            if (confirm(`Are you sure you want to delete "${deck.name}"?`)) {
+                            if (confirm(`Delete custom deck "${deck.name}"?`)) {
                               handleDeleteDeck(deck.id);
                             }
                           }}
@@ -990,22 +1178,22 @@ export function CustomDeckClient() {
           ) : (
             <EmptyState
               title="No custom decks found"
-              description="Create your first Truth or Dare custom deck above."
+              description="Create your first Truth or Dare deck in the Deck Editor above."
             />
           )}
         </div>
       )}
 
       {/* ========================================================
-          TAB 3: SINGLE-DEVICE PASS-AND-PLAY (PHASE 4)
+          TAB 3: PASS & PLAY GAMEPLAY (PHASE 7: PRESERVE GAMEPLAY)
          ======================================================== */}
       {activeTab === 'play' && (
-        <div className="space-y-6">
+        <div className="space-y-4 sm:space-y-6">
           {!isGameActive ? (
             /* Setup Screen: Player List */
-            <div className="p-4 sm:p-6 md:p-8 rounded-3xl bg-surface-elevated/90 border border-white/10 space-y-6 backdrop-blur-sm shadow-elevation-1">
+            <div className="p-4 sm:p-6 rounded-2xl sm:rounded-3xl bg-surface-elevated/90 border border-white/10 space-y-5 backdrop-blur-sm shadow-elevation-1">
               <div>
-                <h2 className="font-display font-extrabold text-xl text-white">Single-Device Pass & Play Setup</h2>
+                <h2 className="font-display font-extrabold text-lg sm:text-xl text-white">Pass & Play Setup</h2>
                 <p className="text-xs text-slate-400">
                   Playing with: <span className="font-bold text-truth-300">{deckName}</span> ({totalCount} cards)
                 </p>
@@ -1014,7 +1202,7 @@ export function CustomDeckClient() {
               {/* Add Player Input */}
               <div className="space-y-2">
                 <label className="text-xs font-bold uppercase tracking-wider text-slate-300">
-                  Add Players (2 to 20):
+                  Players (2 to 20):
                 </label>
                 <div className="flex gap-2">
                   <input
@@ -1043,7 +1231,7 @@ export function CustomDeckClient() {
                   Player Roster ({playPlayers.length}):
                 </p>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                  {playPlayers.map((p, idx) => (
+                  {playPlayers.map((p) => (
                     <div
                       key={p.id}
                       className="p-3 rounded-2xl bg-canvas-base border border-white/10 flex items-center justify-between gap-2"
@@ -1059,6 +1247,7 @@ export function CustomDeckClient() {
                       </div>
                       {playPlayers.length > 2 && (
                         <button
+                          type="button"
                           onClick={() => handleRemovePlayer(p.id)}
                           className="text-slate-500 hover:text-rose-400 p-1"
                         >
@@ -1076,7 +1265,7 @@ export function CustomDeckClient() {
                   variant="dare"
                   size="lg"
                   onClick={handleStartPassAndPlay}
-                  className="w-full gap-2 min-h-[50px] font-bold text-base"
+                  className="w-full gap-2 min-h-[48px] font-black text-white bg-gradient-to-r from-truth-500 to-dare-500 shadow-glow-dare"
                 >
                   <Play className="w-5 h-5 fill-current" /> Start Pass & Play Game
                 </Button>
@@ -1084,12 +1273,12 @@ export function CustomDeckClient() {
             </div>
           ) : (
             /* Active Pass-and-Play Game Board */
-            <div className="space-y-6">
+            <div className="space-y-4 sm:space-y-6">
               {/* Turn Banner */}
-              <div className="p-4 sm:p-5 rounded-3xl bg-surface-elevated/90 border border-white/10 flex flex-col sm:flex-row sm:items-center justify-between gap-3 backdrop-blur-sm shadow-elevation-1">
+              <div className="p-4 rounded-2xl sm:rounded-3xl bg-surface-elevated/90 border border-white/10 flex flex-col sm:flex-row sm:items-center justify-between gap-3 backdrop-blur-sm shadow-elevation-1">
                 <div className="flex items-center gap-3">
                   <div
-                    className="w-12 h-12 rounded-2xl flex items-center justify-center font-black text-white text-lg shadow-elevation-2"
+                    className="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl flex items-center justify-center font-black text-white text-base sm:text-lg shadow-elevation-2"
                     style={{ backgroundColor: playPlayers[activePlayerIndex].avatarColor }}
                   >
                     {playPlayers[activePlayerIndex].name.charAt(0).toUpperCase()}
@@ -1098,7 +1287,7 @@ export function CustomDeckClient() {
                     <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
                       Round {roundNumber} • Current Turn:
                     </span>
-                    <h2 className="font-display font-extrabold text-xl sm:text-2xl text-white">
+                    <h2 className="font-display font-extrabold text-lg sm:text-xl text-white">
                       {playPlayers[activePlayerIndex].name}&apos;s Turn
                     </h2>
                   </div>
@@ -1106,33 +1295,33 @@ export function CustomDeckClient() {
 
                 <div className="flex items-center gap-3 self-end sm:self-center">
                   <span className="text-xs text-slate-400 font-medium">
-                    Next up: <span className="font-bold text-white">{playPlayers[(activePlayerIndex + 1) % playPlayers.length].name}</span>
+                    Next: <span className="font-bold text-white">{playPlayers[(activePlayerIndex + 1) % playPlayers.length].name}</span>
                   </span>
                   <Button
                     variant="ghost"
                     size="sm"
                     onClick={() => setShowHistoryDrawer(!showHistoryDrawer)}
-                    className="gap-1.5 text-xs text-slate-300"
+                    className="gap-1 text-xs text-slate-300"
                   >
-                    <History className="w-4 h-4 text-truth-400" /> History ({questionHistory.length})
+                    <History className="w-3.5 h-3.5 text-truth-400" /> History ({questionHistory.length})
                   </Button>
                 </div>
               </div>
 
               {/* Card Presentation */}
-              <div className="p-6 sm:p-10 rounded-3xl bg-surface-elevated/95 border border-white/15 text-center space-y-6 shadow-elevation-3 min-h-[340px] flex flex-col justify-center items-center">
+              <div className="p-6 sm:p-8 rounded-2xl sm:rounded-3xl bg-surface-elevated/95 border border-white/15 text-center space-y-5 shadow-elevation-3 min-h-[300px] flex flex-col justify-center items-center">
                 {!isCardFlipped ? (
                   /* Face Down: Choose Truth or Dare */
-                  <div className="space-y-6 w-full max-w-md">
-                    <div className="space-y-2">
+                  <div className="space-y-5 w-full max-w-md">
+                    <div className="space-y-1.5">
                       <span className="px-3 py-1 rounded-full bg-brand-500/10 border border-brand-500/20 text-xs font-bold uppercase tracking-wider text-brand-300">
-                        Choose Your Fate
+                        Choose Your Challenge
                       </span>
                       <h3 className="font-display font-extrabold text-2xl sm:text-3xl text-white">
                         Truth or Dare?
                       </h3>
                       <p className="text-xs text-slate-400">
-                        Select a category from your custom deck to reveal the challenge.
+                        Pick a category from your custom deck to reveal the prompt.
                       </p>
                     </div>
 
@@ -1157,7 +1346,7 @@ export function CustomDeckClient() {
                   </div>
                 ) : (
                   /* Face Up: Question Revealed */
-                  <div className="space-y-6 w-full max-w-xl animate-fade-in">
+                  <div className="space-y-5 w-full max-w-xl animate-fade-in">
                     <div className="flex items-center justify-center gap-2">
                       <span
                         className={`px-3 py-1 rounded-full text-xs font-black uppercase tracking-wider border ${
@@ -1166,15 +1355,15 @@ export function CustomDeckClient() {
                             : 'bg-dare-500/20 text-dare-300 border-dare-400/40 shadow-glow-dare'
                         }`}
                       >
-                        {currentCard?.type === 'truth' ? 'TRUTH CHALLENGE' : 'DARE CHALLENGE'}
+                        {currentCard?.type === 'truth' ? 'TRUTH' : 'DARE'}
                       </span>
                     </div>
 
-                    <p className="font-display font-extrabold text-xl sm:text-2xl md:text-3xl text-white leading-relaxed px-2">
+                    <p className="font-display font-extrabold text-lg sm:text-2xl text-white leading-relaxed px-2">
                       &ldquo;{currentCard?.prompt}&rdquo;
                     </p>
 
-                    {/* Voice Controls (Phase 6) */}
+                    {/* Voice Controls */}
                     <div className="flex justify-center pt-1">
                       <QuestionVoiceControls
                         text={currentCard?.prompt || ''}
@@ -1185,15 +1374,15 @@ export function CustomDeckClient() {
                       />
                     </div>
 
-                    {/* Action Controls: Complete / Skip */}
-                    <div className="grid grid-cols-2 gap-3 pt-4 border-t border-white/10">
+                    {/* Action Controls: Skip / Complete */}
+                    <div className="grid grid-cols-2 gap-3 pt-3 border-t border-white/10">
                       <Button
                         variant="secondary"
                         size="lg"
                         onClick={handleSkipTurn}
                         className="gap-2 font-bold text-slate-300 hover:text-white"
                       >
-                        Skip (+0 pts)
+                        Skip
                       </Button>
                       <Button
                         variant="primary"
@@ -1201,7 +1390,7 @@ export function CustomDeckClient() {
                         onClick={handleCompleteDare}
                         className="gap-2 font-extrabold text-white"
                       >
-                        <Check className="w-5 h-5 text-emerald-300" /> Completed (+1 pt)
+                        <Check className="w-5 h-5 text-emerald-300" /> Done (+1 pt)
                       </Button>
                     </div>
                   </div>
@@ -1210,18 +1399,18 @@ export function CustomDeckClient() {
 
               {/* History Drawer */}
               {showHistoryDrawer && (
-                <div className="p-4 sm:p-6 rounded-3xl bg-surface-elevated/90 border border-white/10 space-y-3 backdrop-blur-md">
+                <div className="p-4 rounded-2xl bg-surface-elevated/90 border border-white/10 space-y-3 backdrop-blur-md">
                   <div className="flex items-center justify-between border-b border-white/10 pb-2">
                     <h4 className="font-bold text-xs uppercase tracking-wider text-slate-300">
-                      Question History (This Session)
+                      Session History
                     </h4>
-                    <button onClick={() => setShowHistoryDrawer(false)} className="text-slate-400 hover:text-white">
+                    <button type="button" onClick={() => setShowHistoryDrawer(false)} className="text-slate-400 hover:text-white">
                       <X className="w-4 h-4" />
                     </button>
                   </div>
 
                   {questionHistory.length > 0 ? (
-                    <div className="space-y-2 max-h-48 overflow-y-auto custom-scrollbar">
+                    <div className="space-y-1.5 max-h-48 overflow-y-auto custom-scrollbar">
                       {questionHistory.map((h, idx) => (
                         <div
                           key={idx}
@@ -1244,20 +1433,20 @@ export function CustomDeckClient() {
                       ))}
                     </div>
                   ) : (
-                    <p className="text-xs text-slate-500">No questions completed yet in this session.</p>
+                    <p className="text-xs text-slate-500">No questions played yet in this session.</p>
                   )}
                 </div>
               )}
 
-              {/* Bottom Gameplay Utilities */}
-              <div className="flex flex-wrap items-center justify-between gap-2 pt-2">
+              {/* Bottom Utilities */}
+              <div className="flex flex-wrap items-center justify-between gap-2 pt-1">
                 <Button
                   variant="ghost"
                   size="sm"
                   onClick={handleRestartGame}
                   className="gap-1.5 text-xs text-slate-400 hover:text-white"
                 >
-                  <RotateCcw className="w-4 h-4" /> Reshuffle & Restart
+                  <RotateCcw className="w-3.5 h-3.5" /> Restart
                 </Button>
 
                 <div className="flex items-center gap-2">
@@ -1267,7 +1456,7 @@ export function CustomDeckClient() {
                     onClick={() => setShowGameOverModal(true)}
                     className="gap-1.5 text-xs"
                   >
-                    <Trophy className="w-4 h-4 text-amber-400" /> Leaderboard
+                    <Trophy className="w-3.5 h-3.5 text-amber-400" /> Scores
                   </Button>
 
                   <Button
@@ -1286,21 +1475,26 @@ export function CustomDeckClient() {
       )}
 
       {/* ========================================================
-          PREVIEW MODAL (Phase 2 & Phase 6)
+          PREVIEW MODAL
          ======================================================== */}
       {previewQuestion && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-canvas-deep/85 backdrop-blur-md animate-fade-in">
-          <div className="w-full max-w-md p-6 sm:p-8 rounded-3xl bg-surface-elevated border border-white/10 space-y-5 text-center">
-            <div className="flex items-center justify-between border-b border-white/10 pb-3">
+          <div className="w-full max-w-md p-5 sm:p-6 rounded-3xl bg-surface-elevated border border-white/10 space-y-4 text-center">
+            <div className="flex items-center justify-between border-b border-white/10 pb-2.5">
               <span className="text-xs font-bold uppercase tracking-wider text-slate-400">
-                Card Preview Simulation
+                Card Preview
               </span>
-              <button onClick={() => setPreviewQuestion(null)} className="text-slate-400 hover:text-white">
+              <button
+                type="button"
+                onClick={() => setPreviewQuestion(null)}
+                className="text-slate-400 hover:text-white"
+                aria-label="Close preview"
+              >
                 <X className="w-4 h-4" />
               </button>
             </div>
 
-            <div className="p-6 rounded-2xl bg-canvas-base border border-white/10 space-y-4">
+            <div className="p-5 rounded-2xl bg-canvas-base border border-white/10 space-y-3">
               <span
                 className={`px-3 py-1 rounded-full text-xs font-black uppercase tracking-wider border ${
                   previewQuestion.type === 'truth'
@@ -1311,11 +1505,11 @@ export function CustomDeckClient() {
                 {previewQuestion.type.toUpperCase()}
               </span>
 
-              <p className="font-display font-extrabold text-lg sm:text-xl text-white">
+              <p className="font-display font-extrabold text-base sm:text-lg text-white">
                 &ldquo;{previewQuestion.prompt}&rdquo;
               </p>
 
-              {/* Voice in Preview (Phase 6) */}
+              {/* Voice in Preview */}
               <div className="flex justify-center pt-2">
                 <QuestionVoiceControls
                   text={previewQuestion.prompt}
@@ -1335,40 +1529,40 @@ export function CustomDeckClient() {
       )}
 
       {/* ========================================================
-          LEADERBOARD / SUMMARY MODAL (Phase 4)
+          SCORES / LEADERBOARD MODAL
          ======================================================== */}
       {showGameOverModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-canvas-deep/85 backdrop-blur-md animate-fade-in">
-          <div className="w-full max-w-md p-6 sm:p-8 rounded-3xl bg-surface-elevated border border-white/10 space-y-5 text-center">
-            <div className="w-14 h-14 mx-auto rounded-2xl bg-brand-500/10 border border-brand-400/30 flex items-center justify-center text-brand-400">
-              <Trophy className="w-7 h-7" />
+          <div className="w-full max-w-md p-5 sm:p-6 rounded-3xl bg-surface-elevated border border-white/10 space-y-4 text-center">
+            <div className="w-12 h-12 mx-auto rounded-2xl bg-brand-500/10 border border-brand-400/30 flex items-center justify-center text-brand-400">
+              <Trophy className="w-6 h-6" />
             </div>
 
             <div>
-              <h3 className="font-display font-extrabold text-xl text-white">Party Leaderboard</h3>
-              <p className="text-xs text-slate-400">Round {roundNumber} Current Standings</p>
+              <h3 className="font-display font-extrabold text-lg text-white">Current Standings</h3>
+              <p className="text-xs text-slate-400">Round {roundNumber}</p>
             </div>
 
-            <div className="p-3.5 rounded-2xl bg-canvas-base border border-white/5 space-y-2 text-left max-h-56 overflow-y-auto custom-scrollbar">
+            <div className="p-3 rounded-2xl bg-canvas-base border border-white/5 space-y-1.5 text-left max-h-56 overflow-y-auto custom-scrollbar">
               {playPlayers
                 .slice()
                 .sort((a, b) => b.score - a.score)
                 .map((p, idx) => (
                   <div
                     key={p.id}
-                    className="p-2.5 rounded-xl bg-surface-highlight border border-white/5 flex items-center justify-between text-xs"
+                    className="p-2 rounded-xl bg-surface-highlight border border-white/5 flex items-center justify-between text-xs"
                   >
                     <div className="flex items-center gap-2">
-                      <span className="font-bold text-slate-500 w-4">{idx + 1}.</span>
+                      <span className="font-bold text-slate-500 w-3">{idx + 1}.</span>
                       <div
-                        className="w-6 h-6 rounded-full flex items-center justify-center font-bold text-white text-[10px]"
+                        className="w-5 h-5 rounded-full flex items-center justify-center font-bold text-white text-[10px]"
                         style={{ backgroundColor: p.avatarColor }}
                       >
                         {p.name.charAt(0).toUpperCase()}
                       </div>
                       <span className="font-bold text-white">{p.name}</span>
                     </div>
-                    <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-2.5">
                       <span className="text-slate-400">{p.skips} skips</span>
                       <span className="font-bold text-truth-300">{p.score} pts</span>
                     </div>
@@ -1376,12 +1570,12 @@ export function CustomDeckClient() {
                 ))}
             </div>
 
-            <div className="grid grid-cols-2 gap-2 pt-2">
+            <div className="grid grid-cols-2 gap-2 pt-1">
               <Button variant="secondary" size="md" onClick={() => setShowGameOverModal(false)}>
-                Resume Game
+                Resume
               </Button>
               <Button variant="primary" size="md" onClick={handleRestartGame}>
-                Restart Round 1
+                Restart
               </Button>
             </div>
           </div>
