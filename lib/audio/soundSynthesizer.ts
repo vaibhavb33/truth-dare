@@ -189,7 +189,32 @@ class SoundSynthesizer {
     } catch {}
   }
 
-  // 6. Mobile Web Haptics
+  // 6. Wheel Spin Accelerate Whoosh
+  public playSpinStart() {
+    if (this.isMuted) return;
+    const ctx = this.initContext();
+    if (!ctx) return;
+    try {
+      const now = ctx.currentTime;
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(180, now);
+      osc.frequency.exponentialRampToValueAtTime(520, now + 0.4);
+
+      gain.gain.setValueAtTime(this.volume * 0.35, now);
+      gain.gain.exponentialRampToValueAtTime(0.01, now + 0.45);
+
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+
+      osc.start(now);
+      osc.stop(now + 0.48);
+    } catch {}
+  }
+
+  // 7. Mobile Web Haptics
   public triggerHaptic(pattern: number | number[] = 15) {
     if (typeof window !== 'undefined' && 'navigator' in window && navigator.vibrate) {
       try {

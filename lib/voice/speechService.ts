@@ -89,7 +89,7 @@ export class SpeechService {
             savedRate = parsed;
           }
         }
-      } catch {}
+      } catch { }
     }
     this.currentRate = savedRate;
 
@@ -245,7 +245,7 @@ export class SpeechService {
     if (typeof window !== 'undefined' && typeof window.localStorage !== 'undefined') {
       try {
         window.localStorage.setItem('asteria_voice_rate', clamped.toString());
-      } catch {}
+      } catch { }
     }
     this.notifyState({ rate: clamped });
   }
@@ -577,12 +577,12 @@ export class SpeechService {
       try {
         this.audioElement.pause();
         this.audioElement.currentTime = 0;
-      } catch {}
+      } catch { }
     }
     if (this.activeAudioUrl) {
       try {
         URL.revokeObjectURL(this.activeAudioUrl);
-      } catch {}
+      } catch { }
       this.activeAudioUrl = null;
     }
   }
