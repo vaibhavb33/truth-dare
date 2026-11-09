@@ -1,6 +1,6 @@
 # Asteria Language Selector: Compact Redesign Specification
 
-**Document Version:** 1.0.0  
+**Document Version:** 1.1.0  
 **Audit Date:** November 9, 2026  
 **Auditor:** Senior UI/UX Designer + Frontend Developer  
 **Subsystem:** Global Internationalization & Game Setup Language Selector (`components/i18n/LanguageSelector.tsx`)  
@@ -43,7 +43,23 @@ BEFORE (OVERSIZED & DUPLICATIVE ~100px):
 
 AFTER (COMPACT SINGLE-ROW DROPDOWN ~40px):
 +-----------------------------------------------------------+
-|  [ 🌐  🇺🇸  English (English)          Change Language ▾ ] | <-- 40px Single-Row Tile
+|  [ 🌐  🇺🇸  English (English)          Change Language ▾ ] | <-- 40px Single-Row Trigger
++-----------------------------------------------------------+
+   |
+   v Clicking opens anchored floating dropdown:
++-----------------------------------------------------------+
+| CHANGE LANGUAGE                             8 Languages   |
+| --------------------------------------------------------- |
+| [x] 🇺🇸 English (English)                                  |
+| [ ] 🇮🇳 हिन्दी (Hindi)                                      |
+| [ ] 🇪🇸 Español (Spanish)                                  |
+| [ ] 🇧🇷 Português (Portuguese)                             |
+| [ ] 🇫🇷 Français (French)                                  |
+| [ ] 🇮🇩 Bahasa Indonesia (Indonesian)                      |
+| [ ] 🇸🇦 العربية (Arabic)                              [RTL] |
+| [ ] 🇩🇪 Deutsch (German)                                   |
+| --------------------------------------------------------- |
+| 🌐 Full Language Modal →                                  |
 +-----------------------------------------------------------+
 ```
 
@@ -52,13 +68,10 @@ AFTER (COMPACT SINGLE-ROW DROPDOWN ~40px):
 ```tsx
 <button
   data-testid="game-setup-language-selector"
-  onClick={() => {
-    sound.triggerHaptic(10);
-    setIsOpen(true);
-  }}
+  onClick={toggleDropdown}
   type="button"
-  aria-haspopup="dialog"
-  aria-expanded={isOpen}
+  aria-haspopup="listbox"
+  aria-expanded={isDropdownOpen}
   aria-label={`${t('common.changeLanguage')}: ${currentMeta.nativeName}`}
   className="w-full h-10 sm:h-11 flex items-center justify-between px-3 sm:px-3.5 rounded-xl bg-surface-elevated hover:bg-surface-highlight border border-white/10 hover:border-brand-400/40 text-left transition-all active:scale-[0.99] shadow-sm group"
 >
@@ -87,7 +100,7 @@ AFTER (COMPACT SINGLE-ROW DROPDOWN ~40px):
     <ChevronDown
       className={cn(
         'w-3.5 h-3.5 text-slate-400 group-hover:text-brand-400 transition-transform duration-200',
-        isOpen && 'rotate-180'
+        isDropdownOpen && 'rotate-180'
       )}
     />
   </div>
@@ -99,8 +112,11 @@ AFTER (COMPACT SINGLE-ROW DROPDOWN ~40px):
 ## 3. Key Design Improvements
 
 1. **Elimination of External Label:** Removed the `<label>CHANGE LANGUAGE:</label>` element from `TruthOrDareGameClient.tsx`. The selector communicates its purpose through the inline `Globe` icon, native flag, native language name, and chevron indicator.
-2. **60% Reduction in Vertical Height:** Total component height decreased from ~100px to **40px on mobile** (`h-10`) and **44px on desktop** (`sm:h-11`).
+2. **60% Reduction in Vertical Height:** Total component height decreased from ~100px to **40px on mobile** (`h-10`) and **44px on desktop** (`sm:h-11`). Reclaims ~60px of screen real estate.
 3. **Optimized Icon Size:** Replaced the 36px purple container with an inline 14px `Globe` icon (`text-brand-400`) and standard flag emoji.
 4. **Single-Row Mobile Layout:** Designed with flexbox to fit within 320px viewports without wrapping or line collision.
 5. **Native Language Legibility:** The native script name is displayed in bold (`text-xs sm:text-sm font-bold text-white`), with English name in parentheses on $\ge 360$px devices (`hidden xs:inline`).
-6. **Full Modal Preservation:** Triggering the selector seamlessly opens the accessible, full-screen `LanguageModal` with all 8 supported languages, localized URL transitions, and instant haptic feedback.
+6. **Dual Interaction Paradigm (Dropdown + Preserved Modal):**
+   - **Compact Dropdown Popover:** Fast 1-click language switcher displaying all 8 supported languages with flags, native scripts, active checks, and RTL badges.
+   - **Full Language Modal:** Preserved for users desiring the immersive search/modal view via the "Full Language Modal →" button at the bottom of the popover.
+   - **Keyboard & Click-Away:** Escape key and outside mouse clicks immediately dismiss the floating dropdown.

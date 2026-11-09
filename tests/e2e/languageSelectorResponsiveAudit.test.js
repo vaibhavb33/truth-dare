@@ -92,24 +92,42 @@ async function runLanguageSelectorAudit() {
       const setupShot = path.join(SCREENSHOT_DIR, `${vp.name}-setup-selector.png`);
       await page.screenshot({ path: setupShot, fullPage: false });
 
-      // Verify Modal Functionality: Click selector and verify modal opens
+      // Verify Compact Dropdown & Modal Functionality
       await selectorBtn.click();
       await page.waitForTimeout(300);
 
-      const modal = page.locator('div[role="dialog"]').first();
-      const isModalVisible = await modal.isVisible();
-      console.log(`  ✓ Language Modal Opened on Click: ${isModalVisible ? 'PASS' : 'FAIL'}`);
-      if (!isModalVisible) results.allPassed = false;
+      // 1. Verify Compact Dropdown Popover is visible
+      const dropdown = page.locator('div[role="listbox"]').first();
+      const isDropdownVisible = await dropdown.isVisible();
+      console.log(`  ✓ Compact Dropdown Popover Opened: ${isDropdownVisible ? 'PASS' : 'FAIL'}`);
+      if (!isDropdownVisible) results.allPassed = false;
 
-      // Capture screenshot of Language Modal
+      // Capture screenshot of Compact Dropdown
       if (vp.width === 375 || vp.width === 390 || vp.width === 1024) {
-        const modalShot = path.join(SCREENSHOT_DIR, `${vp.name}-modal-open.png`);
-        await page.screenshot({ path: modalShot, fullPage: false });
+        const dropdownShot = path.join(SCREENSHOT_DIR, `${vp.name}-dropdown-open.png`);
+        await page.screenshot({ path: dropdownShot, fullPage: false });
       }
 
-      // Close modal using Escape
-      await page.keyboard.press('Escape');
-      await page.waitForTimeout(300);
+      // 2. In 390px viewport, test opening Full Language Modal from dropdown
+      if (vp.width === 390) {
+        const fullModalBtn = dropdown.locator('button', { hasText: 'Full Language Modal' });
+        if (await fullModalBtn.isVisible()) {
+          await fullModalBtn.click();
+          await page.waitForTimeout(300);
+          const modal = page.locator('div[role="dialog"]').first();
+          const isModalVisible = await modal.isVisible();
+          console.log(`  ✓ Preserved Full Language Modal Opened: ${isModalVisible ? 'PASS' : 'FAIL'}`);
+          if (!isModalVisible) results.allPassed = false;
+          const modalShot = path.join(SCREENSHOT_DIR, `${vp.name}-modal-open.png`);
+          await page.screenshot({ path: modalShot, fullPage: false });
+          await page.keyboard.press('Escape');
+          await page.waitForTimeout(300);
+        }
+      } else {
+        // Close dropdown using Escape
+        await page.keyboard.press('Escape');
+        await page.waitForTimeout(300);
+      }
 
       results.viewports.push({
         name: vp.name,
@@ -162,20 +180,23 @@ async function runLanguageSelectorAudit() {
       });
     }
 
-    // Modal Language Selection Verification: Select Hindi from Modal, verify route updates
-    console.log('\n🔄 Testing Language Modal Selection Interactivity...');
+    // Dropdown Language Selection Verification: Select Hindi directly from compact dropdown, verify route updates
+    console.log('\n🔄 Testing Compact Dropdown Language Selection Interactivity...');
     await langPage.goto(`${BASE_URL}/en/games/truth-or-dare`, { waitUntil: 'domcontentloaded' });
-    const enSelector = langPage.locator('button[aria-haspopup="dialog"]').filter({ hasText: /English/i }).first();
+    await langPage.waitForTimeout(400);
+
+    const enSelector = langPage.locator('[data-testid="game-setup-language-selector"]').first();
     await enSelector.click();
     await langPage.waitForTimeout(300);
 
-    const hiOption = langPage.locator('button').filter({ hasText: /हिन्दी/i }).first();
+    // Click Hindi option directly inside compact dropdown popover
+    const hiOption = langPage.locator('div[role="listbox"] button[role="option"]').filter({ hasText: /हिन्दी/i }).first();
     await hiOption.click();
     await langPage.waitForTimeout(600);
 
     const currentUrl = langPage.url();
     const isHindiRoute = currentUrl.includes('/hi/');
-    console.log(`  ✓ Selected Hindi: URL changed to ${currentUrl} (Localized URL: ${isHindiRoute ? 'PASS' : 'FAIL'})`);
+    console.log(`  ✓ Selected Hindi via Compact Dropdown: URL changed to ${currentUrl} (Localized URL: ${isHindiRoute ? 'PASS' : 'FAIL'})`);
     if (!isHindiRoute) results.allPassed = false;
 
     await langContext.close();
