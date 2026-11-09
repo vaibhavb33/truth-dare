@@ -116,9 +116,15 @@ export class RoomEngine {
     const customDeckSnapshot = params.customDeckSnapshot
       ? {
           id: params.customDeckSnapshot.id,
+          deckId: params.customDeckSnapshot.deckId || params.customDeckSnapshot.id,
+          roomId,
+          version: params.customDeckSnapshot.version || 1,
           name: params.customDeckSnapshot.name,
           language: params.customDeckSnapshot.language,
           questions: params.customDeckSnapshot.questions.map((q) => ({ ...q })),
+          truthQuestions: (params.customDeckSnapshot.truthQuestions || params.customDeckSnapshot.questions.filter((q) => q.type === 'truth')).map((q) => ({ ...q })),
+          dareQuestions: (params.customDeckSnapshot.dareQuestions || params.customDeckSnapshot.questions.filter((q) => q.type === 'dare')).map((q) => ({ ...q })),
+          snapshotCreatedAt: params.customDeckSnapshot.snapshotCreatedAt || Date.now(),
         }
       : null;
 
@@ -157,6 +163,7 @@ export class RoomEngine {
       recentEmojis: [],
       language,
       customDeckSnapshot,
+      questionHistory: [],
       createdAt: nowUtc,
       updatedAt: nowUtc,
       expiresAt: nowUtc + ttlMs,
@@ -524,9 +531,15 @@ export class RoomEngine {
           room.customDeckSnapshot = snapshot
             ? {
                 id: snapshot.id,
+                deckId: snapshot.deckId || snapshot.id,
+                roomId: room.id,
+                version: snapshot.version || 1,
                 name: snapshot.name,
                 language: snapshot.language,
                 questions: snapshot.questions.map((q) => ({ ...q })),
+                truthQuestions: (snapshot.truthQuestions || snapshot.questions.filter((q) => q.type === 'truth')).map((q) => ({ ...q })),
+                dareQuestions: (snapshot.dareQuestions || snapshot.questions.filter((q) => q.type === 'dare')).map((q) => ({ ...q })),
+                snapshotCreatedAt: snapshot.snapshotCreatedAt || Date.now(),
               }
             : null;
           if (snapshot?.language) {
@@ -590,6 +603,24 @@ export class RoomEngine {
         room.currentCard = card;
         room.isCardFlipped = true;
         room.votes = {}; // Reset votes for new card
+
+        // Append to synchronized question history
+        if (card) {
+          if (!room.questionHistory) {
+            room.questionHistory = [];
+          }
+          room.questionHistory.push({
+            id: 'hist-' + Math.random().toString(36).substring(2, 9),
+            questionId: card.id,
+            type,
+            prompt: card.prompt,
+            playerId: player.id,
+            playerName: player.name,
+            action: 'flipped',
+            timestamp: Date.now(),
+          });
+        }
+
         room.updatedAt = Date.now();
         this.emitEvent(room.roomCode, 'CARD_FLIPPED', { card, type });
         break;
@@ -609,6 +640,12 @@ export class RoomEngine {
           if (activePlayer) {
             activePlayer.score += 1;
           }
+          if (room.questionHistory && room.questionHistory.length > 0) {
+            const last = room.questionHistory[room.questionHistory.length - 1];
+            if (last && last.action === 'flipped') {
+              last.action = 'completed';
+            }
+          }
         }
 
         this.advanceTurn(room);
@@ -625,6 +662,12 @@ export class RoomEngine {
         const activePlayer = room.players.find((p) => p.id === room.activePlayerId);
         if (activePlayer) {
           activePlayer.skips += 1;
+        }
+        if (room.questionHistory && room.questionHistory.length > 0) {
+          const last = room.questionHistory[room.questionHistory.length - 1];
+          if (last && last.action === 'flipped') {
+            last.action = 'skipped';
+          }
         }
 
         this.advanceTurn(room);

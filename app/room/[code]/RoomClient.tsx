@@ -564,6 +564,11 @@ export function RoomClient({ roomCode }: RoomClientProps) {
                   Round {room.roundNumber}
                 </span>
               )}
+              {room?.customDeckSnapshot && (
+                <span className="px-1.5 py-0.5 rounded bg-purple-500/20 text-purple-300 text-[10px] font-bold">
+                  Deck: {room.customDeckSnapshot.name}
+                </span>
+              )}
             </span>
           </div>
         </div>
@@ -704,10 +709,17 @@ export function RoomClient({ roomCode }: RoomClientProps) {
                     ? 'Invite your friends! When everyone is ready, start the game below.'
                     : dict.multiplayer.lobbyWaiting}
                 </p>
-                <div className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-white/5 text-[11px] text-brand-300 border border-white/10 mt-1">
+                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-brand-500/10 text-[11px] text-brand-300 border border-brand-400/30 mt-1">
                   <span>{roomLangMeta.flag} {roomLangMeta.nativeName}</span>
                   <span>•</span>
-                  <span className="capitalize">{room.categoryId.replace(/-/g, ' ')}</span>
+                  {room.customDeckSnapshot ? (
+                    <span className="font-bold flex items-center gap-1 text-white">
+                      <Sparkles className="w-3 h-3 text-amber-400" />
+                      Custom: {room.customDeckSnapshot.name} ({room.customDeckSnapshot.questions.length} cards)
+                    </span>
+                  ) : (
+                    <span className="capitalize">{room.categoryId.replace(/-/g, ' ')}</span>
+                  )}
                 </div>
               </div>
 

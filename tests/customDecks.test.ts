@@ -1,5 +1,6 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { deckStorage, getCreatorId } from '@/lib/custom/deckStorage';
+import { serverDeckRepository } from '@/lib/custom/serverDeckRepository';
 import { validateCustomQuestion, validateQuestionSafety } from '@/lib/custom/safetyFilter';
 import { roomEngine } from '@/lib/multiplayer/roomEngine';
 import { CustomDeck, CustomQuestion } from '@/types';
@@ -363,6 +364,209 @@ describe('Custom Deck System - Comprehensive Unit & Integration Tests', () => {
       expect(flip.success).toBe(true);
       expect(room.currentCard?.language_code).toBe('hi');
       expect(room.currentCard?.prompt).toBe('आपकी सबसे बड़ी गुप्त इच्छा क्या है?');
+    });
+  });
+
+  // ==========================================
+  // PHASE 7: SERVER REPOSITORY & PERMISSION ENFORCEMENT
+  // ==========================================
+  describe('Phase 7: Server Deck Repository & Permission Enforcement', () => {
+    beforeEach(() => {
+      serverDeckRepository.clearForTesting();
+    });
+
+    it('saves deck on server with versioning and increments version on update', () => {
+      const deck: CustomDeck = {
+        id: 'srv-deck-1',
+        name: 'Server Trivia',
+        language: 'en',
+        category: 'classic-party',
+        visibility: 'private',
+        creatorId: 'host-123',
+        questions: [
+          { id: 'q1', type: 'truth', prompt: 'Question 1' },
+          { id: 'q2', type: 'dare', prompt: 'Question 2' },
+        ],
+        createdAt: Date.now(),
+        updatedAt: Date.now(),
+      };
+
+      const res1 = serverDeckRepository.saveDeck(deck);
+      expect(res1.success).toBe(true);
+      expect(res1.deck?.version).toBe(1);
+
+      // Update deck with new question
+      const updatedDeck: CustomDeck = {
+        ...deck,
+        questions: [
+          ...deck.questions,
+          { id: 'q3', type: 'truth', prompt: 'Question 3' },
+        ],
+      };
+      const res2 = serverDeckRepository.saveDeck(updatedDeck);
+      expect(res2.success).toBe(true);
+      expect(res2.deck?.version).toBe(2);
+      expect(res2.deck?.questions.length).toBe(3);
+    });
+
+    it('blocks another creator from updating or deleting a private deck', () => {
+      const deck: CustomDeck = {
+        id: 'alice-deck-1',
+        name: 'Alice Secrets',
+        language: 'en',
+        category: 'classic-party',
+        visibility: 'private',
+        creatorId: 'alice-creator-id',
+        questions: [
+          { id: 'q1', type: 'truth', prompt: 'Secret 1' },
+          { id: 'q2', type: 'dare', prompt: 'Dare 1' },
+        ],
+        createdAt: Date.now(),
+        updatedAt: Date.now(),
+      };
+
+      serverDeckRepository.saveDeck(deck);
+
+      // Bob attempts to edit Alice's deck
+      const bobEdit = serverDeckRepository.saveDeck({
+        ...deck,
+        creatorId: 'bob-creator-id',
+        name: 'Hacked Deck',
+      });
+      expect(bobEdit.success).toBe(false);
+      expect(bobEdit.error).toContain('Permission denied');
+
+      // Bob attempts to delete Alice's deck
+      const bobDelete = serverDeckRepository.deleteDeck('alice-deck-1', 'bob-creator-id');
+      expect(bobDelete.success).toBe(false);
+      expect(bobDelete.error).toContain('Permission denied');
+
+      // Alice can delete her own deck
+      const aliceDelete = serverDeckRepository.deleteDeck('alice-deck-1', 'alice-creator-id');
+      expect(aliceDelete.success).toBe(true);
+    });
+
+    it('generates immutable snapshot with separated truth and dare questions', () => {
+      const deck: CustomDeck = {
+        id: 'snapshot-test-deck',
+        name: 'Party Mix',
+        language: 'en',
+        category: 'classic-party',
+        visibility: 'private',
+        creatorId: 'host-charlie',
+        questions: [
+          { id: 't1', type: 'truth', prompt: 'Truth 1' },
+          { id: 't2', type: 'truth', prompt: 'Truth 2' },
+          { id: 'd1', type: 'dare', prompt: 'Dare 1' },
+        ],
+        createdAt: Date.now(),
+        updatedAt: Date.now(),
+      };
+      serverDeckRepository.saveDeck(deck);
+
+      const res = serverDeckRepository.createRoomSnapshot({
+        deckId: 'snapshot-test-deck',
+        creatorId: 'host-charlie',
+        roomId: 'rm-test-room',
+      });
+
+      expect(res.success).toBe(true);
+      expect(res.snapshot).toBeDefined();
+      expect(res.snapshot?.truthQuestions?.length).toBe(2);
+      expect(res.snapshot?.dareQuestions?.length).toBe(1);
+      expect(res.snapshot?.roomId).toBe('rm-test-room');
+
+      // Mutating snapshot should be prevented by Object.freeze
+      expect(() => {
+        (res.snapshot as any).name = 'Tampered Name';
+      }).toThrow();
+    });
+
+    it('rejects snapshots for non-existent decks or unauthorized creators', () => {
+      const missing = serverDeckRepository.createRoomSnapshot({
+        deckId: 'non-existent-id',
+        creatorId: 'anyone',
+      });
+      expect(missing.success).toBe(false);
+      expect(missing.code).toBe('INVALID_DECK');
+
+      // Unauthorized private deck access
+      const privateDeck: CustomDeck = {
+        id: 'secret-pvt-deck',
+        name: 'VIP Only',
+        language: 'en',
+        category: 'spicy-18',
+        visibility: 'private',
+        creatorId: 'vip-owner',
+        questions: [
+          { id: 'q1', type: 'truth', prompt: 'VIP 1' },
+          { id: 'q2', type: 'dare', prompt: 'VIP 2' },
+        ],
+        createdAt: Date.now(),
+        updatedAt: Date.now(),
+      };
+      serverDeckRepository.saveDeck(privateDeck);
+
+      const unauth = serverDeckRepository.createRoomSnapshot({
+        deckId: 'secret-pvt-deck',
+        creatorId: 'intruder',
+      });
+      expect(unauth.success).toBe(false);
+      expect(unauth.code).toBe('PERMISSION_DENIED');
+    });
+
+    it('tracks synchronized questionHistory across turns', () => {
+      const questions: CustomQuestion[] = [
+        { id: 'h-t1', type: 'truth', prompt: 'History Truth 1' },
+        { id: 'h-d1', type: 'dare', prompt: 'History Dare 1' },
+      ];
+
+      const { room, hostPlayerId, sessionToken } = roomEngine.createRoom({
+        gameId: 'truth-or-dare',
+        categoryId: 'classic-party',
+        hostName: 'Alice',
+        customDeckSnapshot: {
+          id: 'hist-deck',
+          name: 'History Deck',
+          language: 'en',
+          questions,
+        },
+      });
+
+      roomEngine.joinRoom({
+        roomCode: room.roomCode,
+        playerName: 'Bob',
+      });
+
+      roomEngine.dispatchAction({
+        roomCode: room.roomCode,
+        playerId: hostPlayerId,
+        sessionToken,
+        action: 'START_GAME',
+      });
+
+      // 1. Flip Card -> logs 'flipped'
+      roomEngine.dispatchAction({
+        roomCode: room.roomCode,
+        playerId: hostPlayerId,
+        sessionToken,
+        action: 'FLIP_CARD',
+        payload: { type: 'truth' },
+      });
+
+      expect(room.questionHistory?.length).toBe(1);
+      expect(room.questionHistory?.[0].action).toBe('flipped');
+      expect(room.questionHistory?.[0].playerName).toBe('Alice');
+
+      // 2. Complete Dare -> updates last action to 'completed'
+      roomEngine.dispatchAction({
+        roomCode: room.roomCode,
+        playerId: hostPlayerId,
+        sessionToken,
+        action: 'COMPLETE_DARE',
+      });
+
+      expect(room.questionHistory?.[0].action).toBe('completed');
     });
   });
 });

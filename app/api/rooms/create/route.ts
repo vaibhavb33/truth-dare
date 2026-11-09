@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { roomEngine } from '@/lib/multiplayer/roomEngine';
 import { rateLimiter } from '@/lib/security/rateLimiter';
-import { GameType, CategoryId } from '@/types';
+import { serverDeckRepository } from '@/lib/custom/serverDeckRepository';
+import { GameType, CategoryId, SupportedLanguageCode } from '@/types';
 
 export async function POST(request: NextRequest) {
   try {
@@ -23,18 +24,48 @@ export async function POST(request: NextRequest) {
       timerSeconds = 30,
       language = 'en',
       maxPlayers = 12,
+      deckId,
+      creatorId,
       customDeckSnapshot = null,
       clientRequestId,
     } = body;
 
+    let verifiedSnapshot = null;
+
+    // Phase 2, 3 & 6: Validate Custom Deck & Build Immutable Room Snapshot
+    if (deckId || customDeckSnapshot) {
+      const hostCreatorId = creatorId || request.headers.get('x-creator-id') || 'anonymous';
+      const snapshotResult = serverDeckRepository.createRoomSnapshot({
+        deckId,
+        creatorId: hostCreatorId,
+        clientPayload: customDeckSnapshot,
+      });
+
+      if (!snapshotResult.success) {
+        const statusCode = snapshotResult.code === 'PERMISSION_DENIED' ? 403 : 400;
+        return NextResponse.json(
+          {
+            success: false,
+            code: snapshotResult.code || 'INVALID_DECK',
+            error: snapshotResult.error || 'Failed to validate custom deck.',
+          },
+          { status: statusCode }
+        );
+      }
+
+      verifiedSnapshot = snapshotResult.snapshot;
+    }
+
+    const chosenLanguage = (verifiedSnapshot?.language || language || 'en') as SupportedLanguageCode;
+
     const { room, hostPlayerId, sessionToken, roomId, roomCode } = roomEngine.createRoom({
       gameId: gameId as GameType,
-      categoryId: categoryId as CategoryId,
+      categoryId: (verifiedSnapshot ? 'custom' : categoryId) as CategoryId,
       hostName,
       timerSeconds,
-      language,
+      language: chosenLanguage,
       maxPlayers: Number(maxPlayers),
-      customDeckSnapshot,
+      customDeckSnapshot: verifiedSnapshot,
       clientRequestId,
     });
 

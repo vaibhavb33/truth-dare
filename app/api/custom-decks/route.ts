@@ -1,10 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { rateLimiter } from '@/lib/security/rateLimiter';
 import { validateCustomQuestion } from '@/lib/custom/safetyFilter';
+import { serverDeckRepository } from '@/lib/custom/serverDeckRepository';
 import { CustomDeck, CustomQuestion } from '@/types';
-
-// In-memory server-side mock storage fallback for API verification
-const serverDeckStore = new Map<string, CustomDeck>();
 
 export async function GET(request: NextRequest) {
   try {
@@ -15,13 +13,9 @@ export async function GET(request: NextRequest) {
     }
 
     const { searchParams } = new URL(request.url);
-    const creatorId = searchParams.get('creatorId') || request.headers.get('x-creator-id');
+    const creatorId = searchParams.get('creatorId') || request.headers.get('x-creator-id') || undefined;
 
-    const decks = Array.from(serverDeckStore.values()).filter((d) => {
-      if (d.visibility === 'public') return true;
-      if (creatorId && d.creatorId === creatorId) return true;
-      return false;
-    });
+    const decks = serverDeckRepository.getDecks(creatorId);
 
     return NextResponse.json({ success: true, decks });
   } catch {
@@ -39,6 +33,7 @@ export async function POST(request: NextRequest) {
 
     const body = await request.json();
     const {
+      id,
       name,
       description = '',
       language = 'en',
@@ -81,7 +76,7 @@ export async function POST(request: NextRequest) {
       });
     }
 
-    const deckId = 'deck-' + Math.random().toString(36).substring(2, 9) + '-' + Date.now().toString(36);
+    const deckId = id || 'deck-' + Math.random().toString(36).substring(2, 9) + '-' + Date.now().toString(36);
     const newDeck: CustomDeck = {
       id: deckId,
       name: cleanName,
@@ -90,19 +85,22 @@ export async function POST(request: NextRequest) {
       category,
       visibility,
       creatorId,
+      version: 1,
       questions: sanitizedQuestions,
-      createdAt: Date.now(),
+      createdAt: body.createdAt || Date.now(),
       updatedAt: Date.now(),
     };
 
-    serverDeckStore.set(deckId, newDeck);
+    const result = serverDeckRepository.saveDeck(newDeck);
+    if (!result.success) {
+      return NextResponse.json({ success: false, error: result.error || 'Failed to save deck.' }, { status: 400 });
+    }
 
     return NextResponse.json({
       success: true,
-      deck: newDeck,
+      deck: result.deck,
     });
   } catch {
     return NextResponse.json({ success: false, error: 'Failed to create custom deck.' }, { status: 500 });
   }
 }
-

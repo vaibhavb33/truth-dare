@@ -26,6 +26,8 @@ import { Button } from '@/components/ui/Button';
 import { sound } from '@/lib/audio/soundSynthesizer';
 import { useTranslation } from '@/lib/i18n/LanguageContext';
 import { ALL_LOCALES, SUPPORTED_LOCALES, Locale } from '@/lib/i18n/config';
+import { deckStorage, getCreatorId } from '@/lib/custom/deckStorage';
+import { CustomDeck } from '@/types';
 
 export function HomeClientContent() {
   const router = useRouter();
@@ -42,6 +44,19 @@ export function HomeClientContent() {
   const [maxPlayers, setMaxPlayers] = useState<number>(12);
   const [isCreatingRoom, setIsCreatingRoom] = useState(false);
   const [createError, setCreateError] = useState('');
+  const [deckSource, setDeckSource] = useState<'preset' | 'custom'>('preset');
+  const [savedDecks, setSavedDecks] = useState<CustomDeck[]>([]);
+  const [selectedDeckId, setSelectedDeckId] = useState<string>('');
+
+  React.useEffect(() => {
+    if (showCreateModal && typeof window !== 'undefined') {
+      const decks = deckStorage.getDecks().filter((d) => (d.questions?.length || 0) >= 2);
+      setSavedDecks(decks);
+      if (decks.length > 0 && !selectedDeckId) {
+        setSelectedDeckId(decks[0].id);
+      }
+    }
+  }, [showCreateModal, selectedDeckId]);
 
   const handleCreateRoom = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -50,15 +65,32 @@ export function HomeClientContent() {
     sound.triggerHaptic(15);
 
     try {
+      const selectedCustomDeck =
+        deckSource === 'custom' ? savedDecks.find((d) => d.id === selectedDeckId) : null;
+      const creator = getCreatorId();
+
       const res = await fetch('/api/rooms/create', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          'x-creator-id': creator,
+        },
         body: JSON.stringify({
           gameId: 'truth-or-dare',
-          categoryId: selectedCategory,
+          categoryId: selectedCustomDeck ? 'custom' : selectedCategory,
           hostName: hostName.trim() || 'Host',
-          language: selectedLanguage,
+          language: selectedCustomDeck?.language || selectedLanguage,
           maxPlayers,
+          deckId: selectedCustomDeck?.id || undefined,
+          creatorId: creator,
+          customDeckSnapshot: selectedCustomDeck
+            ? {
+                id: selectedCustomDeck.id,
+                name: selectedCustomDeck.name,
+                language: selectedCustomDeck.language,
+                questions: selectedCustomDeck.questions,
+              }
+            : undefined,
           clientRequestId: `req-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
         }),
       });
@@ -472,31 +504,95 @@ export function HomeClientContent() {
                   </div>
                 </div>
 
-                {/* Category Deck */}
-                <div className="space-y-1.5">
-                  <label className="text-xs font-bold uppercase tracking-wider text-slate-300">
-                    Starting Deck Category:
-                  </label>
-                  <div className="grid grid-cols-2 gap-2">
-                    {categories.map((cat) => {
-                      const isSelected = selectedCategory === cat.id;
-                      return (
-                        <button
-                          type="button"
-                          key={cat.id}
-                          onClick={() => setSelectedCategory(cat.id)}
-                          className={`p-2 rounded-xl border text-xs font-semibold flex items-center gap-2 transition-all ${
-                            isSelected
-                              ? 'bg-brand-500/20 border-brand-400 text-white shadow-glow-brand'
-                              : 'bg-surface-highlight border-white/5 text-slate-300 hover:text-white'
-                          }`}
-                        >
-                          <span className="text-base">{cat.icon}</span>
-                          <span className="truncate">{cat.name}</span>
-                        </button>
-                      );
-                    })}
+                {/* Deck Source Selection */}
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <label className="text-xs font-bold uppercase tracking-wider text-slate-300">
+                      Game Deck:
+                    </label>
+                    <div className="flex rounded-lg bg-surface-highlight p-0.5 border border-white/5 text-[11px] font-bold">
+                      <button
+                        type="button"
+                        onClick={() => setDeckSource('preset')}
+                        className={`px-2.5 py-0.5 rounded-md transition-all ${
+                          deckSource === 'preset' ? 'bg-brand-500 text-white shadow' : 'text-slate-400 hover:text-white'
+                        }`}
+                      >
+                        Official Packs
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setDeckSource('custom')}
+                        className={`px-2.5 py-0.5 rounded-md transition-all ${
+                          deckSource === 'custom' ? 'bg-brand-500 text-white shadow' : 'text-slate-400 hover:text-white'
+                        }`}
+                      >
+                        Custom Decks ({savedDecks.length})
+                      </button>
+                    </div>
                   </div>
+
+                  {deckSource === 'preset' ? (
+                    <div className="grid grid-cols-2 gap-2">
+                      {categories.map((cat) => {
+                        const isSelected = selectedCategory === cat.id;
+                        return (
+                          <button
+                            type="button"
+                            key={cat.id}
+                            onClick={() => setSelectedCategory(cat.id)}
+                            className={`p-2 rounded-xl border text-xs font-semibold flex items-center gap-2 transition-all ${
+                              isSelected
+                                ? 'bg-brand-500/20 border-brand-400 text-white shadow-glow-brand'
+                                : 'bg-surface-highlight border-white/5 text-slate-300 hover:text-white'
+                            }`}
+                          >
+                            <span className="text-base">{cat.icon}</span>
+                            <span className="truncate">{cat.name}</span>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  ) : savedDecks.length > 0 ? (
+                    <div className="space-y-1.5 max-h-40 overflow-y-auto custom-scrollbar">
+                      {savedDecks.map((deck) => {
+                        const isSelected = selectedDeckId === deck.id;
+                        const truths = deck.questions.filter((q) => q.type === 'truth').length;
+                        const dares = deck.questions.filter((q) => q.type === 'dare').length;
+                        return (
+                          <button
+                            type="button"
+                            key={deck.id}
+                            onClick={() => setSelectedDeckId(deck.id)}
+                            className={`w-full p-2.5 rounded-xl border text-left text-xs font-semibold flex items-center justify-between transition-all ${
+                              isSelected
+                                ? 'bg-brand-500/20 border-brand-400 text-white shadow-glow-brand'
+                                : 'bg-surface-highlight border-white/5 text-slate-300 hover:text-white'
+                            }`}
+                          >
+                            <div className="min-w-0 pr-2">
+                              <div className="font-bold truncate text-white">{deck.name}</div>
+                              <div className="text-[10px] text-slate-400 flex items-center gap-1.5 pt-0.5">
+                                <span className="text-truth-400">{truths} Truths</span>
+                                <span>•</span>
+                                <span className="text-dare-400">{dares} Dares</span>
+                              </div>
+                            </div>
+                            <span className="px-1.5 py-0.5 rounded bg-brand-500/20 text-brand-300 text-[10px] uppercase font-bold shrink-0">
+                              {deck.language}
+                            </span>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  ) : (
+                    <div className="p-3 rounded-xl bg-surface-highlight border border-white/5 text-center space-y-1">
+                      <p className="text-xs text-slate-400">No custom decks saved yet.</p>
+                      <Link href="/custom" className="text-xs text-brand-400 font-bold hover:underline inline-block">
+                        Build your first deck in Custom Deck Builder →
+                      </Link>
+                    </div>
+                  )}
                 </div>
 
                 {/* Capacity */}

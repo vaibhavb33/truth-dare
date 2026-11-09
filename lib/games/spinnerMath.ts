@@ -93,3 +93,4 @@ export function formatSegmentLabel(label: string, maxLength: number = 24): strin
   if (trimmed.length <= maxLength) return trimmed;
   return trimmed.slice(0, maxLength - 2) + '..';
 }
+

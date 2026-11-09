@@ -200,6 +200,18 @@ export function CustomDeckClient() {
     if (saveResult.deck) {
       setCurrentDeckId(saveResult.deck.id);
       setDecks(deckStorage.getDecks());
+
+      // Sync with server deck repository for multiplayer rooms
+      if (typeof window !== 'undefined') {
+        fetch('/api/custom-decks', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'x-creator-id': saveResult.deck.creatorId,
+          },
+          body: JSON.stringify(saveResult.deck),
+        }).catch(() => {});
+      }
     }
 
     setSavedSuccess(true);
@@ -235,8 +247,15 @@ export function CustomDeckClient() {
 
   // Delete Deck from Library
   const handleDeleteDeck = (id: string) => {
+    const creator = getCreatorId();
     const res = deckStorage.deleteDeck(id);
     if (res.success) {
+      if (typeof window !== 'undefined') {
+        fetch(`/api/custom-decks/${id}?creatorId=${creator}`, {
+          method: 'DELETE',
+          headers: { 'x-creator-id': creator },
+        }).catch(() => {});
+      }
       const remaining = deckStorage.getDecks();
       setDecks(remaining);
       if (currentDeckId === id) {
@@ -254,8 +273,8 @@ export function CustomDeckClient() {
 
   // Host Multiplayer Room with this Custom Deck Snapshot (Phase 5)
   const handleHostMultiplayerRoom = async () => {
-    if (questions.length < 3) {
-      setInputError('A custom deck must contain at least 3 cards to host a multiplayer room.');
+    if (questions.length < 2) {
+      setInputError('A custom deck must contain at least 2 cards to host a multiplayer room.');
       sound.playBuzzer();
       return;
     }
@@ -264,13 +283,18 @@ export function CustomDeckClient() {
       const creator = getCreatorId();
       const res = await fetch('/api/rooms/create', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          'x-creator-id': creator,
+        },
         body: JSON.stringify({
           gameId: 'truth-or-dare',
           categoryId: deckCategory,
           hostName: 'Host (' + creator.slice(0, 5) + ')',
           language: deckLanguage,
           timerSeconds: 30,
+          deckId: currentDeckId || undefined,
+          creatorId: creator,
           customDeckSnapshot: {
             id: currentDeckId || 'custom-deck-' + Date.now(),
             name: deckName,
@@ -286,8 +310,11 @@ export function CustomDeckClient() {
           localStorage.setItem(
             `asteria_multiplayer_session_${data.roomCode}`,
             JSON.stringify({
+              roomId: data.roomId,
+              roomCode: data.roomCode,
               playerId: data.hostPlayerId,
               sessionToken: data.sessionToken,
+              playerName: 'Host (' + creator.slice(0, 5) + ')',
             })
           );
         }

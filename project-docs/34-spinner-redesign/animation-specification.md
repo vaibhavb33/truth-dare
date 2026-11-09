@@ -78,3 +78,4 @@ A critical failure mode of naive spinner wheels is "disconnect": the backend or 
 - **Animation Engine:** Uses `window.requestAnimationFrame` with high-resolution timestamps (`performance.now()`).
 - **Progress Calculation:** Based strictly on elapsed wall-clock milliseconds, ensuring identical 4.50-second spin duration whether running at 60Hz, 90Hz, or 120Hz ProMotion displays.
 - **Unmount Protection:** Animation frame handles are preserved in `animationFrameRef` and cleanly cancelled only on component unmount, preventing memory leaks and frame thrashing during React state updates.
+

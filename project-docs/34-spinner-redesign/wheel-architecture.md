@@ -158,3 +158,4 @@ All audio is procedurally synthesized using the browser's native Web Audio API w
    When the user or operating system has enabled reduced motion preferences, the animation duration is scaled from 4500ms down to 400ms, immediately presenting the result without vertigo-inducing rapid rotation.
 3. **Keyboard Navigation:**
    Full keyboard focus rings, Enter/Space key triggers on spin button, and modal ESC dismiss.
+

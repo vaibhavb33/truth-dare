@@ -149,15 +149,33 @@ export interface MultiplayerRoom {
   language: SupportedLanguageCode; // Room question language selected by the host
   customDeckSnapshot?: {
     id: string;
+    deckId?: string;
+    roomId?: string;
+    version?: number;
     name: string;
     language: SupportedLanguageCode;
     questions: CustomQuestion[];
+    truthQuestions?: CustomQuestion[];
+    dareQuestions?: CustomQuestion[];
+    snapshotCreatedAt?: number;
   } | null;
+  questionHistory?: RoomQuestionHistoryEntry[];
   createdAt: number; // UTC timestamp milliseconds
   updatedAt: number; // UTC timestamp milliseconds
   expiresAt: number; // UTC timestamp milliseconds
   createdAtIso?: string; // ISO 8601 UTC string
   expiresAtIso?: string; // ISO 8601 UTC string
+}
+
+export interface RoomQuestionHistoryEntry {
+  id: string;
+  questionId: string;
+  type: QuestionType;
+  prompt: string;
+  playerId: string;
+  playerName: string;
+  action: 'completed' | 'skipped' | 'flipped';
+  timestamp: number;
 }
 
 export interface CustomQuestion {
@@ -175,6 +193,7 @@ export interface CustomDeck {
   category: CategoryId;
   visibility: 'private' | 'unlisted' | 'public';
   creatorId: string;
+  version?: number;
   questions: CustomQuestion[];
   createdAt: number;
   updatedAt: number;

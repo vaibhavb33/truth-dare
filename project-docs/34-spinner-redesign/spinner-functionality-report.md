@@ -56,3 +56,4 @@ In tournament, drinking, or party game contexts, users frequently want to elimin
 - **Toggle Control:** Accessible sound button (`Volume2` / `VolumeX`) in the wheel controls bar.
 - **Mute State:** Toggling sound mutes all synthesized audio (whoosh, tick, victory) while preserving haptic vibrations on supported mobile devices.
 - **No Autoplay:** Audio is only synthesized upon deliberate user interaction (spinning the wheel, clicking toggle, or completing spin).
+

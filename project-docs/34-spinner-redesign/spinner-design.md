@@ -88,3 +88,4 @@ An inner dark gradient ring (`rgba(0,0,0,0.5)` to `rgba(0,0,0,0.0)`) is rendered
     - Center: HiDPI Wheel Canvas with prominent top pointer.
     - Below Wheel: Big Touch-Friendly Spin CTA (`min-h-[52px]` thumb zone).
     - Bottom: Expandable Player Roster Accordion with inline edit, remove, and add inputs.
+

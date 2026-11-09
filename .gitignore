@@ -32,4 +32,8 @@ next-env.d.ts
 # scratch scripts
 scratch/
 
+# runtime data
+.data/
+
+
 

@@ -81,3 +81,4 @@ Next.js 15 production build (`npm run build`) confirmed:
 - Zero ESLint warnings.
 - Clean compilation of all 184 static/dynamic routes.
 - Bundle size overhead for `/games/spin-the-bottle`: First load JS 171 kB (shared core 103 kB).
+
