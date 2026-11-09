@@ -334,11 +334,8 @@ function TruthOrDareInner() {
             </p>
           </div>
 
-          {/* Phase 2: Game Setup Language Selector */}
-          <div className="space-y-2">
-            <label className="text-xs font-bold uppercase tracking-wider text-slate-300">
-              {t('common.changeLanguage')}:
-            </label>
+          {/* Compact Game Setup Language Selector (Single-Row Dropdown) */}
+          <div className="w-full">
             <LanguageSelector variant="gameSetup" />
           </div>
 

@@ -96,3 +96,4 @@ Devanagari characters used in Hindi require a line-height multiplier of at least
 4. **Independent Voice Control Bar:**
    - Relocated voice buttons to a full-width bottom bar below the decision tiles.
    - Distinct, accessible touch targets ($\ge 36$px) with `Volume2` icons.
+

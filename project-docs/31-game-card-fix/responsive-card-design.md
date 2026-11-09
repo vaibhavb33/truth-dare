@@ -120,3 +120,4 @@ Both buttons are placed inside a balanced CSS Grid:
 - **Font Stack:** `'Cairo', sans-serif`
 - **Direction:** Automatic `dir="rtl"` inheritance flips flex order, placing Truth on the right and Dare on the left according to natural reading flow.
 - **Diacritics:** Fully preserved with comfortable line-height.
+
