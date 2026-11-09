@@ -102,3 +102,4 @@ For power users who wish to customize themes and discovery, an optional collapsi
 If a user accidentally navigates away, refreshes the browser, or switches tabs:
 - The editor automatically serializes the active draft (`name`, `language`, `questions`) into `localStorage.getItem('asteria_custom_deck_draft')`.
 - On return, the in-progress questions are instantly restored without loss.
+

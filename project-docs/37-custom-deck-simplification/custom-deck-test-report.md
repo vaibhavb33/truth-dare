@@ -122,3 +122,4 @@ The following high-resolution screenshots have been saved in [`project-docs/37-c
 - Confusing metadata options are neatly tucked away under an optional collapsible section.
 - Empty button clicks are prevented at the UI level, eliminating false error alerts.
 - Questions are instantly added to a clean visual list with reassuring feedback.
+

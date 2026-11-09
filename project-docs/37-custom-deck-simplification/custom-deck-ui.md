@@ -121,3 +121,4 @@ High-resolution visual evidence captured during testing in `/project-docs/37-cus
 - `07-save-and-play-transition.png`: Instant transition into Pass & Play mode.
 - `08-mobile-simplified-deck-editor.png`: Single-column mobile layout with zero overflow.
 - `09-my-decks-library.png`: My Decks library view with Play, Edit, and Delete actions.
+

@@ -93,7 +93,7 @@ const PROHIBITED_RULES: Array<{
 export function validateQuestionSafety(prompt: string): SafetyCheckResult {
   const clean = (prompt || '').trim();
   if (!clean) {
-    return { isValid: false, reason: 'Question prompt cannot be empty.' };
+    return { isValid: false, reason: 'Write a question before adding it.' };
   }
 
   for (const rule of PROHIBITED_RULES) {
@@ -119,18 +119,22 @@ export function validateCustomQuestion(
   existingPrompts: string[] = [],
   maxLength: number = 250
 ): { isValid: boolean; error?: string } {
-  const clean = (prompt || '').trim();
+  const raw = prompt ?? '';
+  const clean = raw.trim();
 
   // 1. Empty Check
   if (!clean) {
-    return { isValid: false, error: 'Question prompt cannot be empty or only spaces.' };
+    if (raw.length > 0) {
+      return { isValid: false, error: 'Your question cannot contain only spaces.' };
+    }
+    return { isValid: false, error: 'Write a question before adding it.' };
   }
 
   // 2. Length Check
   if (clean.length > maxLength) {
     return {
       isValid: false,
-      error: `Question exceeds the maximum length of ${maxLength} characters (${clean.length}/${maxLength}).`,
+      error: `Maximum ${maxLength} characters allowed.`,
     };
   }
 
@@ -138,13 +142,13 @@ export function validateCustomQuestion(
   const normalized = clean.toLowerCase();
   const isDuplicate = existingPrompts.some((p) => p.trim().toLowerCase() === normalized);
   if (isDuplicate) {
-    return { isValid: false, error: 'This exact question already exists in this deck.' };
+    return { isValid: false, error: 'This question is already in your deck.' };
   }
 
   // 4. Content Safety Check
   const safety = validateQuestionSafety(clean);
   if (!safety.isValid) {
-    return { isValid: false, error: safety.reason };
+    return { isValid: false, error: safety.reason || 'This question contains prohibited content.' };
   }
 
   return { isValid: true };

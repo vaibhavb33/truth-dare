@@ -28,6 +28,7 @@ import {
   ChevronDown,
   ChevronUp,
   Settings2,
+  AlertCircle,
 } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { sound } from '@/lib/audio/soundSynthesizer';
@@ -67,17 +68,22 @@ export function CustomDeckClient() {
   // Question List State
   const [questions, setQuestions] = useState<CustomQuestion[]>([]);
 
-  // Simple Question Editor Form State (Phase 3)
+  // Simple Question Editor Form State (Phase 1, 2, 3)
   const [newPromptText, setNewPromptText] = useState('');
   const [newPromptType, setNewPromptType] = useState<'truth' | 'dare'>('truth');
-  const [inputError, setInputError] = useState<string | null>(null);
+  const [isSubmittingQuestion, setIsSubmittingQuestion] = useState(false);
+  const [questionInlineError, setQuestionInlineError] = useState<string | null>(null);
   const [addedSuccess, setAddedSuccess] = useState<string | null>(null);
+
+  // Deck Operation Messages & Alerts (Separated from question inline validation)
+  const [deckError, setDeckError] = useState<string | null>(null);
   const [savedSuccess, setSavedSuccess] = useState(false);
 
   // Inline Question Editing State
   const [editingQuestionId, setEditingQuestionId] = useState<string | null>(null);
   const [editingText, setEditingText] = useState('');
   const [editingType, setEditingType] = useState<'truth' | 'dare'>('truth');
+  const [editError, setEditError] = useState<string | null>(null);
 
   // Preview Modal State
   const [previewQuestion, setPreviewQuestion] = useState<CustomQuestion | null>(null);
@@ -151,19 +157,78 @@ export function CustomDeckClient() {
   const dareCount = useMemo(() => questions.filter((q) => q.type === 'dare').length, [questions]);
   const totalCount = questions.length;
 
-  // Question validation state for Add button
-  const isInputValidToAdd = useMemo(() => {
-    const trimmed = newPromptText.trim();
-    return trimmed.length > 0 && trimmed.length <= 250;
-  }, [newPromptText]);
+  // PHASE 1 & 2: Question Validation State & Button Behaviour
+  const cleanedQuestion = useMemo(() => newPromptText.trim(), [newPromptText]);
+  const isOnlySpaces = useMemo(
+    () => newPromptText.length > 0 && cleanedQuestion.length === 0,
+    [newPromptText, cleanedQuestion]
+  );
+  const isTooLong = useMemo(
+    () => newPromptText.length > 250 || cleanedQuestion.length > 250,
+    [newPromptText, cleanedQuestion]
+  );
+  const isDuplicatePrompt = useMemo(() => {
+    if (!cleanedQuestion) return false;
+    const normalized = cleanedQuestion.toLowerCase();
+    return questions.some((q) => q.prompt.trim().toLowerCase() === normalized);
+  }, [cleanedQuestion, questions]);
 
-  // PHASE 3: ADD QUESTION HANDLER
+  // Button is explicitly disabled when:
+  // - Input is empty
+  // - Input contains only spaces
+  // - Input exceeds allowed character limit (> 250)
+  // - Input is already in deck
+  // - Submission is in flight
+  const isInputValidToAdd = useMemo(() => {
+    return (
+      cleanedQuestion.length > 0 &&
+      !isTooLong &&
+      !isDuplicatePrompt &&
+      !isSubmittingQuestion
+    );
+  }, [cleanedQuestion, isTooLong, isDuplicatePrompt, isSubmittingQuestion]);
+
+  // PHASE 3: Inline Error Resolution (Shown directly below the question input)
+  const displayInlineError = useMemo(() => {
+    if (questionInlineError) return questionInlineError;
+    if (isOnlySpaces) return 'Your question cannot contain only spaces.';
+    if (isTooLong) return 'Maximum 250 characters allowed.';
+    if (isDuplicatePrompt) return 'This question is already in your deck.';
+    return null;
+  }, [questionInlineError, isOnlySpaces, isTooLong, isDuplicatePrompt]);
+
+  // PHASE 3 & 4: ADD QUESTION HANDLER & SUCCESS BEHAVIOUR
   const handleAddQuestion = (e?: React.FormEvent) => {
     if (e) e.preventDefault();
-    setInputError(null);
+    setQuestionInlineError(null);
+
+    // Prevent duplicate or in-flight submissions
+    if (isSubmittingQuestion) return;
 
     const clean = newPromptText.trim();
-    if (!clean) return;
+    if (!clean) {
+      if (newPromptText.length > 0) {
+        setQuestionInlineError('Your question cannot contain only spaces.');
+      } else {
+        setQuestionInlineError('Write a question before adding it.');
+      }
+      sound.playBuzzer();
+      return;
+    }
+
+    if (newPromptText.length > 250 || clean.length > 250) {
+      setQuestionInlineError('Maximum 250 characters allowed.');
+      sound.playBuzzer();
+      return;
+    }
+
+    if (isDuplicatePrompt) {
+      setQuestionInlineError('This question is already in your deck.');
+      sound.playBuzzer();
+      return;
+    }
+
+    setIsSubmittingQuestion(true);
 
     const validation = validateCustomQuestion(
       clean,
@@ -172,7 +237,8 @@ export function CustomDeckClient() {
     );
 
     if (!validation.isValid) {
-      setInputError(validation.error || 'Invalid question prompt.');
+      setQuestionInlineError(validation.error || 'Please rephrase your question.');
+      setIsSubmittingQuestion(false);
       sound.playBuzzer();
       return;
     }
@@ -184,19 +250,25 @@ export function CustomDeckClient() {
       intensity: 3,
     };
 
-    // Update list: add to deck
+    // Phase 4: Success Behaviour
+    // 1. Add new question to visible list
     setQuestions((prev) => [...prev, newQuestion]);
 
-    // 1. Clear input
+    // 2. Clear input
     setNewPromptText('');
-    // 2. Keep selected question type (newPromptType remains unchanged)
-    // 3. Display small success message
+    setQuestionInlineError(null);
+
+    // 3. Keep selected question type (newPromptType remains unchanged)
+    // 4. Update Truth and Dare question counts (handled automatically by useMemo)
+    // 5. Display small confirmation message
     const typeLabel = newPromptType === 'truth' ? 'Truth' : 'Dare';
     setAddedSuccess(`✓ ${typeLabel} added! (${questions.length + 1} total)`);
     setTimeout(() => setAddedSuccess(null), 2500);
 
+    // 6. Keep user on the same page
     sound.playChime();
     sound.triggerHaptic(15);
+    setIsSubmittingQuestion(false);
   };
 
   // Delete Question
@@ -210,13 +282,25 @@ export function CustomDeckClient() {
     setEditingQuestionId(q.id);
     setEditingText(q.prompt);
     setEditingType(q.type);
+    setEditError(null);
   };
 
   // Save Inline Question Edit
   const handleSaveEdit = (id: string) => {
+    setEditError(null);
     const clean = editingText.trim();
     if (!clean) {
-      setInputError('Question cannot be empty.');
+      if (editingText.length > 0) {
+        setEditError('Your question cannot contain only spaces.');
+      } else {
+        setEditError('Write a question before adding it.');
+      }
+      sound.playBuzzer();
+      return;
+    }
+
+    if (clean.length > 250) {
+      setEditError('Maximum 250 characters allowed.');
       sound.playBuzzer();
       return;
     }
@@ -228,7 +312,7 @@ export function CustomDeckClient() {
     );
 
     if (!validation.isValid) {
-      setInputError(validation.error || 'Invalid edited question.');
+      setEditError(validation.error || 'Invalid edited question.');
       sound.playBuzzer();
       return;
     }
@@ -239,17 +323,17 @@ export function CustomDeckClient() {
       )
     );
     setEditingQuestionId(null);
-    setInputError(null);
+    setEditError(null);
     sound.triggerHaptic(15);
   };
 
   // PHASE 5: SAVE DECK
   const handleSaveDeck = (): boolean => {
-    setInputError(null);
+    setDeckError(null);
     const cleanName = deckName.trim() || 'My Custom Deck';
 
     if (questions.length === 0) {
-      setInputError('Please add at least one question before saving.');
+      setDeckError('Please add at least one question before saving.');
       sound.playBuzzer();
       return false;
     }
@@ -265,7 +349,7 @@ export function CustomDeckClient() {
     });
 
     if (!saveResult.success) {
-      setInputError(saveResult.error || 'Failed to save deck.');
+      setDeckError(saveResult.error || 'Failed to save deck.');
       sound.playBuzzer();
       return false;
     }
@@ -283,7 +367,9 @@ export function CustomDeckClient() {
             'x-creator-id': saveResult.deck.creatorId,
           },
           body: JSON.stringify(saveResult.deck),
-        }).catch(() => {});
+        }).catch((err) => {
+          console.warn('Server sync offline, deck saved locally:', err);
+        });
       }
     }
 
@@ -295,8 +381,8 @@ export function CustomDeckClient() {
 
   // PHASE 5: SAVE DECK & PLAY
   const handleSaveAndPlay = () => {
-    if (questions.length < 2) {
-      setInputError('Add at least 2 questions to start playing!');
+    if (questions.length === 0) {
+      setDeckError('Add at least one question to start playing!');
       sound.playBuzzer();
       return;
     }
@@ -318,7 +404,8 @@ export function CustomDeckClient() {
     setDeckVisibility('public');
     setQuestions([]);
     setNewPromptText('');
-    setInputError(null);
+    setQuestionInlineError(null);
+    setDeckError(null);
     setActiveTab('editor');
     sound.triggerHaptic(15);
   };
@@ -333,7 +420,8 @@ export function CustomDeckClient() {
     setDeckVisibility(deck.visibility || 'public');
     setQuestions(deck.questions || []);
     setNewPromptText('');
-    setInputError(null);
+    setQuestionInlineError(null);
+    setDeckError(null);
     setActiveTab('editor');
     sound.triggerHaptic(15);
   };
@@ -360,14 +448,14 @@ export function CustomDeckClient() {
       }
       sound.triggerHaptic(15);
     } else {
-      alert(res.error || 'Failed to delete deck.');
+      setDeckError(res.error || 'Failed to delete deck.');
     }
   };
 
   // Host Multiplayer Room with this Custom Deck Snapshot
   const handleHostMultiplayerRoom = async () => {
     if (questions.length < 2) {
-      setInputError('Add at least 2 questions to host a multiplayer room.');
+      setDeckError('Add at least 2 questions to host a multiplayer room.');
       sound.playBuzzer();
       return;
     }
@@ -415,10 +503,10 @@ export function CustomDeckClient() {
         }
         router.push(`/room/${data.roomCode}`);
       } else {
-        setInputError(data.error || 'Failed to create multiplayer room.');
+        setDeckError(data.error || 'Failed to create multiplayer room.');
       }
     } catch {
-      setInputError('Network error while establishing multiplayer room.');
+      setDeckError('Network error while establishing multiplayer room.');
     }
   };
 
@@ -448,11 +536,11 @@ export function CustomDeckClient() {
 
   const handleStartPassAndPlay = () => {
     if (questions.length < 2) {
-      setInputError('Add at least 2 questions to start playing!');
+      setDeckError('Add at least 2 questions to start playing!');
       return;
     }
     if (playPlayers.length < 2) {
-      setInputError('Add at least 2 players for pass-and-play.');
+      setDeckError('Add at least 2 players for pass-and-play.');
       return;
     }
 
@@ -603,17 +691,17 @@ export function CustomDeckClient() {
         </button>
       </div>
 
-      {/* Global Validation Error Notice */}
-      {inputError && (
-        <div className="p-3 rounded-2xl bg-rose-500/15 border border-rose-500/30 flex items-start gap-2.5 text-rose-300 text-xs sm:text-sm animate-shake">
+      {/* Deck-level Warning / Error Notice (Only appears on explicit deck actions, never on initial load) */}
+      {deckError && (
+        <div className="p-3 rounded-2xl bg-rose-500/15 border border-rose-500/30 flex items-start gap-2.5 text-rose-300 text-xs sm:text-sm animate-shake" role="alert">
           <ShieldAlert className="w-4 h-4 shrink-0 text-rose-400 mt-0.5" />
           <div className="flex-1">
             <p className="font-bold">Attention</p>
-            <p className="text-rose-200/90 leading-relaxed">{inputError}</p>
+            <p className="text-rose-200/90 leading-relaxed">{deckError}</p>
           </div>
           <button
             type="button"
-            onClick={() => setInputError(null)}
+            onClick={() => setDeckError(null)}
             className="text-rose-400 hover:text-white p-0.5"
             aria-label="Dismiss error"
           >
@@ -775,7 +863,7 @@ export function CustomDeckClient() {
                   Add a Question
                 </h2>
               </div>
-              <span className={`text-[11px] font-mono ${newPromptText.length > 240 ? 'text-amber-400 font-bold' : 'text-slate-500'}`}>
+              <span className={`text-[11px] font-mono ${newPromptText.length > 250 ? 'text-rose-400 font-bold' : newPromptText.length > 220 ? 'text-amber-400 font-bold' : 'text-slate-500'}`}>
                 {newPromptText.length}/250
               </span>
             </div>
@@ -827,32 +915,64 @@ export function CustomDeckClient() {
                 value={newPromptText}
                 onChange={(e) => {
                   setNewPromptText(e.target.value);
-                  if (inputError) setInputError(null);
+                  if (questionInlineError) setQuestionInlineError(null);
+                  if (addedSuccess) setAddedSuccess(null);
                 }}
-                maxLength={250}
-                className="flex-1 min-w-0 h-11 sm:h-12 px-3.5 rounded-xl bg-canvas-base border border-white/10 text-xs sm:text-sm text-white placeholder:text-slate-500 focus:outline-none focus:border-brand-400 transition-colors"
+                maxLength={300}
+                className={`flex-1 min-w-0 h-11 sm:h-12 px-3.5 rounded-xl bg-canvas-base border text-xs sm:text-sm text-white placeholder:text-slate-500 focus:outline-none transition-colors ${
+                  displayInlineError
+                    ? 'border-rose-500/60 focus:border-rose-400'
+                    : 'border-white/10 focus:border-brand-400'
+                }`}
+                aria-invalid={!!displayInlineError}
+                aria-describedby={displayInlineError ? 'question-inline-error' : undefined}
               />
 
-              {/* Add Question Button: Explicitly Disabled When Input is Empty (Problem 4 Fixed) */}
+              {/* Add Question Button: Explicitly Disabled When Input is Empty (Phases 1 & 2) */}
               <Button
                 type="submit"
                 variant="primary"
                 size="md"
-                disabled={!isInputValidToAdd}
+                disabled={!isInputValidToAdd || isSubmittingQuestion}
+                aria-disabled={!isInputValidToAdd || isSubmittingQuestion}
                 className={`gap-1.5 shrink-0 h-11 sm:h-12 px-5 font-bold transition-all ${
-                  !isInputValidToAdd
-                    ? 'opacity-40 cursor-not-allowed bg-slate-800 text-slate-500 border border-white/5'
-                    : 'shadow-glow-brand'
+                  !isInputValidToAdd || isSubmittingQuestion
+                    ? 'opacity-40 cursor-not-allowed bg-slate-800 text-slate-500 border border-white/5 pointer-events-none'
+                    : 'shadow-glow-brand hover:scale-[1.02] active:scale-[0.98]'
                 }`}
               >
-                <Plus className="w-4 h-4" />
-                <span>Add Question</span>
+                {isSubmittingQuestion ? (
+                  <span className="flex items-center gap-2">
+                    <span className="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                    <span>Adding...</span>
+                  </span>
+                ) : (
+                  <>
+                    <Plus className="w-4 h-4" />
+                    <span>Add Question</span>
+                  </>
+                )}
               </Button>
             </div>
 
-            {/* Small Success Notice after adding question (Phase 3 Requirement) */}
+            {/* Inline Error Message directly below input (Phase 3 Requirement) */}
+            {displayInlineError && (
+              <div
+                id="question-inline-error"
+                role="alert"
+                className="flex items-center gap-1.5 text-xs font-semibold text-rose-300 animate-fade-in pt-0.5"
+              >
+                <AlertCircle className="w-3.5 h-3.5 text-rose-400 shrink-0" />
+                <span>{displayInlineError}</span>
+              </div>
+            )}
+
+            {/* Small Success Notice after adding question (Phase 4 Requirement) */}
             {addedSuccess && (
-              <div className="flex items-center gap-2 p-2.5 rounded-xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 text-xs font-semibold animate-fade-in">
+              <div
+                role="status"
+                className="flex items-center gap-2 p-2.5 rounded-xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 text-xs font-semibold animate-fade-in"
+              >
                 <Check className="w-4 h-4 text-emerald-400 shrink-0" />
                 <span>{addedSuccess}</span>
               </div>
@@ -916,11 +1036,17 @@ export function CustomDeckClient() {
                           maxLength={250}
                           className="w-full h-10 px-3 rounded-xl bg-canvas-base border border-white/15 text-white text-xs focus:outline-none focus:border-brand-400"
                         />
+                        {editError && (
+                          <div className="flex items-center gap-1.5 text-xs font-semibold text-rose-300 animate-fade-in pt-0.5">
+                            <AlertCircle className="w-3.5 h-3.5 text-rose-400 shrink-0" />
+                            <span>{editError}</span>
+                          </div>
+                        )}
                         <div className="flex items-center gap-2 pt-1">
                           <Button size="sm" variant="primary" onClick={() => handleSaveEdit(q.id)} className="h-8 text-xs">
                             Save Changes
                           </Button>
-                          <Button size="sm" variant="secondary" onClick={() => setEditingQuestionId(null)} className="h-8 text-xs">
+                          <Button size="sm" variant="secondary" onClick={() => { setEditingQuestionId(null); setEditError(null); }} className="h-8 text-xs">
                             Cancel
                           </Button>
                         </div>

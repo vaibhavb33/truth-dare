@@ -62,7 +62,7 @@ export async function POST(request: NextRequest) {
 
       if (!validation.isValid) {
         return NextResponse.json(
-          { success: false, error: `Invalid question: "${prompt.slice(0, 30)}..." — ${validation.error}` },
+          { success: false, error: validation.error || 'Invalid question prompt.' },
           { status: 400 }
         );
       }

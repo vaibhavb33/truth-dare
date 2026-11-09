@@ -78,11 +78,11 @@ describe('Custom Deck System - Comprehensive Unit & Integration Tests', () => {
     it('rejects empty or whitespace-only questions', () => {
       const emptyCheck = validateCustomQuestion('');
       expect(emptyCheck.isValid).toBe(false);
-      expect(emptyCheck.error).toContain('cannot be empty');
+      expect(emptyCheck.error).toBe('Write a question before adding it.');
 
       const spaceCheck = validateCustomQuestion('    ');
       expect(spaceCheck.isValid).toBe(false);
-      expect(spaceCheck.error).toContain('cannot be empty');
+      expect(spaceCheck.error).toBe('Your question cannot contain only spaces.');
     });
 
     it('rejects duplicate questions within the same deck (case-insensitive & trimmed)', () => {
@@ -90,18 +90,18 @@ describe('Custom Deck System - Comprehensive Unit & Integration Tests', () => {
 
       const duplicateExact = validateCustomQuestion('What is your biggest fear?', existing);
       expect(duplicateExact.isValid).toBe(false);
-      expect(duplicateExact.error).toContain('already exists in this deck');
+      expect(duplicateExact.error).toContain('already in your deck');
 
       const duplicateCase = validateCustomQuestion('  WHAT IS YOUR BIGGEST FEAR?  ', existing);
       expect(duplicateCase.isValid).toBe(false);
-      expect(duplicateCase.error).toContain('already exists in this deck');
+      expect(duplicateCase.error).toContain('already in your deck');
     });
 
     it('rejects questions exceeding 250 characters limit', () => {
       const longPrompt = 'A'.repeat(251);
       const longCheck = validateCustomQuestion(longPrompt, [], 250);
       expect(longCheck.isValid).toBe(false);
-      expect(longCheck.error).toContain('exceeds the maximum length of 250');
+      expect(longCheck.error).toBe('Maximum 250 characters allowed.');
     });
 
     it('detects and blocks dangerous physical stunts (self-harm, fire, poisons)', () => {

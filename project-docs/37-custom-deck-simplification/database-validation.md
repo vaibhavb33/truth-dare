@@ -89,3 +89,4 @@ When a user hosts a multiplayer room with their custom deck:
 - **JSON Export Buttons:** Verified 0 occurrences of Export JSON buttons in the DOM.
 - **Export Handlers:** Decommissioned and removed from frontend and API routes.
 - **No Unused Code:** The bundle size for `/custom` decreased from 293 kB to 289 kB.
+
