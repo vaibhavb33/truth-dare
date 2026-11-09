@@ -49,3 +49,4 @@ public validateDeckOwnership(
 - `POST /api/custom-decks`: Rate-limited to 30 requests per minute per IP via `rateLimiter.check`.
 - `POST /api/rooms/create`: Rate-limited to 30 room creations per minute per IP.
 - Mismatched session tokens on turn actions are immediately rejected with `403 Forbidden` (`PERMISSION_DENIED`).
+

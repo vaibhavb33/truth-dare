@@ -73,3 +73,4 @@ In our automated integration test suite (`tests/e2e/multiplayerCustomDeckIntegra
    - The prompt `"MUTATED TRUTH"` was **0% leaked** into the room.
    - `room.customDeckSnapshot.version` remained strictly `1`.
    - `room.customDeckSnapshot.questions.length` remained strictly `20`.
+

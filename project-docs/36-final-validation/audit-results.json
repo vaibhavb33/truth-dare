@@ -1,0 +1,194 @@
+{
+  "roomSystem": {
+    "passed": true,
+    "details": [
+      {
+        "check": "Host Lobby view & Zero False Expired Error",
+        "passed": true,
+        "roomCode": "K4J498"
+      }
+    ]
+  },
+  "gameCardUI": {
+    "passed": true,
+    "details": [
+      {
+        "check": "English Truth Card Dimensions & Zero Overflow",
+        "passed": true
+      },
+      {
+        "check": "Hindi Devanagari text rendered correctly",
+        "passed": true
+      }
+    ]
+  },
+  "languageSelector": {
+    "passed": true,
+    "details": [
+      {
+        "check": "Arabic dir=\"rtl\" & Layout alignment",
+        "passed": true
+      }
+    ]
+  },
+  "voiceQuality": {
+    "passed": true,
+    "details": [
+      {
+        "locale": "en",
+        "name": "English",
+        "status": 200,
+        "bytes": 144044,
+        "mime": "audio/wav",
+        "passed": true
+      },
+      {
+        "locale": "hi",
+        "name": "Hindi",
+        "status": 200,
+        "bytes": 139244,
+        "mime": "audio/wav",
+        "passed": true
+      },
+      {
+        "locale": "es",
+        "name": "Spanish",
+        "status": 200,
+        "bytes": 144044,
+        "mime": "audio/wav",
+        "passed": true
+      },
+      {
+        "locale": "pt",
+        "name": "Portuguese",
+        "status": 200,
+        "bytes": 151244,
+        "mime": "audio/wav",
+        "passed": true
+      },
+      {
+        "locale": "fr",
+        "name": "French",
+        "status": 200,
+        "bytes": 141644,
+        "mime": "audio/wav",
+        "passed": true
+      },
+      {
+        "locale": "id",
+        "name": "Indonesian",
+        "status": 200,
+        "bytes": 151244,
+        "mime": "audio/wav",
+        "passed": true
+      },
+      {
+        "locale": "ar",
+        "name": "Arabic",
+        "status": 200,
+        "bytes": 141644,
+        "mime": "audio/wav",
+        "passed": true
+      },
+      {
+        "locale": "de",
+        "name": "German",
+        "status": 200,
+        "bytes": 141644,
+        "mime": "audio/wav",
+        "passed": true
+      }
+    ]
+  },
+  "spinnerWheel": {
+    "passed": true,
+    "details": [
+      {
+        "check": "Spinner Canvas Render & Winner Resolution",
+        "winner": "Alex",
+        "passed": true
+      }
+    ]
+  },
+  "customDeck": {
+    "passed": true,
+    "details": [
+      {
+        "check": "Export JSON completely removed from UI (Zero occurrences)",
+        "passed": true
+      }
+    ]
+  },
+  "responsiveViewports": {
+    "passed": true,
+    "details": [
+      {
+        "viewport": "320px-iphone-se1",
+        "width": 320,
+        "hasOverflow": false,
+        "passed": true
+      },
+      {
+        "viewport": "360px-android-compact",
+        "width": 360,
+        "hasOverflow": false,
+        "passed": true
+      },
+      {
+        "viewport": "375px-iphone-se3",
+        "width": 375,
+        "hasOverflow": false,
+        "passed": true
+      },
+      {
+        "viewport": "390px-iphone14",
+        "width": 390,
+        "hasOverflow": false,
+        "passed": true
+      },
+      {
+        "viewport": "414px-iphone-xr",
+        "width": 414,
+        "hasOverflow": false,
+        "passed": true
+      },
+      {
+        "viewport": "430px-iphone15-promax",
+        "width": 430,
+        "hasOverflow": false,
+        "passed": true
+      },
+      {
+        "viewport": "768px-ipad-mini",
+        "width": 768,
+        "hasOverflow": false,
+        "passed": true
+      },
+      {
+        "viewport": "1024px-ipad-pro",
+        "width": 1024,
+        "hasOverflow": false,
+        "passed": true
+      },
+      {
+        "viewport": "1280px-laptop",
+        "width": 1280,
+        "hasOverflow": false,
+        "passed": true
+      },
+      {
+        "viewport": "1440px-desktop",
+        "width": 1440,
+        "hasOverflow": false,
+        "passed": true
+      },
+      {
+        "viewport": "1920px-fhd",
+        "width": 1920,
+        "hasOverflow": false,
+        "passed": true
+      }
+    ]
+  },
+  "allPassed": true
+}

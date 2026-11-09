@@ -55,3 +55,4 @@ Screenshots captured during automated Playwright execution in `project-docs/35-c
 
 1. `active-gameplay-host-view.png` (269 KB) — Desktop host arena displaying active 3D card, custom deck name badge, player presence indicators, and host game controls.
 2. `active-gameplay-guest-mobile.png` (194 KB) — Mobile viewport (iPhone 390x844) displaying replicated card prompt, live turn indicator, and emoji reaction tray.
+

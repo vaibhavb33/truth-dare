@@ -154,3 +154,4 @@ This document specifies the end-to-end integration between Asteria's **Custom De
 3. **Turn Progression:**
    - `COMPLETE_DARE`: updates player score $+1$, marks history entry as `'completed'`, rotates `activePlayerId` to the next player.
    - `SKIP_TURN`: updates player skips $+1$, marks history entry as `'skipped'`, rotates `activePlayerId` to the next player.
+
