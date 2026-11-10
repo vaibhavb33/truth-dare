@@ -290,6 +290,16 @@ export function RoomClient({ roomCode }: RoomClientProps) {
     setTimeout(() => setCopiedLink(false), 2000);
   };
 
+  // Direct Copy Room Link to Clipboard
+  const handleCopyLink = () => {
+    sound.triggerHaptic(15);
+    if (typeof window === 'undefined') return;
+    const shareUrl = `${window.location.origin}/room/${roomCode}`;
+    navigator.clipboard.writeText(shareUrl);
+    setCopiedLink(true);
+    setTimeout(() => setCopiedLink(false), 2000);
+  };
+
   const isHost = room?.hostPlayerId === playerId;
   const activePlayer = room?.players.find((p) => p.id === room.activePlayerId);
   const isMyTurn = room?.activePlayerId === playerId;
@@ -542,51 +552,77 @@ export function RoomClient({ roomCode }: RoomClientProps) {
       )}
 
       {/* ========================================================
-          GLOBAL ROOM TOP BAR (Lobby & In-Game)
+          GLOBAL ROOM TOP BAR (Responsive: Mobile 3-Row & Desktop 1-Row)
          ======================================================== */}
-      <div className="flex items-center justify-between gap-2 p-2.5 sm:p-3 rounded-2xl bg-surface-elevated border border-white/10 shrink-0 backdrop-blur-md">
-        <div className="flex items-center gap-2 min-w-0">
-          {isJoined && (
-            <button
-              onClick={() => setShowLeaveModal(true)}
-              className="p-1.5 sm:p-2 rounded-xl bg-surface-highlight hover:bg-rose-500/20 text-slate-400 hover:text-rose-400 transition-colors border border-white/5 shrink-0"
-              title="Leave Room"
-            >
-              <ArrowLeft className="w-4 h-4" />
-            </button>
-          )}
+      {/* 1. MOBILE TOOLBAR (Width < 768px: 3 Balanced Rows) */}
+      <div className="flex md:hidden flex-col gap-2.5 p-3 rounded-2xl bg-surface-elevated border border-white/10 shrink-0 backdrop-blur-md shadow-elevation-1">
+        {/* ROW 1: Back Navigation, Title & Status */}
+        <div className="flex items-center justify-between gap-2 min-w-0">
+          <div className="flex items-center gap-2 min-w-0">
+            {isJoined && (
+              <button
+                onClick={() => setShowLeaveModal(true)}
+                className="p-2 rounded-xl bg-surface-highlight hover:bg-rose-500/20 text-slate-400 hover:text-rose-400 transition-colors border border-white/5 shrink-0 min-h-[36px] min-w-[36px] flex items-center justify-center active:scale-95"
+                title="Leave Room"
+                aria-label="Leave Room"
+              >
+                <ArrowLeft className="w-4 h-4" />
+              </button>
+            )}
 
-          <div className="overflow-hidden">
-            <span className="text-[10px] sm:text-xs font-black uppercase tracking-wider text-brand-400 flex items-center gap-1.5">
-              <span>{dict.multiplayer.title}</span>
-              {isInGame && (
-                <span className="px-1.5 py-0.5 rounded bg-brand-500/20 text-brand-300 text-[10px] font-mono font-bold">
-                  Round {room.roundNumber}
-                </span>
-              )}
-              {room?.customDeckSnapshot && (
-                <span className="px-1.5 py-0.5 rounded bg-purple-500/20 text-purple-300 text-[10px] font-bold">
-                  Deck: {room.customDeckSnapshot.name}
-                </span>
-              )}
-            </span>
+            <h1 className="font-display font-extrabold text-sm xs:text-base tracking-wider uppercase text-white whitespace-nowrap min-w-0 truncate">
+              {dict.multiplayer.title}
+            </h1>
+          </div>
+
+          {/* Compact Room Status Badges */}
+          <div className="flex items-center gap-1.5 shrink-0">
+            {isInGame ? (
+              <span className="px-2 py-0.5 rounded-full bg-brand-500/20 text-brand-300 border border-brand-500/30 text-[10px] font-mono font-bold tracking-wider whitespace-nowrap">
+                Round {room.roundNumber}
+              </span>
+            ) : (
+              <span className="px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-300 border border-emerald-500/20 text-[10px] font-bold uppercase tracking-wider flex items-center gap-1 whitespace-nowrap">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse shrink-0" />
+                <span>Lobby</span>
+              </span>
+            )}
+
+            {room?.customDeckSnapshot && (
+              <span
+                className="hidden xs:inline-block px-2 py-0.5 rounded-lg bg-purple-500/20 text-purple-300 border border-purple-500/30 text-[10px] font-bold max-w-[110px] truncate"
+                title={room.customDeckSnapshot.name}
+              >
+                {room.customDeckSnapshot.name}
+              </span>
+            )}
           </div>
         </div>
 
-        {/* Right Action Icons & Badges */}
-        <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
-          {/* Question Language Badge */}
-          <span className="hidden xs:inline-flex items-center gap-1 px-2 sm:px-2.5 py-1 rounded-xl bg-surface-highlight border border-white/10 text-[11px] font-semibold text-slate-300">
-            <Globe className="w-3.5 h-3.5 text-brand-400" />
-            <span>{roomLangMeta.flag} {roomLangMeta.nativeName}</span>
-          </span>
+        {/* ROW 2: Language Selector, Lobby Settings, and QR Code */}
+        <div className="flex items-center gap-2 pt-1 border-t border-white/5">
+          {/* Shared Language Selector / Indicator */}
+          <button
+            onClick={() => (isHost && isLobby ? setShowSettingsModal(true) : null)}
+            className={`flex-1 inline-flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-xl border text-xs font-semibold min-h-[36px] transition-all min-w-0 ${
+              isHost && isLobby
+                ? 'bg-surface-highlight hover:bg-white/10 text-white border-white/10 active:scale-95 cursor-pointer'
+                : 'bg-surface-highlight/70 text-slate-300 border-white/5 cursor-default'
+            }`}
+            title={isHost && isLobby ? 'Change shared question language' : 'Shared question language'}
+          >
+            <Globe className="w-3.5 h-3.5 text-brand-400 shrink-0" />
+            <span className="text-xs shrink-0">{roomLangMeta.flag}</span>
+            <span className="truncate">{roomLangMeta.nativeName}</span>
+          </button>
 
           {/* Lobby Settings (Host Only) */}
           {isHost && isLobby && (
             <button
               onClick={() => setShowSettingsModal(true)}
-              className="p-2 rounded-xl bg-surface-elevated hover:bg-surface-highlight border border-white/10 text-slate-300 min-h-[36px] min-w-[36px] flex items-center justify-center transition-colors"
+              className="p-2 rounded-xl bg-surface-highlight hover:bg-white/10 border border-white/10 text-slate-300 min-h-[36px] min-w-[36px] flex items-center justify-center transition-all active:scale-95 shrink-0"
               title="Lobby Settings"
+              aria-label="Lobby Settings"
             >
               <Settings className="w-4 h-4" />
             </button>
@@ -596,7 +632,144 @@ export function RoomClient({ roomCode }: RoomClientProps) {
           <button
             onClick={() => setShowQrModal(true)}
             aria-label={dict.multiplayer.scanQr}
-            className="p-2 rounded-xl bg-surface-elevated hover:bg-surface-highlight border border-white/10 text-slate-300 min-h-[36px] min-w-[36px] flex items-center justify-center transition-colors"
+            className="p-2 rounded-xl bg-surface-highlight hover:bg-white/10 border border-white/10 text-slate-300 min-h-[36px] min-w-[36px] flex items-center justify-center transition-all active:scale-95 shrink-0"
+            title={dict.multiplayer.scanQr}
+          >
+            <QrCode className="w-4 h-4" />
+          </button>
+        </div>
+
+        {/* ROW 3: Prominent Room Code, Copy Button, Share Button */}
+        <div className="flex items-center gap-1.5 xs:gap-2 pt-1">
+          {/* Room Code Card (Always Unclipped) */}
+          <div
+            onClick={handleCopyLink}
+            className="flex-1 flex items-center justify-center xs:justify-between px-2.5 xs:px-3 py-1.5 rounded-xl bg-canvas-base/80 border border-brand-500/30 text-xs font-bold text-brand-300 min-h-[38px] cursor-pointer hover:border-brand-500/50 transition-colors select-all group min-w-0"
+            title="Click to copy room code"
+          >
+            <div className="flex items-center gap-1.5 shrink-0">
+              <span className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Room:</span>
+              <span className="font-mono font-black text-xs xs:text-sm tracking-widest text-white group-hover:text-brand-300 transition-colors whitespace-nowrap">
+                {roomCode}
+              </span>
+            </div>
+            {copiedLink && (
+              <span className="hidden xs:inline-flex text-[10px] text-emerald-400 font-semibold items-center gap-1 shrink-0">
+                <CheckCircle className="w-3 h-3 text-emerald-400" />
+                <span>Copied</span>
+              </span>
+            )}
+          </div>
+
+          {/* Dedicated Copy Button */}
+          <button
+            onClick={handleCopyLink}
+            className="px-2.5 xs:px-3 py-1.5 rounded-xl bg-surface-highlight hover:bg-white/10 border border-white/10 text-xs font-bold text-slate-200 min-h-[38px] flex items-center justify-center gap-1.5 transition-all active:scale-95 shrink-0"
+            title="Copy room link to clipboard"
+          >
+            {copiedLink ? (
+              <>
+                <CheckCircle className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+                <span className="text-emerald-400">Copied</span>
+              </>
+            ) : (
+              <>
+                <Copy className="w-3.5 h-3.5 text-slate-300 shrink-0" />
+                <span>Copy</span>
+              </>
+            )}
+          </button>
+
+          {/* Dedicated Share Button */}
+          <button
+            onClick={handleShare}
+            className="px-2.5 xs:px-3 py-1.5 rounded-xl bg-gradient-to-r from-brand-600 to-indigo-600 hover:from-brand-500 hover:to-indigo-500 text-white border border-brand-400/40 text-xs font-black min-h-[38px] flex items-center justify-center gap-1.5 shadow-glow-brand transition-all active:scale-95 shrink-0"
+            title="Share invitation link"
+          >
+            <Share2 className="w-3.5 h-3.5 shrink-0" />
+            <span>Share</span>
+          </button>
+        </div>
+      </div>
+
+      {/* 2. DESKTOP / TABLET TOOLBAR (Width >= 768px: Unified Single-Row) */}
+      <div className="hidden md:flex items-center justify-between gap-3 p-3 rounded-2xl bg-surface-elevated border border-white/10 shrink-0 backdrop-blur-md shadow-elevation-1">
+        {/* Left: Navigation, Title & Room Badges */}
+        <div className="flex items-center gap-3 min-w-0">
+          {isJoined && (
+            <button
+              onClick={() => setShowLeaveModal(true)}
+              className="p-2 rounded-xl bg-surface-highlight hover:bg-rose-500/20 text-slate-400 hover:text-rose-400 transition-colors border border-white/5 shrink-0 min-h-[38px] min-w-[38px] flex items-center justify-center active:scale-95"
+              title="Leave Room"
+              aria-label="Leave Room"
+            >
+              <ArrowLeft className="w-4 h-4" />
+            </button>
+          )}
+
+          <div className="flex items-center gap-2.5 min-w-0">
+            <h1 className="font-display font-extrabold text-base tracking-wider uppercase text-white whitespace-nowrap">
+              {dict.multiplayer.title}
+            </h1>
+
+            {isInGame ? (
+              <span className="px-2 py-0.5 rounded-lg bg-brand-500/20 text-brand-300 border border-brand-500/30 text-xs font-mono font-bold whitespace-nowrap">
+                Round {room.roundNumber}
+              </span>
+            ) : (
+              <span className="px-2 py-0.5 rounded-lg bg-emerald-500/15 text-emerald-300 border border-emerald-500/20 text-xs font-bold uppercase tracking-wider flex items-center gap-1.5 whitespace-nowrap">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                <span>Lobby</span>
+              </span>
+            )}
+
+            {room?.customDeckSnapshot && (
+              <span
+                className="px-2 py-0.5 rounded-lg bg-purple-500/20 text-purple-300 border border-purple-500/30 text-xs font-bold max-w-[200px] truncate"
+                title={room.customDeckSnapshot.name}
+              >
+                Deck: {room.customDeckSnapshot.name}
+              </span>
+            )}
+          </div>
+        </div>
+
+        {/* Right: Actions, Language, Settings, QR & Room Code Share */}
+        <div className="flex items-center gap-2 shrink-0">
+          {/* Language Badge */}
+          <button
+            onClick={() => (isHost && isLobby ? setShowSettingsModal(true) : null)}
+            className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border text-xs font-semibold min-h-[38px] transition-colors ${
+              isHost && isLobby
+                ? 'bg-surface-highlight hover:bg-white/10 text-white border-white/10 cursor-pointer'
+                : 'bg-surface-highlight text-slate-300 border-white/10 cursor-default'
+            }`}
+            title={isHost && isLobby ? 'Change shared question language' : 'Shared question language'}
+          >
+            <Globe className="w-3.5 h-3.5 text-brand-400" />
+            <span>
+              {roomLangMeta.flag} {roomLangMeta.nativeName}
+            </span>
+          </button>
+
+          {/* Lobby Settings (Host Only) */}
+          {isHost && isLobby && (
+            <button
+              onClick={() => setShowSettingsModal(true)}
+              className="p-2 rounded-xl bg-surface-elevated hover:bg-surface-highlight border border-white/10 text-slate-300 min-h-[38px] min-w-[38px] flex items-center justify-center transition-colors"
+              title="Lobby Settings"
+              aria-label="Lobby Settings"
+            >
+              <Settings className="w-4 h-4" />
+            </button>
+          )}
+
+          {/* QR Code Button */}
+          <button
+            onClick={() => setShowQrModal(true)}
+            aria-label={dict.multiplayer.scanQr}
+            className="p-2 rounded-xl bg-surface-elevated hover:bg-surface-highlight border border-white/10 text-slate-300 min-h-[38px] min-w-[38px] flex items-center justify-center transition-colors"
+            title={dict.multiplayer.scanQr}
           >
             <QrCode className="w-4 h-4" />
           </button>
@@ -604,10 +777,11 @@ export function RoomClient({ roomCode }: RoomClientProps) {
           {/* Share Invitation Link Button */}
           <button
             onClick={handleShare}
-            className="flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3.5 py-1.5 rounded-xl bg-surface-elevated hover:bg-surface-highlight border border-brand-500/30 text-xs font-bold text-brand-300 font-mono min-h-[36px] transition-colors"
+            className="flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-brand-600 to-indigo-600 hover:from-brand-500 hover:to-indigo-500 text-white border border-brand-400/40 text-xs font-bold font-mono min-h-[38px] shadow-glow-brand transition-all active:scale-95"
+            title="Share invitation link"
           >
             <span>{roomCode}</span>
-            {copiedLink ? <CheckCircle className="w-3.5 h-3.5 text-emerald-400" /> : <Share2 className="w-3.5 h-3.5 shrink-0" />}
+            {copiedLink ? <CheckCircle className="w-4 h-4 text-emerald-300" /> : <Share2 className="w-4 h-4 shrink-0" />}
           </button>
         </div>
       </div>
@@ -741,7 +915,7 @@ export function RoomClient({ roomCode }: RoomClientProps) {
                   )}
                   <button
                     onClick={() => setShowSettingsModal(true)}
-                    className="text-xs text-slate-400 hover:text-white flex items-center justify-center gap-1 mx-auto py-1"
+                    className="text-xs text-slate-400 hover:text-white flex items-center justify-center gap-1.5 mx-auto py-1.5 px-3 min-h-[36px] rounded-xl hover:bg-white/5 transition-colors"
                   >
                     <Settings className="w-3.5 h-3.5" />
                     <span>Adjust category or question language</span>
