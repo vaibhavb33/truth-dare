@@ -58,8 +58,13 @@ class ServerDeckRepository {
     const existing = this.decks.get(deck.id);
 
     if (existing) {
-      // Ownership validation
-      if (existing.creatorId && deck.creatorId && existing.creatorId !== deck.creatorId) {
+      // Ownership validation (starter template can be customized by any visitor)
+      if (
+        existing.id !== 'starter-deck-01' &&
+        existing.creatorId &&
+        deck.creatorId &&
+        existing.creatorId !== deck.creatorId
+      ) {
         return { success: false, error: 'Permission denied: you can only edit your own decks.' };
       }
 
@@ -197,6 +202,17 @@ class ServerDeckRepository {
       targetDeck = registered.deck || null;
     }
 
+    // If targetDeck exists and client supplied newer/edited questions from their browser session
+    if (targetDeck && params.clientPayload && params.clientPayload.questions && params.clientPayload.questions.length > 0) {
+      const creator = params.creatorId || params.clientPayload.creatorId || 'anonymous';
+      if (!targetDeck.creatorId || targetDeck.creatorId === 'anonymous' || targetDeck.creatorId === creator) {
+        targetDeck.questions = params.clientPayload.questions;
+        if (params.clientPayload.name) targetDeck.name = params.clientPayload.name;
+        if (params.clientPayload.language) targetDeck.language = params.clientPayload.language;
+        this.saveDeck(targetDeck);
+      }
+    }
+
     if (!targetDeck) {
       return {
         success: false,
@@ -206,8 +222,15 @@ class ServerDeckRepository {
     }
 
     // Permission validation: Never trust client ID without ownership or public check
-    const creator = params.creatorId || 'anonymous';
-    if (targetDeck.visibility === 'private' && targetDeck.creatorId !== creator) {
+    const creator = params.creatorId || params.clientPayload?.creatorId || 'anonymous';
+    const isStarterTemplate = targetDeck.id === 'starter-deck-01';
+    if (
+      !isStarterTemplate &&
+      targetDeck.visibility === 'private' &&
+      targetDeck.creatorId &&
+      targetDeck.creatorId !== 'anonymous' &&
+      targetDeck.creatorId !== creator
+    ) {
       return {
         success: false,
         code: 'PERMISSION_DENIED',
@@ -274,5 +297,11 @@ class ServerDeckRepository {
   }
 }
 
-export const serverDeckRepository = new ServerDeckRepository();
+const globalForDeckRepo = globalThis as unknown as {
+  __asteria_server_deck_repo__?: ServerDeckRepository;
+};
+
+export const serverDeckRepository =
+  globalForDeckRepo.__asteria_server_deck_repo__ ?? new ServerDeckRepository();
+globalForDeckRepo.__asteria_server_deck_repo__ = serverDeckRepository;
 

@@ -62,3 +62,4 @@ All 8 supported languages were tested with sample Custom Deck prompts:
    Typing a question into the creation input enables the speaker button. Pressing it vocalizes the draft prompt without creating a deck entry or modifying `localStorage`.
 4. **Visual & Touch Target Ergonomics:**
    Speaker buttons render at 36x36px with 44px active touch padding, ensuring easy thumb tapping on mobile displays without mis-hitting the adjacent Delete or Edit buttons.
+

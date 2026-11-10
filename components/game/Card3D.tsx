@@ -235,7 +235,12 @@ export function Card3D({
                   language={question.language_code}
                   type={isDare ? 'dare' : 'truth'}
                   variant="card"
-                  isCustom={Boolean((question as any)?.is_custom || (question as any)?.deck_id)}
+                  isCustom={Boolean(
+                    (question as any)?.is_custom ||
+                    (question as any)?.deck_id ||
+                    (question as any)?.category === 'custom' ||
+                    (question as any)?.categoryId === 'custom'
+                  )}
                 />
               )}
               <button

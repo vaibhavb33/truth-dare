@@ -796,6 +796,7 @@ export function RoomClient({ roomCode }: RoomClientProps) {
                 {room?.isCardFlipped && (isHost || isMyTurn) ? (
                   <div className="grid grid-cols-2 gap-2 sm:gap-3">
                     <Button
+                      data-testid="skip-turn-btn"
                       variant="skip"
                       size="lg"
                       onClick={() => dispatch('SKIP_TURN')}
@@ -805,6 +806,7 @@ export function RoomClient({ roomCode }: RoomClientProps) {
                       <span className="truncate">{dict.multiplayer.skipTurn}</span>
                     </Button>
                     <Button
+                      data-testid="complete-dare-btn"
                       variant="primary"
                       size="lg"
                       onClick={() => {

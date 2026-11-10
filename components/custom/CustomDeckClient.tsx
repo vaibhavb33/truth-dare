@@ -29,6 +29,7 @@ import {
   ChevronUp,
   Settings2,
   AlertCircle,
+  Loader2,
 } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { sound } from '@/lib/audio/soundSynthesizer';
@@ -78,6 +79,7 @@ export function CustomDeckClient() {
   // Deck Operation Messages & Alerts (Separated from question inline validation)
   const [deckError, setDeckError] = useState<string | null>(null);
   const [savedSuccess, setSavedSuccess] = useState(false);
+  const [isHostingRoom, setIsHostingRoom] = useState(false);
 
   // Inline Question Editing State
   const [editingQuestionId, setEditingQuestionId] = useState<string | null>(null);
@@ -340,7 +342,7 @@ export function CustomDeckClient() {
     }
 
     const saveResult = deckStorage.saveDeck({
-      id: currentDeckId || undefined,
+      id: currentDeckId === 'starter-deck-01' ? undefined : (currentDeckId || undefined),
       name: cleanName,
       description: deckDescription,
       language: deckLanguage,
@@ -453,15 +455,28 @@ export function CustomDeckClient() {
     }
   };
 
-  // Host Multiplayer Room with this Custom Deck Snapshot
-  const handleHostMultiplayerRoom = async () => {
-    if (questions.length < 2) {
-      setDeckError('Add at least 2 questions to host a multiplayer room.');
+  // Host Multiplayer Room with this Custom Deck Snapshot (Play with Friends)
+  const handleHostMultiplayerRoom = async (targetDeck?: CustomDeck) => {
+    const deckToHost = targetDeck || {
+      id: currentDeckId === 'starter-deck-01' ? undefined : (currentDeckId || undefined),
+      name: deckName.trim() || 'My Custom Deck',
+      language: deckLanguage,
+      category: deckCategory,
+      questions,
+    };
+
+    if (deckToHost.questions.length < 2) {
+      setDeckError('Add at least 2 questions to play with friends in a multiplayer room.');
       sound.playBuzzer();
       return;
     }
 
-    handleSaveDeck();
+    if (!targetDeck) {
+      handleSaveDeck();
+    }
+
+    setIsHostingRoom(true);
+    setDeckError(null);
 
     try {
       const creator = getCreatorId();
@@ -473,18 +488,20 @@ export function CustomDeckClient() {
         },
         body: JSON.stringify({
           gameId: 'truth-or-dare',
-          categoryId: deckCategory,
-          hostName: 'Host (' + creator.slice(0, 5) + ')',
-          language: deckLanguage,
+          categoryId: 'custom',
+          hostName: 'Host',
+          language: deckToHost.language,
           timerSeconds: 30,
-          deckId: currentDeckId || undefined,
+          deckId: deckToHost.id || undefined,
           creatorId: creator,
           customDeckSnapshot: {
-            id: currentDeckId || 'custom-deck-' + Date.now(),
-            name: deckName,
-            language: deckLanguage,
-            questions,
+            id: deckToHost.id || 'custom-deck-' + Date.now(),
+            name: deckToHost.name,
+            language: deckToHost.language,
+            questions: deckToHost.questions,
+            creatorId: creator,
           },
+          clientRequestId: `req-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
         }),
       });
 
@@ -498,16 +515,21 @@ export function CustomDeckClient() {
               roomCode: data.roomCode,
               playerId: data.hostPlayerId,
               sessionToken: data.sessionToken,
-              playerName: 'Host (' + creator.slice(0, 5) + ')',
+              playerName: 'Host',
             })
           );
         }
+        sound.playChime();
         router.push(`/room/${data.roomCode}`);
       } else {
         setDeckError(data.error || 'Failed to create multiplayer room.');
+        sound.playBuzzer();
+        setIsHostingRoom(false);
       }
     } catch {
       setDeckError('Network error while establishing multiplayer room.');
+      sound.playBuzzer();
+      setIsHostingRoom(false);
     }
   };
 
@@ -1204,18 +1226,22 @@ export function CustomDeckClient() {
                 <span>Save Deck & Play</span>
               </Button>
 
-              {/* Secondary Action: Host Party Room */}
+              {/* Secondary Action: Play with Friends (Host Room) */}
               <Button
                 type="button"
                 variant="secondary"
                 size="lg"
-                onClick={handleHostMultiplayerRoom}
-                disabled={questions.length < 2}
-                className="w-full sm:w-auto gap-2 min-h-[46px] text-xs font-semibold"
+                onClick={() => handleHostMultiplayerRoom()}
+                disabled={questions.length < 2 || isHostingRoom}
+                className="w-full sm:w-auto gap-2 min-h-[46px] text-xs font-semibold hover:border-brand-400"
                 title="Create a live multiplayer room with this custom deck"
               >
-                <Share2 className="w-4 h-4 text-brand-300" />
-                <span>Host Room</span>
+                {isHostingRoom ? (
+                  <Loader2 className="w-4 h-4 animate-spin text-brand-300" />
+                ) : (
+                  <Users className="w-4 h-4 text-brand-300" />
+                )}
+                <span>Play with Friends</span>
               </Button>
             </div>
 
@@ -1294,7 +1320,18 @@ export function CustomDeckClient() {
                         {deck.questions.length} cards
                       </div>
 
-                      <div className="flex items-center gap-1.5">
+                      <div className="flex flex-wrap items-center gap-1.5">
+                        <Button
+                          variant="primary"
+                          size="sm"
+                          onClick={() => handleHostMultiplayerRoom(deck)}
+                          disabled={deck.questions.length < 2 || isHostingRoom}
+                          className="gap-1 px-2.5 text-xs bg-gradient-to-r from-truth-500 to-dare-500 hover:from-truth-400 hover:to-dare-400 font-bold"
+                          title="Host a multiplayer room with friends"
+                        >
+                          <Users className="w-3.5 h-3.5" /> Play with Friends
+                        </Button>
+
                         <Button
                           variant="secondary"
                           size="sm"
@@ -1302,16 +1339,16 @@ export function CustomDeckClient() {
                             handleLoadDeckToEdit(deck);
                             setActiveTab('play');
                           }}
-                          className="gap-1 px-3 text-xs"
+                          className="gap-1 px-2.5 text-xs"
                         >
-                          <Play className="w-3.5 h-3.5 fill-current" /> Play
+                          <Play className="w-3.5 h-3.5 fill-current" /> Single Device
                         </Button>
 
                         <Button
                           variant="ghost"
                           size="sm"
                           onClick={() => handleLoadDeckToEdit(deck)}
-                          className="gap-1 px-2.5 text-xs text-slate-300 hover:text-white"
+                          className="gap-1 px-2 text-xs text-slate-300 hover:text-white"
                         >
                           <Edit2 className="w-3.5 h-3.5" /> Edit
                         </Button>
@@ -1323,7 +1360,7 @@ export function CustomDeckClient() {
                               handleDeleteDeck(deck.id);
                             }
                           }}
-                          className="text-slate-500 hover:text-rose-400 p-2 rounded-xl transition-colors hover:bg-white/5"
+                          className="text-slate-500 hover:text-rose-400 p-1.5 rounded-xl transition-colors hover:bg-white/5"
                           title="Delete Deck"
                           aria-label="Delete Deck"
                         >

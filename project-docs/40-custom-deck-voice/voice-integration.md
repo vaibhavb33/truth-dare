@@ -133,3 +133,4 @@ Custom Deck questions frequently contain personal party jokes, private friend na
 1. **`isCustom: true` Flag:** Every voice invocation from Custom Deck explicitly flags `isCustom: true`.
 2. **LRU Cache Bypass:** `VoiceCache` ignores custom prompts, preventing server-side memory persistence.
 3. **No-Store HTTP Headers:** When synthesized through the server neural route, the response returns `Cache-Control: private, no-store, no-cache, must-revalidate`.
+

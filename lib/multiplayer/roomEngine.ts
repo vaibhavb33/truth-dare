@@ -566,13 +566,26 @@ export class RoomEngine {
         if (room.customDeckSnapshot && room.customDeckSnapshot.questions && room.customDeckSnapshot.questions.length > 0) {
           const matching = room.customDeckSnapshot.questions.filter((q) => q.type === type);
           const pool = matching.length > 0 ? matching : room.customDeckSnapshot.questions;
-          const chosen = pool[Math.floor(Math.random() * pool.length)];
+
+          // Duplicate Prevention: Track draw counts in history to prevent duplicates until pool is exhausted
+          const drawCounts = new Map<string, number>();
+          for (const q of pool) {
+            drawCounts.set(q.id, 0);
+          }
+          for (const h of room.questionHistory || []) {
+            if (drawCounts.has(h.questionId)) {
+              drawCounts.set(h.questionId, (drawCounts.get(h.questionId) || 0) + 1);
+            }
+          }
+          const minCount = Math.min(...Array.from(drawCounts.values()));
+          const eligible = pool.filter((q) => (drawCounts.get(q.id) || 0) === minCount);
+          const chosen = eligible[Math.floor(Math.random() * eligible.length)];
 
           card = {
             id: chosen.id,
             game_type: 'truth-or-dare',
             question_type: chosen.type,
-            language_code: room.language || 'en',
+            language_code: room.language || room.customDeckSnapshot.language || 'en',
             category: 'custom',
             difficulty: (Math.max(1, Math.min(5, chosen.intensity || 3)) as 1 | 2 | 3 | 4 | 5),
             question_text: chosen.prompt,
@@ -590,12 +603,13 @@ export class RoomEngine {
             isNsfw: false,
           };
         } else {
+          const drawnIds = (room.questionHistory || []).map((h) => h.questionId);
           const result = questionEngine.drawNextCard({
             gameId: room.gameId,
             categoryId: room.categoryId,
             type,
             language: room.language || 'en',
-            drawnCardIds: [],
+            drawnCardIds: drawnIds,
           });
           card = result.card;
         }
@@ -612,7 +626,7 @@ export class RoomEngine {
           room.questionHistory.push({
             id: 'hist-' + Math.random().toString(36).substring(2, 9),
             questionId: card.id,
-            type,
+            type: card.type,
             prompt: card.prompt,
             playerId: player.id,
             playerName: player.name,
@@ -622,7 +636,7 @@ export class RoomEngine {
         }
 
         room.updatedAt = Date.now();
-        this.emitEvent(room.roomCode, 'CARD_FLIPPED', { card, type });
+        this.emitEvent(room.roomCode, 'CARD_FLIPPED', { card, type: card?.type || type });
         break;
       }
 
