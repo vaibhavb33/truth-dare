@@ -113,3 +113,4 @@ Queries available neural providers and registered speaker catalogs.
    Private user-authored Truth & Dare questions are marked with `isCustom: true`. The in-memory LRU `VoiceCache` explicitly bypasses disk/memory caching for custom questions. Audio responses return `no-store, private` headers, preventing CDN, proxy, or server-side retention of personal party questions.
 3. **Abuse Protection & Rate Limiting:**
    Each client IP is limited to 30 neural synthesis requests per minute. Prompts are capped at 500 characters to prevent runaway token expenditure.
+

@@ -39,3 +39,4 @@ A comprehensive multi-layer investigation across frontend audio pipelines, brows
 - [x] **Root Cause 3 Verified & Fixed:** `tests/speechService.test.ts` validates strict non-silent fallback rules while properly handling missing language voices.
 - [x] **Root Cause 4 Verified & Fixed:** Question switching and card re-renders do not cut off active speech.
 - [x] **Root Cause 5 Verified & Fixed:** Utterance retains global anchor and keepalive pulse, preventing Chrome GC freeze.
+

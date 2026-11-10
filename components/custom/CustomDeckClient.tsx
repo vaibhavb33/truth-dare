@@ -248,6 +248,7 @@ export function CustomDeckClient() {
       type: newPromptType,
       prompt: clean,
       intensity: 3,
+      language: deckLanguage,
     };
 
     // Phase 4: Success Behaviour
@@ -928,31 +929,53 @@ export function CustomDeckClient() {
                 aria-describedby={displayInlineError ? 'question-inline-error' : undefined}
               />
 
-              {/* Add Question Button: Explicitly Disabled When Input is Empty (Phases 1 & 2) */}
-              <Button
-                type="submit"
-                variant="primary"
-                size="md"
-                disabled={!isInputValidToAdd || isSubmittingQuestion}
-                aria-disabled={!isInputValidToAdd || isSubmittingQuestion}
-                className={`gap-1.5 shrink-0 h-11 sm:h-12 px-5 font-bold transition-all ${
-                  !isInputValidToAdd || isSubmittingQuestion
-                    ? 'opacity-40 cursor-not-allowed bg-slate-800 text-slate-500 border border-white/5 pointer-events-none'
-                    : 'shadow-glow-brand hover:scale-[1.02] active:scale-[0.98]'
-                }`}
-              >
-                {isSubmittingQuestion ? (
-                  <span className="flex items-center gap-2">
-                    <span className="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                    <span>Adding...</span>
-                  </span>
-                ) : (
-                  <>
-                    <Plus className="w-4 h-4" />
-                    <span>Add Question</span>
-                  </>
-                )}
-              </Button>
+              <div className="flex items-center gap-2 shrink-0">
+                {/* Listen to Question Before Saving (Preview) */}
+                <div
+                  title={
+                    newPromptText.trim()
+                      ? `Listen to ${newPromptType.toUpperCase()} before saving`
+                      : 'Write a question to listen'
+                  }
+                  className="shrink-0"
+                >
+                  <QuestionVoiceControls
+                    text={newPromptText.trim()}
+                    language={deckLanguage}
+                    type={newPromptType}
+                    variant="compact"
+                    isCustom={true}
+                    dataTestId="preview-question-voice-btn"
+                    className={!newPromptText.trim() ? 'opacity-40 pointer-events-none' : ''}
+                  />
+                </div>
+
+                {/* Add Question Button: Explicitly Disabled When Input is Empty (Phases 1 & 2) */}
+                <Button
+                  type="submit"
+                  variant="primary"
+                  size="md"
+                  disabled={!isInputValidToAdd || isSubmittingQuestion}
+                  aria-disabled={!isInputValidToAdd || isSubmittingQuestion}
+                  className={`gap-1.5 shrink-0 h-11 sm:h-12 px-5 font-bold transition-all ${
+                    !isInputValidToAdd || isSubmittingQuestion
+                      ? 'opacity-40 cursor-not-allowed bg-slate-800 text-slate-500 border border-white/5 pointer-events-none'
+                      : 'shadow-glow-brand hover:scale-[1.02] active:scale-[0.98]'
+                  }`}
+                >
+                  {isSubmittingQuestion ? (
+                    <span className="flex items-center gap-2">
+                      <span className="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                      <span>Adding...</span>
+                    </span>
+                  ) : (
+                    <>
+                      <Plus className="w-4 h-4" />
+                      <span>Add Question</span>
+                    </>
+                  )}
+                </Button>
+              </div>
             </div>
 
             {/* Inline Error Message directly below input (Phase 3 Requirement) */}
@@ -1049,6 +1072,16 @@ export function CustomDeckClient() {
                           <Button size="sm" variant="secondary" onClick={() => { setEditingQuestionId(null); setEditError(null); }} className="h-8 text-xs">
                             Cancel
                           </Button>
+                          {editingText.trim() && (
+                            <QuestionVoiceControls
+                              text={editingText.trim()}
+                              language={q.language || deckLanguage}
+                              type={editingType}
+                              variant="compact"
+                              isCustom={true}
+                              dataTestId={`edit-question-voice-${q.id}`}
+                            />
+                          )}
                         </div>
                       </div>
                     ) : (
@@ -1073,13 +1106,14 @@ export function CustomDeckClient() {
                         </div>
 
                         <div className="flex items-center gap-1 shrink-0 self-end sm:self-center">
-                          {/* Optional Listen Button (Phase 4) */}
+                          {/* Speaker Button for Saved Questions */}
                           <QuestionVoiceControls
                             text={q.prompt}
-                            language={deckLanguage}
+                            language={q.language || deckLanguage}
                             type={q.type}
                             variant="compact"
                             isCustom={true}
+                            dataTestId={`saved-question-voice-${q.id}`}
                           />
 
                           {/* Preview Question Button */}
@@ -1493,10 +1527,11 @@ export function CustomDeckClient() {
                     <div className="flex justify-center pt-1">
                       <QuestionVoiceControls
                         text={currentCard?.prompt || ''}
-                        language={deckLanguage}
+                        language={currentCard?.language || deckLanguage}
                         type={currentCard?.type || 'truth'}
                         variant="card"
                         isCustom={true}
+                        dataTestId="custom-play-voice-btn"
                       />
                     </div>
 
@@ -1639,10 +1674,11 @@ export function CustomDeckClient() {
               <div className="flex justify-center pt-2">
                 <QuestionVoiceControls
                   text={previewQuestion.prompt}
-                  language={deckLanguage}
+                  language={previewQuestion.language || deckLanguage}
                   type={previewQuestion.type}
                   variant="card"
                   isCustom={true}
+                  dataTestId="custom-preview-modal-voice-btn"
                 />
               </div>
             </div>

@@ -24,6 +24,7 @@ interface QuestionVoiceControlsProps {
   variant?: 'card' | 'compact' | 'pill';
   isCustom?: boolean; // If true, prevents server caching of private deck questions
   className?: string;
+  dataTestId?: string;
 }
 
 export function QuestionVoiceControls({
@@ -33,6 +34,7 @@ export function QuestionVoiceControls({
   variant = 'card',
   isCustom = false,
   className,
+  dataTestId,
 }: QuestionVoiceControlsProps) {
   const { dict, locale } = useTranslation();
   const currentLang = language || locale;
@@ -137,6 +139,7 @@ export function QuestionVoiceControls({
     return (
       <div className={cn('relative inline-flex items-center gap-1', className)}>
         <button
+          data-testid={dataTestId || 'compact-voice-btn'}
           type="button"
           onClick={handlePlayToggle}
           aria-label={
@@ -205,6 +208,7 @@ export function QuestionVoiceControls({
     return (
       <div className={cn('relative inline-flex items-center', className)}>
         <button
+          data-testid={dataTestId || 'compact-voice-btn'}
           type="button"
           onClick={handlePlayToggle}
           className={cn(

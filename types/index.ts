@@ -183,6 +183,7 @@ export interface CustomQuestion {
   type: 'truth' | 'dare';
   prompt: string;
   intensity?: number;
+  language?: SupportedLanguageCode;
 }
 
 export interface CustomDeck {

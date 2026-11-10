@@ -71,3 +71,4 @@ Assuming an average session of 15 questions per user, with an average question l
 - **Layer 1 (Neural Cloud):** Server endpoint synthesizes via Google Cloud TTS when configured and healthy.
 - **Layer 2 (Browser Web Speech API):** If server returns non-200, offline, or mock provider without cloud keys, client seamlessly switches to device Web Speech API with BCP-47 matched voices (e.g. Google हिन्दी, Siri, Apple Samantha, Microsoft Ravi).
 - **Strict User Honesty:** If neither engine has a compatible voice, the UI displays an actionable, non-intrusive tooltip message rather than silently vocalizing text in an incorrect language.
+

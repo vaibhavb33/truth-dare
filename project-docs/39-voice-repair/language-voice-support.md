@@ -67,3 +67,4 @@ Under Asteria's repaired voice architecture:
 
 ### Microsoft Windows Desktop (Edge / Chrome)
 - Windows 10/11 includes `Microsoft Kalpana` / `Microsoft Hemant` for Hindi, `Microsoft Naayf` for Arabic, and rich Natural neural voices when running inside Microsoft Edge.
+

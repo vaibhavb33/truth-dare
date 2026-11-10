@@ -87,3 +87,4 @@ stateDiagram-v2
 ### Desktop Viewport (1280x800 - macOS / Windows / Linux)
 - Full visual fidelity with ambient glow shaders (`shadow-glow-truth`, `shadow-glow-dare`).
 - Clean separation between card flip triggers and voice synthesis triggers.
+
