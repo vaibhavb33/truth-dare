@@ -800,7 +800,7 @@ export function CustomDeckClient() {
               <button
                 type="button"
                 onClick={() => setShowAdvancedSettings(!showAdvancedSettings)}
-                className="inline-flex items-center gap-1.5 text-xs font-medium text-slate-400 hover:text-brand-300 transition-colors py-1"
+                className="inline-flex items-center gap-1.5 text-xs font-medium text-slate-400 hover:text-brand-300 transition-colors py-1.5 min-h-[36px]"
                 aria-expanded={showAdvancedSettings}
               >
                 <Settings2 className="w-3.5 h-3.5 text-slate-400" />
@@ -1142,7 +1142,7 @@ export function CustomDeckClient() {
                           <button
                             type="button"
                             onClick={() => setPreviewQuestion(q)}
-                            className="text-slate-400 hover:text-truth-300 p-1.5 transition-colors rounded-xl hover:bg-white/5"
+                            className="text-slate-400 hover:text-truth-300 min-w-[36px] min-h-[36px] p-2 flex items-center justify-center transition-colors rounded-xl hover:bg-white/5 active:scale-95"
                             title="Preview Card"
                             aria-label="Preview Card"
                           >
@@ -1153,7 +1153,7 @@ export function CustomDeckClient() {
                           <button
                             type="button"
                             onClick={() => handleStartEdit(q)}
-                            className="text-slate-400 hover:text-brand-300 p-1.5 transition-colors rounded-xl hover:bg-white/5"
+                            className="text-slate-400 hover:text-brand-300 min-w-[36px] min-h-[36px] p-2 flex items-center justify-center transition-colors rounded-xl hover:bg-white/5 active:scale-95"
                             title="Edit Question"
                             aria-label="Edit Question"
                           >
@@ -1164,7 +1164,7 @@ export function CustomDeckClient() {
                           <button
                             type="button"
                             onClick={() => handleDeleteQuestion(q.id)}
-                            className="text-slate-400 hover:text-rose-400 p-1.5 transition-colors rounded-xl hover:bg-white/5"
+                            className="text-slate-400 hover:text-rose-400 min-w-[36px] min-h-[36px] p-2 flex items-center justify-center transition-colors rounded-xl hover:bg-white/5 active:scale-95"
                             title="Delete Question"
                             aria-label="Delete Question"
                           >

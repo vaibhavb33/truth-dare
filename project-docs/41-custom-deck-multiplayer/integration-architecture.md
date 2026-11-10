@@ -74,3 +74,4 @@ The Asteria Custom Deck Multiplayer system connects user-created Truth and Dare 
 - **Optimized Room Creation:** Saves deck locally, registers payload, creates room, persists session credentials in `localStorage`, and transitions client-side to `/room/[code]`.
 - **Contradictory Error Elimination:** Case-normalizes room codes, handles initial polling without false 404 banners, and displays custom deck metadata (`Custom: {deckName} ({count} cards)`).
 - **Synchronized Voice Audio:** Card3D components render question-specific voice speaker buttons allowing all connected players to listen to custom questions in the room's shared language.
+

@@ -64,3 +64,4 @@ Object.freeze(snapshot.dareQuestions);
   - Original deck renamed to `'MODIFIED DECK NAME'` with new prompts.
   - Active room queried: retained original questions and title `'College Dorm Party'`.
   - Result: 100% data preservation and isolation.
+
