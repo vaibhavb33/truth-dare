@@ -81,12 +81,22 @@ export function LanguageProvider({
         document.documentElement.dir = meta.dir;
       }
 
-      // Re-map the current URL to the new locale
+      // Re-map the current URL to the new locale ONLY for routes that live under /[locale]
       const segments = pathname.split('/').filter(Boolean);
       const isFirstLocale = segments.length > 0 && ALL_LOCALES.includes(segments[0] as Locale);
 
       let targetSubpath = isFirstLocale ? '/' + segments.slice(1).join('/') : pathname;
       if (targetSubpath === '') targetSubpath = '/';
+
+      // Routes like /room/[code] and /offline do not have /[locale] dynamic segments.
+      // Switching language there updates the React UI in-place without triggering a 404 navigation.
+      if (
+        targetSubpath.startsWith('/room') ||
+        targetSubpath.startsWith('/offline') ||
+        targetSubpath.startsWith('/admin')
+      ) {
+        return;
+      }
 
       let nextUrl = '';
       if (newLocale === DEFAULT_LOCALE) {
