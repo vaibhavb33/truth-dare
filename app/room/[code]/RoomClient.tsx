@@ -384,7 +384,7 @@ export function RoomClient({ roomCode }: RoomClientProps) {
     !errorMsg.toLowerCase().includes('expired');
 
   return (
-    <div className="w-full max-w-4xl lg:max-w-5xl mx-auto px-3 sm:px-4 py-3 sm:py-6 md:py-8 space-y-4 sm:space-y-6 flex-1 flex flex-col justify-between">
+    <div className="w-full max-w-4xl lg:max-w-5xl mx-auto px-3 sm:px-4 py-2 sm:py-6 md:py-8 space-y-2.5 sm:space-y-6 flex-1 flex flex-col justify-start md:justify-between">
       {/* Reconnecting Banner */}
       {isReconnecting && (
         <div className="w-full p-2.5 rounded-2xl bg-brand-500/20 border border-brand-400/40 text-brand-300 text-xs font-semibold flex items-center justify-center gap-2 animate-pulse">
@@ -555,7 +555,7 @@ export function RoomClient({ roomCode }: RoomClientProps) {
           GLOBAL ROOM TOP BAR (Responsive: Mobile 3-Row & Desktop 1-Row)
          ======================================================== */}
       {/* 1. MOBILE TOOLBAR (Width < 768px: 3 Balanced Rows) */}
-      <div className="flex md:hidden flex-col gap-2.5 p-3 rounded-2xl bg-surface-elevated border border-white/10 shrink-0 backdrop-blur-md shadow-elevation-1">
+      <div className="flex md:hidden flex-col gap-2 p-2.5 rounded-2xl bg-surface-elevated border border-white/10 shrink-0 backdrop-blur-md shadow-elevation-1">
         {/* ROW 1: Back Navigation, Title & Status */}
         <div className="flex items-center justify-between gap-2 min-w-0">
           <div className="flex items-center gap-2 min-w-0">
@@ -644,7 +644,11 @@ export function RoomClient({ roomCode }: RoomClientProps) {
           {/* Room Code Card (Always Unclipped) */}
           <div
             onClick={handleCopyLink}
-            className="flex-1 flex items-center justify-center xs:justify-between px-2.5 xs:px-3 py-1.5 rounded-xl bg-canvas-base/80 border border-brand-500/30 text-xs font-bold text-brand-300 min-h-[38px] cursor-pointer hover:border-brand-500/50 transition-colors select-all group min-w-0"
+            className={`flex-1 flex items-center justify-center px-2.5 xs:px-3 py-1.5 rounded-xl border text-xs font-bold min-h-[38px] cursor-pointer transition-colors select-all group min-w-0 ${
+              copiedLink
+                ? 'border-emerald-400/60 bg-emerald-500/10 text-emerald-300'
+                : 'border-brand-500/30 bg-canvas-base/80 text-brand-300 hover:border-brand-500/50'
+            }`}
             title="Click to copy room code"
           >
             <div className="flex items-center gap-1.5 shrink-0">
@@ -653,12 +657,6 @@ export function RoomClient({ roomCode }: RoomClientProps) {
                 {roomCode}
               </span>
             </div>
-            {copiedLink && (
-              <span className="hidden xs:inline-flex text-[10px] text-emerald-400 font-semibold items-center gap-1 shrink-0">
-                <CheckCircle className="w-3 h-3 text-emerald-400" />
-                <span>Copied</span>
-              </span>
-            )}
           </div>
 
           {/* Dedicated Copy Button */}
@@ -825,9 +823,9 @@ export function RoomClient({ roomCode }: RoomClientProps) {
         /* ========================================================
             VIEW B: ACTIVE MULTIPLAYER ROOM (Lobby or In-Game)
            ======================================================== */
-        <div className="w-full flex-1 flex flex-col justify-between space-y-4 sm:space-y-6">
+        <div className="w-full flex-1 flex flex-col justify-start md:justify-between space-y-2.5 sm:space-y-6">
           {/* Room Players Presence Bar (Showing connection status & scores) */}
-          <div className="w-full p-2.5 sm:p-3 rounded-2xl bg-surface-elevated/80 border border-white/10 space-y-2 backdrop-blur-sm">
+          <div className="w-full p-2 sm:p-3 rounded-2xl bg-surface-elevated/80 border border-white/10 space-y-1.5 sm:space-y-2 backdrop-blur-sm">
             <div className="flex items-center justify-between text-xs font-semibold px-1 text-slate-400">
               <span className="flex items-center gap-1.5">
                 <Users className="w-3.5 h-3.5 text-brand-400" />
@@ -871,8 +869,8 @@ export function RoomClient({ roomCode }: RoomClientProps) {
               LOBBY VIEW (Phase 3: Waiting for Host to Start)
              ======================================================== */}
           {isLobby ? (
-            <div className="w-full max-w-md mx-auto my-auto p-5 sm:p-8 rounded-3xl bg-surface-elevated border border-white/10 text-center space-y-5 sm:space-y-6 shadow-elevation-2">
-              <div className="w-14 h-14 sm:w-16 sm:h-16 mx-auto rounded-2xl bg-brand-500/10 border border-brand-400/30 flex items-center justify-center text-brand-400 font-bold text-2xl">
+            <div className="w-full max-w-md mx-auto my-1 sm:my-auto p-4 sm:p-8 rounded-3xl bg-surface-elevated border border-white/10 text-center space-y-3 sm:space-y-6 shadow-elevation-2">
+              <div className="w-11 h-11 sm:w-16 sm:h-16 mx-auto rounded-2xl bg-brand-500/10 border border-brand-400/30 flex items-center justify-center text-brand-400 font-bold text-xl sm:text-2xl">
                 ⏳
               </div>
 

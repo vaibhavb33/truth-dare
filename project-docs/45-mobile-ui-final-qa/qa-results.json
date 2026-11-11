@@ -1,0 +1,791 @@
+{
+  "timestamp": "2026-11-11T05:18:33.402Z",
+  "deviceTests": [
+    {
+      "device": "320px",
+      "resolution": "320x568",
+      "toolbarChecks": {
+        "backVisible": true,
+        "titleVisible": true,
+        "titleSingleLine": true,
+        "langVisible": true,
+        "settingsVisible": true,
+        "qrVisible": true,
+        "roomCodeVisible": true,
+        "roomCodeUnclipped": true,
+        "copyVisible": true,
+        "shareVisible": true
+      },
+      "overlaps": {
+        "headerVsToolbar": false,
+        "toolbarVsPlayers": false,
+        "playersVsLobby": false,
+        "bottomNavVsStartBtnInitial": true,
+        "bottomNavVsLobbyInitial": true,
+        "hostOutsidePlayersBar": false,
+        "startBtnOutsideLobby": false
+      },
+      "docOverflowX": false,
+      "canScrollToBottom": true,
+      "rects": {
+        "header": {
+          "top": 0,
+          "bottom": 64,
+          "left": 0,
+          "right": 320,
+          "width": 320,
+          "height": 64
+        },
+        "toolbar": {
+          "top": 72,
+          "bottom": 229,
+          "left": 12,
+          "right": 308,
+          "width": 296,
+          "height": 157
+        },
+        "playersBar": {
+          "top": 239,
+          "bottom": 305,
+          "left": 12,
+          "right": 308,
+          "width": 296,
+          "height": 66
+        },
+        "hostPill": {
+          "top": 270,
+          "bottom": 296,
+          "left": 21,
+          "right": 299,
+          "width": 278,
+          "height": 26
+        },
+        "lobby": {
+          "top": 315,
+          "bottom": 619.5,
+          "left": 12,
+          "right": 308,
+          "width": 296,
+          "height": 304.5
+        },
+        "startBtn": {
+          "top": 494.5,
+          "bottom": 558.5,
+          "left": 29,
+          "right": 291,
+          "width": 262,
+          "height": 64
+        },
+        "bottomNav": {
+          "top": 503,
+          "bottom": 568,
+          "left": 0,
+          "right": 320,
+          "width": 320,
+          "height": 65
+        }
+      },
+      "passed": true
+    },
+    {
+      "device": "360px",
+      "resolution": "360x640",
+      "toolbarChecks": {
+        "backVisible": true,
+        "titleVisible": true,
+        "titleSingleLine": true,
+        "langVisible": true,
+        "settingsVisible": true,
+        "qrVisible": true,
+        "roomCodeVisible": true,
+        "roomCodeUnclipped": true,
+        "copyVisible": true,
+        "shareVisible": true
+      },
+      "overlaps": {
+        "headerVsToolbar": false,
+        "toolbarVsPlayers": false,
+        "playersVsLobby": false,
+        "bottomNavVsStartBtnInitial": false,
+        "bottomNavVsLobbyInitial": true,
+        "hostOutsidePlayersBar": false,
+        "startBtnOutsideLobby": false
+      },
+      "docOverflowX": false,
+      "canScrollToBottom": true,
+      "rects": {
+        "header": {
+          "top": 0,
+          "bottom": 64,
+          "left": 0,
+          "right": 360,
+          "width": 360,
+          "height": 64
+        },
+        "toolbar": {
+          "top": 72,
+          "bottom": 229,
+          "left": 12,
+          "right": 348,
+          "width": 336,
+          "height": 157
+        },
+        "playersBar": {
+          "top": 239,
+          "bottom": 305,
+          "left": 12,
+          "right": 348,
+          "width": 336,
+          "height": 66
+        },
+        "hostPill": {
+          "top": 270,
+          "bottom": 296,
+          "left": 21,
+          "right": 339,
+          "width": 318,
+          "height": 26
+        },
+        "lobby": {
+          "top": 315,
+          "bottom": 619.5,
+          "left": 12,
+          "right": 348,
+          "width": 336,
+          "height": 304.5
+        },
+        "startBtn": {
+          "top": 494.5,
+          "bottom": 558.5,
+          "left": 29,
+          "right": 331,
+          "width": 302,
+          "height": 64
+        },
+        "bottomNav": {
+          "top": 575,
+          "bottom": 640,
+          "left": 0,
+          "right": 360,
+          "width": 360,
+          "height": 65
+        }
+      },
+      "passed": true
+    },
+    {
+      "device": "375px",
+      "resolution": "375x667",
+      "toolbarChecks": {
+        "backVisible": true,
+        "titleVisible": true,
+        "titleSingleLine": true,
+        "langVisible": true,
+        "settingsVisible": true,
+        "qrVisible": true,
+        "roomCodeVisible": true,
+        "roomCodeUnclipped": true,
+        "copyVisible": true,
+        "shareVisible": true
+      },
+      "overlaps": {
+        "headerVsToolbar": false,
+        "toolbarVsPlayers": false,
+        "playersVsLobby": false,
+        "bottomNavVsStartBtnInitial": false,
+        "bottomNavVsLobbyInitial": true,
+        "hostOutsidePlayersBar": false,
+        "startBtnOutsideLobby": false
+      },
+      "docOverflowX": false,
+      "canScrollToBottom": true,
+      "rects": {
+        "header": {
+          "top": 0,
+          "bottom": 64,
+          "left": 0,
+          "right": 375,
+          "width": 375,
+          "height": 64
+        },
+        "toolbar": {
+          "top": 72,
+          "bottom": 229,
+          "left": 12,
+          "right": 363,
+          "width": 351,
+          "height": 157
+        },
+        "playersBar": {
+          "top": 239,
+          "bottom": 305,
+          "left": 12,
+          "right": 363,
+          "width": 351,
+          "height": 66
+        },
+        "hostPill": {
+          "top": 270,
+          "bottom": 296,
+          "left": 21,
+          "right": 354,
+          "width": 333,
+          "height": 26
+        },
+        "lobby": {
+          "top": 315,
+          "bottom": 619.5,
+          "left": 12,
+          "right": 363,
+          "width": 351,
+          "height": 304.5
+        },
+        "startBtn": {
+          "top": 494.5,
+          "bottom": 558.5,
+          "left": 29,
+          "right": 346,
+          "width": 317,
+          "height": 64
+        },
+        "bottomNav": {
+          "top": 602,
+          "bottom": 667,
+          "left": 0,
+          "right": 375,
+          "width": 375,
+          "height": 65
+        }
+      },
+      "passed": true
+    },
+    {
+      "device": "390px",
+      "resolution": "390x844",
+      "toolbarChecks": {
+        "backVisible": true,
+        "titleVisible": true,
+        "titleSingleLine": true,
+        "langVisible": true,
+        "settingsVisible": true,
+        "qrVisible": true,
+        "roomCodeVisible": true,
+        "roomCodeUnclipped": true,
+        "copyVisible": true,
+        "shareVisible": true
+      },
+      "overlaps": {
+        "headerVsToolbar": false,
+        "toolbarVsPlayers": false,
+        "playersVsLobby": false,
+        "bottomNavVsStartBtnInitial": false,
+        "bottomNavVsLobbyInitial": false,
+        "hostOutsidePlayersBar": false,
+        "startBtnOutsideLobby": false
+      },
+      "docOverflowX": false,
+      "canScrollToBottom": true,
+      "rects": {
+        "header": {
+          "top": 0,
+          "bottom": 64,
+          "left": 0,
+          "right": 390,
+          "width": 390,
+          "height": 64
+        },
+        "toolbar": {
+          "top": 72,
+          "bottom": 229,
+          "left": 12,
+          "right": 378,
+          "width": 366,
+          "height": 157
+        },
+        "playersBar": {
+          "top": 239,
+          "bottom": 305,
+          "left": 12,
+          "right": 378,
+          "width": 366,
+          "height": 66
+        },
+        "hostPill": {
+          "top": 270,
+          "bottom": 296,
+          "left": 21,
+          "right": 369,
+          "width": 348,
+          "height": 26
+        },
+        "lobby": {
+          "top": 315,
+          "bottom": 619.5,
+          "left": 12,
+          "right": 378,
+          "width": 366,
+          "height": 304.5
+        },
+        "startBtn": {
+          "top": 494.5,
+          "bottom": 558.5,
+          "left": 29,
+          "right": 361,
+          "width": 332,
+          "height": 64
+        },
+        "bottomNav": {
+          "top": 779,
+          "bottom": 844,
+          "left": 0,
+          "right": 390,
+          "width": 390,
+          "height": 65
+        }
+      },
+      "passed": true
+    },
+    {
+      "device": "414px",
+      "resolution": "414x896",
+      "toolbarChecks": {
+        "backVisible": true,
+        "titleVisible": true,
+        "titleSingleLine": true,
+        "langVisible": true,
+        "settingsVisible": true,
+        "qrVisible": true,
+        "roomCodeVisible": true,
+        "roomCodeUnclipped": true,
+        "copyVisible": true,
+        "shareVisible": true
+      },
+      "overlaps": {
+        "headerVsToolbar": false,
+        "toolbarVsPlayers": false,
+        "playersVsLobby": false,
+        "bottomNavVsStartBtnInitial": false,
+        "bottomNavVsLobbyInitial": false,
+        "hostOutsidePlayersBar": false,
+        "startBtnOutsideLobby": false
+      },
+      "docOverflowX": false,
+      "canScrollToBottom": true,
+      "rects": {
+        "header": {
+          "top": 0,
+          "bottom": 64,
+          "left": 0,
+          "right": 414,
+          "width": 414,
+          "height": 64
+        },
+        "toolbar": {
+          "top": 72,
+          "bottom": 229,
+          "left": 12,
+          "right": 402,
+          "width": 390,
+          "height": 157
+        },
+        "playersBar": {
+          "top": 239,
+          "bottom": 305,
+          "left": 12,
+          "right": 402,
+          "width": 390,
+          "height": 66
+        },
+        "hostPill": {
+          "top": 270,
+          "bottom": 296,
+          "left": 21,
+          "right": 393,
+          "width": 372,
+          "height": 26
+        },
+        "lobby": {
+          "top": 315,
+          "bottom": 619.5,
+          "left": 12,
+          "right": 402,
+          "width": 390,
+          "height": 304.5
+        },
+        "startBtn": {
+          "top": 494.5,
+          "bottom": 558.5,
+          "left": 29,
+          "right": 385,
+          "width": 356,
+          "height": 64
+        },
+        "bottomNav": {
+          "top": 831,
+          "bottom": 896,
+          "left": 0,
+          "right": 414,
+          "width": 414,
+          "height": 65
+        }
+      },
+      "passed": true
+    },
+    {
+      "device": "430px",
+      "resolution": "430x932",
+      "toolbarChecks": {
+        "backVisible": true,
+        "titleVisible": true,
+        "titleSingleLine": true,
+        "langVisible": true,
+        "settingsVisible": true,
+        "qrVisible": true,
+        "roomCodeVisible": true,
+        "roomCodeUnclipped": true,
+        "copyVisible": true,
+        "shareVisible": true
+      },
+      "overlaps": {
+        "headerVsToolbar": false,
+        "toolbarVsPlayers": false,
+        "playersVsLobby": false,
+        "bottomNavVsStartBtnInitial": false,
+        "bottomNavVsLobbyInitial": false,
+        "hostOutsidePlayersBar": false,
+        "startBtnOutsideLobby": false
+      },
+      "docOverflowX": false,
+      "canScrollToBottom": true,
+      "rects": {
+        "header": {
+          "top": 0,
+          "bottom": 64,
+          "left": 0,
+          "right": 430,
+          "width": 430,
+          "height": 64
+        },
+        "toolbar": {
+          "top": 72,
+          "bottom": 229,
+          "left": 12,
+          "right": 418,
+          "width": 406,
+          "height": 157
+        },
+        "playersBar": {
+          "top": 239,
+          "bottom": 305,
+          "left": 12,
+          "right": 418,
+          "width": 406,
+          "height": 66
+        },
+        "hostPill": {
+          "top": 270,
+          "bottom": 296,
+          "left": 21,
+          "right": 409,
+          "width": 388,
+          "height": 26
+        },
+        "lobby": {
+          "top": 315,
+          "bottom": 619.5,
+          "left": 12,
+          "right": 418,
+          "width": 406,
+          "height": 304.5
+        },
+        "startBtn": {
+          "top": 494.5,
+          "bottom": 558.5,
+          "left": 29,
+          "right": 401,
+          "width": 372,
+          "height": 64
+        },
+        "bottomNav": {
+          "top": 867,
+          "bottom": 932,
+          "left": 0,
+          "right": 430,
+          "width": 430,
+          "height": 65
+        }
+      },
+      "passed": true
+    },
+    {
+      "device": "768px",
+      "resolution": "768x1024",
+      "toolbarChecks": {
+        "backVisible": true,
+        "titleVisible": true,
+        "titleSingleLine": true,
+        "langVisible": true,
+        "settingsVisible": true,
+        "qrVisible": true,
+        "roomCodeVisible": true,
+        "roomCodeUnclipped": true,
+        "copyVisible": true,
+        "shareVisible": true
+      },
+      "overlaps": {
+        "headerVsToolbar": false,
+        "toolbarVsPlayers": false,
+        "playersVsLobby": false,
+        "bottomNavVsStartBtnInitial": false,
+        "bottomNavVsLobbyInitial": false,
+        "hostOutsidePlayersBar": false,
+        "startBtnOutsideLobby": false
+      },
+      "docOverflowX": false,
+      "canScrollToBottom": true,
+      "rects": {
+        "header": {
+          "top": 0,
+          "bottom": 64,
+          "left": 0,
+          "right": 768,
+          "width": 768,
+          "height": 64
+        },
+        "toolbar": {
+          "top": 120,
+          "bottom": 184,
+          "left": 16,
+          "right": 752,
+          "width": 736,
+          "height": 64
+        },
+        "playersBar": {
+          "top": 208,
+          "bottom": 284,
+          "left": 16,
+          "right": 752,
+          "width": 736,
+          "height": 76
+        },
+        "hostPill": {
+          "top": 245,
+          "bottom": 271,
+          "left": 29,
+          "right": 739,
+          "width": 710,
+          "height": 26
+        },
+        "lobby": {
+          "top": 551.5,
+          "bottom": 920,
+          "left": 160,
+          "right": 608,
+          "width": 448,
+          "height": 368.5
+        },
+        "startBtn": {
+          "top": 779,
+          "bottom": 843,
+          "left": 193,
+          "right": 575,
+          "width": 382,
+          "height": 64
+        },
+        "bottomNav": {
+          "top": 959,
+          "bottom": 1024,
+          "left": 0,
+          "right": 768,
+          "width": 768,
+          "height": 65
+        }
+      },
+      "passed": true
+    },
+    {
+      "device": "1024px",
+      "resolution": "1024x768",
+      "toolbarChecks": {
+        "backVisible": true,
+        "titleVisible": true,
+        "titleSingleLine": true,
+        "langVisible": true,
+        "settingsVisible": true,
+        "qrVisible": true,
+        "roomCodeVisible": true,
+        "roomCodeUnclipped": true,
+        "copyVisible": true,
+        "shareVisible": true
+      },
+      "overlaps": {
+        "headerVsToolbar": false,
+        "toolbarVsPlayers": false,
+        "playersVsLobby": false,
+        "bottomNavVsStartBtnInitial": false,
+        "bottomNavVsLobbyInitial": false,
+        "hostOutsidePlayersBar": false,
+        "startBtnOutsideLobby": false
+      },
+      "docOverflowX": false,
+      "canScrollToBottom": true,
+      "rects": {
+        "header": {
+          "top": 0,
+          "bottom": 64,
+          "left": 0,
+          "right": 1024,
+          "width": 1024,
+          "height": 64
+        },
+        "toolbar": {
+          "top": 120,
+          "bottom": 184,
+          "left": 16,
+          "right": 1008,
+          "width": 992,
+          "height": 64
+        },
+        "playersBar": {
+          "top": 208,
+          "bottom": 284,
+          "left": 16,
+          "right": 1008,
+          "width": 992,
+          "height": 76
+        },
+        "hostPill": {
+          "top": 245,
+          "bottom": 271,
+          "left": 29,
+          "right": 995,
+          "width": 966,
+          "height": 26
+        },
+        "lobby": {
+          "top": 367.5,
+          "bottom": 736,
+          "left": 288,
+          "right": 736,
+          "width": 448,
+          "height": 368.5
+        },
+        "startBtn": {
+          "top": 595,
+          "bottom": 659,
+          "left": 321,
+          "right": 703,
+          "width": 382,
+          "height": 64
+        },
+        "bottomNav": null
+      },
+      "passed": true
+    },
+    {
+      "device": "1440px",
+      "resolution": "1440x900",
+      "toolbarChecks": {
+        "backVisible": true,
+        "titleVisible": true,
+        "titleSingleLine": true,
+        "langVisible": true,
+        "settingsVisible": true,
+        "qrVisible": true,
+        "roomCodeVisible": true,
+        "roomCodeUnclipped": true,
+        "copyVisible": true,
+        "shareVisible": true
+      },
+      "overlaps": {
+        "headerVsToolbar": false,
+        "toolbarVsPlayers": false,
+        "playersVsLobby": false,
+        "bottomNavVsStartBtnInitial": false,
+        "bottomNavVsLobbyInitial": false,
+        "hostOutsidePlayersBar": false,
+        "startBtnOutsideLobby": false
+      },
+      "docOverflowX": false,
+      "canScrollToBottom": true,
+      "rects": {
+        "header": {
+          "top": 0,
+          "bottom": 64,
+          "left": 0,
+          "right": 1440,
+          "width": 1440,
+          "height": 64
+        },
+        "toolbar": {
+          "top": 120,
+          "bottom": 184,
+          "left": 224,
+          "right": 1216,
+          "width": 992,
+          "height": 64
+        },
+        "playersBar": {
+          "top": 208,
+          "bottom": 284,
+          "left": 224,
+          "right": 1216,
+          "width": 992,
+          "height": 76
+        },
+        "hostPill": {
+          "top": 245,
+          "bottom": 271,
+          "left": 237,
+          "right": 1203,
+          "width": 966,
+          "height": 26
+        },
+        "lobby": {
+          "top": 499.5,
+          "bottom": 868,
+          "left": 496,
+          "right": 944,
+          "width": 448,
+          "height": 368.5
+        },
+        "startBtn": {
+          "top": 727,
+          "bottom": 791,
+          "left": 529,
+          "right": 911,
+          "width": 382,
+          "height": 64
+        },
+        "bottomNav": null
+      },
+      "passed": true
+    }
+  ],
+  "languageDropdownDeepTest": {
+    "opensOnClick": true,
+    "solidOpaque": true,
+    "withinViewport": true,
+    "scrollable": true,
+    "scrollToLastItem": true,
+    "outsideClickCloses": true,
+    "escapeKeyCloses": true,
+    "focusRestored": true,
+    "activeIndicatorAccurate": true,
+    "persistenceAfterReload": true
+  },
+  "functionalRegressionTest": {
+    "roomCreatedUI": true,
+    "roomCode": "ESB5PS",
+    "guestJoinedUI": true,
+    "roomLanguageSync": true,
+    "copyButtonWorked": true,
+    "roomCodeCardCleanWhenCopied": true,
+    "shareButtonWorked": true,
+    "qrModalWorked": true,
+    "backButtonLeaveModal": true,
+    "activeGameplayStarted": true
+  },
+  "consoleErrors": [],
+  "allPassed": true
+}
