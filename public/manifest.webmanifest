@@ -1,6 +1,6 @@
 {
-  "name": "Asteria - Truth or Dare",
-  "short_name": "Asteria",
+  "name": "Play Truth & Dare",
+  "short_name": "PlayTruthNDare",
   "description": "Play Truth or Dare, Spinner Wheel, Never Have I Ever, and Would You Rather with friends online or locally.",
   "start_url": "/",
   "scope": "/",

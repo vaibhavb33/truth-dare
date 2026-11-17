@@ -3,22 +3,21 @@ import type { Metadata } from 'next';
 import { JsonLd } from '@/components/seo/JsonLd';
 import { Breadcrumbs } from '@/components/seo/Breadcrumbs';
 import { QuestionsClient } from '@/components/questions/QuestionsClient';
+import { getLocalizedAlternates } from '@/lib/i18n/seo';
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://truthordarequiz.com';
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://playtruthndare.com';
 
 export const metadata: Metadata = {
-  title: '500+ Best Truth or Dare Questions | Searchable Library',
+  title: '500+ Truth or Dare Questions — Funny, Deep & Couples | Play Truth & Dare',
   description:
-    'Explore 500+ curated Truth or Dare questions! Filter by category, intensity level (1-5), and copy favorite challenges with 1 click.',
-  alternates: {
-    canonical: `${siteUrl}/questions`,
-  },
+    'Explore 500+ free Truth or Dare questions! Filter by category: funny, party, deep, teens, and couples. Read, listen with voice audio, or copy instantly.',
+  alternates: getLocalizedAlternates('/questions'),
   openGraph: {
     type: 'website',
     url: `${siteUrl}/questions`,
-    title: '500+ Best Truth or Dare Questions | Searchable Library',
+    title: '500+ Truth or Dare Questions — Funny, Deep & Couples | Play Truth & Dare',
     description:
-      'Explore 500+ curated Truth or Dare questions! Filter by category, intensity level (1-5), and copy favorite challenges with 1 click.',
+      'Explore 500+ free Truth or Dare questions! Filter by category: funny, party, deep, teens, and couples. Read, listen with voice audio, or copy instantly.',
     images: [
       {
         url: '/og-image.png',
@@ -30,9 +29,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: '500+ Best Truth or Dare Questions | Searchable Library',
+    title: '500+ Truth or Dare Questions — Funny, Deep & Couples | Play Truth & Dare',
     description:
-      'Explore 500+ curated Truth or Dare questions! Filter by category, intensity level (1-5), and copy favorite challenges with 1 click.',
+      'Explore 500+ free Truth or Dare questions! Filter by category: funny, party, deep, teens, and couples. Read, listen with voice audio, or copy instantly.',
     images: ['/og-image.png'],
   },
 };

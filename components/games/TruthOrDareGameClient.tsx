@@ -28,6 +28,13 @@ import { Question, CategoryId, Player } from '@/types';
 import { useTranslation } from '@/lib/i18n/LanguageContext';
 import { LanguageSelector } from '@/components/i18n/LanguageSelector';
 import { setGameplayActive } from '@/lib/gameplay/gameplayState';
+import {
+  trackGameStarted,
+  trackTruthSelected,
+  trackDareSelected,
+  trackRoomCreated,
+  trackGameCompleted,
+} from '@/lib/analytics/gtm';
 
 function TruthOrDareInner() {
   const router = useRouter();
@@ -58,17 +65,17 @@ function TruthOrDareInner() {
       });
       const data = await res.json();
       if (data.success && data.roomCode) {
+        trackRoomCreated({ game_type: 'truth-or-dare' });
         if (typeof window !== 'undefined') {
-          localStorage.setItem(
-            `asteria_multiplayer_session_${data.roomCode}`,
-            JSON.stringify({
-              roomId: data.roomId,
-              roomCode: data.roomCode,
-              playerId: data.hostPlayerId,
-              sessionToken: data.sessionToken,
-              playerName: players[0]?.name || 'Host',
-            })
-          );
+          const sessionPayload = JSON.stringify({
+            roomId: data.roomId,
+            roomCode: data.roomCode,
+            playerId: data.hostPlayerId,
+            sessionToken: data.sessionToken,
+            playerName: players[0]?.name || 'Host',
+          });
+          localStorage.setItem(`playtruthndare_multiplayer_session_${data.roomCode}`, sessionPayload);
+          localStorage.setItem(`asteria_multiplayer_session_${data.roomCode}`, sessionPayload);
         }
         sound.playChime();
         router.push(`/room/${data.roomCode}`);
@@ -106,7 +113,9 @@ function TruthOrDareInner() {
   useEffect(() => {
     if (initialCategory === 'spicy-18') {
       if (typeof window !== 'undefined') {
-        const isConfirmed = localStorage.getItem('asteria_age_verified') === 'true';
+        const isConfirmed =
+          localStorage.getItem('playtruthndare_age_verified') === 'true' ||
+          localStorage.getItem('asteria_age_verified') === 'true';
         if (!isConfirmed) {
           setShowAgeGate(true);
         }
@@ -167,7 +176,9 @@ function TruthOrDareInner() {
   const handleSelectCategory = (catId: CategoryId) => {
     sound.triggerHaptic(15);
     if (catId === 'spicy-18') {
-      const isConfirmed = localStorage.getItem('asteria_age_verified') === 'true';
+      const isConfirmed =
+        localStorage.getItem('playtruthndare_age_verified') === 'true' ||
+        localStorage.getItem('asteria_age_verified') === 'true';
       if (!isConfirmed) {
         setShowAgeGate(true);
         return;
@@ -177,6 +188,7 @@ function TruthOrDareInner() {
   };
 
   const handleConfirmAge = () => {
+    localStorage.setItem('playtruthndare_age_verified', 'true');
     localStorage.setItem('asteria_age_verified', 'true');
     setShowAgeGate(false);
     setSelectedCategory('spicy-18');
@@ -214,6 +226,11 @@ function TruthOrDareInner() {
     setDrawnCardIds([]);
     setIsDeckExhausted(false);
     setCategoryUnavailableNotice(null);
+    trackGameStarted({
+      game_id: 'truth-or-dare',
+      game_name: 'Truth or Dare',
+      mode: players.length > 1 ? 'pass_and_play' : 'solo',
+    });
     if (typeof window !== 'undefined') {
       window.scrollTo({ top: 0, behavior: 'instant' });
     }
@@ -243,6 +260,10 @@ function TruthOrDareInner() {
         setShowSummaryModal(true);
         sound.playVictory();
         triggerConfetti();
+        trackGameCompleted({
+          game_id: 'truth-or-dare',
+          rounds_played: drawnCardIds.length,
+        });
         return;
       }
 
@@ -250,6 +271,12 @@ function TruthOrDareInner() {
       setCurrentCard(card);
       setDrawnCardIds((prev) => [...prev, card.id]);
       setIsFlipped(true);
+
+      if (type === 'truth') {
+        trackTruthSelected({ category: selectedCategory, language: locale });
+      } else {
+        trackDareSelected({ category: selectedCategory, language: locale });
+      }
 
       if (autoSpeak && card.prompt) {
         // Deliberate user action triggered via "Listen to Truth" or "Listen to Dare"

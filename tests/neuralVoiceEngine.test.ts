@@ -11,7 +11,7 @@ import { POST, GET } from '@/app/api/voice/synthesize/route';
 import { ALL_LOCALES } from '@/lib/i18n/config';
 import { SupportedLanguageCode } from '@/types';
 
-describe('Asteria Neural Voice Architecture & Providers', () => {
+describe('Play Truth & Dare Neural Voice Architecture & Providers', () => {
   beforeEach(() => {
     voiceCache.clear();
     setVoiceProviderForTesting(new MockNeuralProvider());

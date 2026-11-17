@@ -32,3 +32,4 @@ Executed in Chromium mobile context (`390×844px`, touch enabled) inside active 
 - **375px Compact Phone:** [dropdown-375px.png](file:///Users/vaibhavborkar/truth&dare/project-docs/45-mobile-ui-final-qa/screenshots/dropdown-375px.png) — Standalone menu cleanly overlays dimmed page content above bottom navigation.
 - **390px Modern Phone:** [dropdown-390px.png](file:///Users/vaibhavborkar/truth&dare/project-docs/45-mobile-ui-final-qa/screenshots/dropdown-390px.png) — Displays solid `rgb(13, 13, 30)` card, RTL indicator on Arabic option, and explanatory footer note without transparency artifacts.
 - **768px Tablet & 1440px Desktop:** [dropdown-768px.png](file:///Users/vaibhavborkar/truth&dare/project-docs/45-mobile-ui-final-qa/screenshots/dropdown-768px.png), [dropdown-1440px.png](file:///Users/vaibhavborkar/truth&dare/project-docs/45-mobile-ui-final-qa/screenshots/dropdown-1440px.png) — Anchored beneath header trigger without clipping toolbar controls underneath.
+

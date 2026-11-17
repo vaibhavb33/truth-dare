@@ -25,7 +25,7 @@ export async function generateMetadata({ params }: LocalizedContactProps): Promi
   return generateLocalizedMetadata({
     locale: locale as Locale,
     subpath: '/contact',
-    overrideTitle: `${dict.contact.title} — Asteria (${langMeta.nativeName})`,
+    overrideTitle: `${dict.contact.title} — Play Truth & Dare (${langMeta.nativeName})`,
     overrideDescription: dict.contact.subtitle,
   });
 }

@@ -1,5 +1,5 @@
 /**
- * Asteria Voice Synthesis API Endpoint
+ * Play Truth & Dare Voice Synthesis API Endpoint
  * POST /api/voice/synthesize
  * Synthesizes natural neural speech with server-authoritative credentials,
  * LRU caching for standard questions, strict custom question privacy, and rate limiting.
@@ -77,6 +77,10 @@ export async function POST(req: NextRequest) {
           'Content-Type': cachedResult.mimeType,
           'Content-Length': cachedResult.audioBuffer.length.toString(),
           'Cache-Control': 'public, max-age=604800, immutable',
+          'X-PlayTruthNDare-Voice-Engine': 'neural',
+          'X-PlayTruthNDare-Voice-Provider': cachedResult.providerName,
+          'X-PlayTruthNDare-Voice-Cached': 'true',
+          'X-PlayTruthNDare-Voice-Id': cachedResult.voiceId,
           'X-Asteria-Voice-Engine': 'neural',
           'X-Asteria-Voice-Provider': cachedResult.providerName,
           'X-Asteria-Voice-Cached': 'true',
@@ -108,6 +112,10 @@ export async function POST(req: NextRequest) {
         'Content-Type': result.mimeType,
         'Content-Length': result.audioBuffer.length.toString(),
         'Cache-Control': cacheControlHeader,
+        'X-PlayTruthNDare-Voice-Engine': 'neural',
+        'X-PlayTruthNDare-Voice-Provider': result.providerName,
+        'X-PlayTruthNDare-Voice-Cached': 'false',
+        'X-PlayTruthNDare-Voice-Id': result.voiceId,
         'X-Asteria-Voice-Engine': 'neural',
         'X-Asteria-Voice-Provider': result.providerName,
         'X-Asteria-Voice-Cached': 'false',

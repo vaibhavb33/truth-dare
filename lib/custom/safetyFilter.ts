@@ -1,5 +1,5 @@
 /**
- * Asteria Custom Deck Content Safety Filter
+ * Play Truth & Dare Custom Deck Content Safety Filter
  * Prevents dangerous, illegal, and non-consensual truth and dare prompts
  */
 

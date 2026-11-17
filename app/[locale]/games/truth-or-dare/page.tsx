@@ -27,7 +27,7 @@ export async function generateMetadata({ params }: LocalizedGamesTODProps): Prom
   return generateLocalizedMetadata({
     locale: locale as Locale,
     subpath: '/games/truth-or-dare',
-    overrideTitle: `${dict.gamesList.truthOrDare.name} Online — Asteria (${langMeta.nativeName})`,
+    overrideTitle: `${dict.gamesList.truthOrDare.name} Online — Play Truth & Dare (${langMeta.nativeName})`,
     overrideDescription: dict.gamesList.truthOrDare.tagline,
   });
 }

@@ -40,8 +40,8 @@ async function runPWAValidation() {
       const manifestText = await manifestRes.text();
       const manifest = JSON.parse(manifestText);
 
-      const hasCorrectName = manifest.name === 'Asteria - Truth or Dare';
-      const hasCorrectShortName = manifest.short_name === 'Asteria';
+      const hasCorrectName = manifest.name === 'Play Truth & Dare';
+      const hasCorrectShortName = manifest.short_name === 'PlayTruthNDare';
       const hasStandalone = manifest.display === 'standalone';
       const hasColors = manifest.theme_color === '#0A0A16' && manifest.background_color === '#0A0A16';
       const hasIcons = manifest.icons && manifest.icons.length >= 3;
@@ -140,7 +140,7 @@ async function runPWAValidation() {
           navigator.serviceWorker.ready,
           new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), 4000)),
         ]);
-      } catch (e) {}
+      } catch (e) { }
 
       const registrations = await navigator.serviceWorker.getRegistrations();
       if (registrations.length === 0) {
@@ -174,7 +174,7 @@ async function runPWAValidation() {
     const cacheInfo = await page.evaluate(async () => {
       if (!('caches' in window)) return { supported: false };
       const keys = await caches.keys();
-      const shellCache = keys.find((k) => k.startsWith('asteria-shell-'));
+      const shellCache = keys.find((k) => k.startsWith('playtruthndare-shell-') || k.startsWith('asteria-shell-'));
       if (!shellCache) return { supported: true, keys, precached: false };
 
       const cache = await caches.open(shellCache);
@@ -209,7 +209,7 @@ async function runPWAValidation() {
       // Simulate attempting to fetch room or admin endpoint
       try {
         await fetch('/api/rooms/TESTCODE', { method: 'GET' });
-      } catch (e) {}
+      } catch (e) { }
 
       const keys = await caches.keys();
       let leakedInCache = false;
@@ -244,7 +244,7 @@ async function runPWAValidation() {
       const localPlayLink = document.querySelector('a[href="/games/truth-or-dare"]');
 
       return {
-        hasRequiredHeading: h1 ? h1.innerText.includes('Asteria is currently offline. Please reconnect to continue playing.') : false,
+        hasRequiredHeading: h1 ? h1.innerText.includes('Play Truth & Dare is currently offline. Please reconnect to continue playing.') : false,
         h1Text: h1 ? h1.innerText : '',
         hasRetryBtn: !!retryBtn,
         hasLocalPlayLink: !!localPlayLink,
@@ -277,7 +277,7 @@ async function runPWAValidation() {
     try {
       await context.setOffline(true);
       // Navigate to an uncached URL while disconnected
-      await page.goto(`${BASE_URL}/uncached-offline-test-route`, { waitUntil: 'domcontentloaded' }).catch(() => {});
+      await page.goto(`${BASE_URL}/uncached-offline-test-route`, { waitUntil: 'domcontentloaded' }).catch(() => { });
       await page.waitForTimeout(500);
 
       const interceptedHeading = await page.evaluate(() => {
@@ -285,7 +285,7 @@ async function runPWAValidation() {
         return h1 ? h1.innerText : '';
       });
 
-      const successfullyFellBack = interceptedHeading.includes('Asteria is currently offline. Please reconnect to continue playing.');
+      const successfullyFellBack = interceptedHeading.includes('Play Truth & Dare is currently offline. Please reconnect to continue playing.');
       console.log(`  ✓ Service Worker Served /offline on Disconnect: ${successfullyFellBack}`);
       if (successfullyFellBack) {
         results.offlineNetworkSimulation = true;
@@ -318,8 +318,8 @@ async function runPWAValidation() {
       await menuBtn.click();
       await iosPage.waitForTimeout(300);
 
-      // Click "Install Asteria App" button
-      const installBtn = await iosPage.$('button:has-text("Install Asteria App")');
+      // Click "Install Play Truth & Dare App" button
+      const installBtn = await iosPage.$('button:has-text("Install Play Truth & Dare App")');
       if (installBtn) {
         await installBtn.click();
         await iosPage.waitForTimeout(300);

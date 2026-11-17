@@ -8,6 +8,7 @@ import { useTranslation } from '@/lib/i18n/LanguageContext';
 import { LanguageSelector } from '@/components/i18n/LanguageSelector';
 import { PWAInstallButton } from '@/components/pwa/PWAInstallButton';
 import { isGameplayActive, subscribeGameplayActive } from '@/lib/gameplay/gameplayState';
+import { BrandIcon } from '@/components/branding';
 
 export function AppFooter() {
   const { t, locale } = useTranslation();
@@ -40,10 +41,10 @@ export function AppFooter() {
         {/* Col 1: Brand Info */}
         <div className="space-y-4 sm:col-span-2 md:col-span-1">
           <Link href={loc('/')} className="flex items-center gap-2 group">
-            <div className="w-7 h-7 rounded-lg bg-brand-600 flex items-center justify-center shadow-glow-brand">
-              <Sparkles className="w-4 h-4 text-white" />
+            <div className="w-7 h-7 rounded-lg bg-[#180C34] border border-brand-500/30 flex items-center justify-center shadow-glow-brand group-hover:scale-105 group-hover:border-brand-400 transition-all">
+              <BrandIcon size={18} className="w-4 h-4" idPrefix="footer-brand-icon" />
             </div>
-            <span className="font-display font-bold text-lg text-white">ASTERIA</span>
+            <span className="font-display font-bold text-lg text-white">Play Truth & Dare</span>
           </Link>
           <p className="text-xs text-slate-400 leading-relaxed">
             {t('footer.tagline')}
@@ -200,7 +201,7 @@ export function AppFooter() {
       </div>
 
       <div className="max-w-7xl mx-auto pt-6 border-t border-white/5 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs">
-        <p>© 2026 Project Asteria. {t('footer.allRightsReserved')}</p>
+        <p>© 2026 Play Truth & Dare. {t('footer.allRightsReserved')}</p>
         <p className="flex items-center gap-1 text-slate-500">
           Built with <Heart className="w-3.5 h-3.5 text-rose-500 fill-rose-500" /> for parties worldwide
         </p>

@@ -54,3 +54,4 @@ All 8 toolbar controls were verified programmatically across all 9 responsive br
 | Single-Line Title (No Vertical Wrapping) | **PASS** | `titleSingleLine === true` across all 9 devices |
 | Unclipped Room Code (Resting & Copied States) | **PASS** | `roomCodeUnclipped: true`, `158/158px` |
 | Back / Settings / QR / Copy / Share Actions | **PASS** | All interactive flags `true` in `qa-results.json`, `0` console errors |
+

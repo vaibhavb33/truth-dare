@@ -5,17 +5,17 @@ import { Breadcrumbs } from '@/components/seo/Breadcrumbs';
 import { BlogClient } from '@/components/pages/BlogClient';
 import { getLocalizedAlternates } from '@/lib/i18n/seo';
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://truthordarequiz.com';
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://playtruthndare.com';
 
 export const metadata: Metadata = {
-  title: 'Party Game Rules & Guides | Project Asteria Blog',
+  title: 'Party Game Rules & Guides | Play Truth & Dare Blog',
   description:
     'Discover official party game rules, creative variations, icebreakers for video calls, and tips for hosting unforgettable game nights.',
   alternates: getLocalizedAlternates('/blog', 'en'),
   openGraph: {
     type: 'website',
     url: `${siteUrl}/blog`,
-    title: 'Party Game Rules & Guides | Project Asteria Blog',
+    title: 'Party Game Rules & Guides | Play Truth & Dare Blog',
     description:
       'Discover official party game rules, creative variations, icebreakers for video calls, and tips for hosting unforgettable game nights.',
     images: [
@@ -23,13 +23,13 @@ export const metadata: Metadata = {
         url: '/og-image.png',
         width: 1200,
         height: 630,
-        alt: 'Asteria Party Game Guides & Rules',
+        alt: 'Play Truth & Dare Game Guides & Rules',
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Party Game Rules & Guides | Project Asteria Blog',
+    title: 'Party Game Rules & Guides | Play Truth & Dare Blog',
     description:
       'Discover official party game rules, creative variations, icebreakers for video calls, and tips for hosting unforgettable game nights.',
     images: ['/og-image.png'],
@@ -58,13 +58,13 @@ const blogBreadcrumbSchema = {
 const blogCollectionSchema = {
   '@context': 'https://schema.org',
   '@type': 'Blog',
-  name: 'Asteria Party Game Guides & Rules',
+  name: 'Play Truth & Dare Game Guides & Rules',
   description:
     'Official rules breakdowns, icebreakers, and party game hosting guides for browser games.',
   url: `${siteUrl}/blog`,
   publisher: {
     '@type': 'Organization',
-    name: 'Asteria Party Gaming',
+    name: 'Play Truth & Dare',
     logo: {
       '@type': 'ImageObject',
       url: `${siteUrl}/icon.svg`,

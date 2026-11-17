@@ -10,22 +10,22 @@ describe('SEO Architecture & Indexability Validation', () => {
     expect(sitemapData.length).toBe(18);
 
     const urls = sitemapData.map((entry) => entry.url);
-    expect(urls).toContain('https://truthordarequiz.com');
-    expect(urls).toContain('https://truthordarequiz.com/games/truth-or-dare');
-    expect(urls).toContain('https://truthordarequiz.com/games/spin-the-bottle');
-    expect(urls).toContain('https://truthordarequiz.com/games/never-have-i-ever');
-    expect(urls).toContain('https://truthordarequiz.com/games/would-you-rather');
-    expect(urls).toContain('https://truthordarequiz.com/games/most-likely-to');
-    expect(urls).toContain('https://truthordarequiz.com/games/this-or-that');
-    expect(urls).toContain('https://truthordarequiz.com/questions');
-    expect(urls).toContain('https://truthordarequiz.com/blog');
-    expect(urls).toContain('https://truthordarequiz.com/blog/official-truth-or-dare-rules');
-    expect(urls).toContain('https://truthordarequiz.com/blog/50-best-dares-over-facetime');
-    expect(urls).toContain('https://truthordarequiz.com/blog/clean-icebreakers-for-work');
-    expect(urls).toContain('https://truthordarequiz.com/about');
-    expect(urls).toContain('https://truthordarequiz.com/contact');
-    expect(urls).toContain('https://truthordarequiz.com/privacy');
-    expect(urls).toContain('https://truthordarequiz.com/terms');
+    expect(urls).toContain('https://playtruthndare.com');
+    expect(urls).toContain('https://playtruthndare.com/games/truth-or-dare');
+    expect(urls).toContain('https://playtruthndare.com/games/spin-the-bottle');
+    expect(urls).toContain('https://playtruthndare.com/games/never-have-i-ever');
+    expect(urls).toContain('https://playtruthndare.com/games/would-you-rather');
+    expect(urls).toContain('https://playtruthndare.com/games/most-likely-to');
+    expect(urls).toContain('https://playtruthndare.com/games/this-or-that');
+    expect(urls).toContain('https://playtruthndare.com/questions');
+    expect(urls).toContain('https://playtruthndare.com/blog');
+    expect(urls).toContain('https://playtruthndare.com/blog/official-truth-or-dare-rules');
+    expect(urls).toContain('https://playtruthndare.com/blog/50-best-dares-over-facetime');
+    expect(urls).toContain('https://playtruthndare.com/blog/clean-icebreakers-for-work');
+    expect(urls).toContain('https://playtruthndare.com/about');
+    expect(urls).toContain('https://playtruthndare.com/contact');
+    expect(urls).toContain('https://playtruthndare.com/privacy');
+    expect(urls).toContain('https://playtruthndare.com/terms');
 
     // Verify all priorities are valid between 0.0 and 1.0
     sitemapData.forEach((entry) => {
@@ -38,7 +38,7 @@ describe('SEO Architecture & Indexability Validation', () => {
     const robotsData = robots();
 
     expect(robotsData.rules).toBeDefined();
-    expect(robotsData.sitemap).toBe('https://truthordarequiz.com/sitemap.xml');
+    expect(robotsData.sitemap).toBe('https://playtruthndare.com/sitemap.xml');
 
     const rules = Array.isArray(robotsData.rules) ? robotsData.rules : [robotsData.rules];
     const wildcardRule = rules.find((r) => r.userAgent === '*');

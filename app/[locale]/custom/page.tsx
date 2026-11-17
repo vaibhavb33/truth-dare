@@ -25,7 +25,7 @@ export async function generateMetadata({ params }: LocalizedCustomProps): Promis
   return generateLocalizedMetadata({
     locale: locale as Locale,
     subpath: '/custom',
-    overrideTitle: `${dict.nav.customDeck} Studio — Asteria (${langMeta.nativeName})`,
+    overrideTitle: `${dict.nav.customDeck} Studio — Play Truth & Dare (${langMeta.nativeName})`,
     overrideDescription: 'Create, edit, and share custom Truth or Dare decks with friends.',
   });
 }

@@ -82,9 +82,8 @@ export function PWAPromotionModal({ forceOpen, onClose }: PWAPromotionModalProps
         <button
           onClick={handleDismiss}
           aria-label={texts.closeAria}
-          className={`absolute top-4 ${
-            isRTL ? 'left-4' : 'right-4'
-          } p-2 rounded-full text-slate-400 hover:text-white hover:bg-white/10 transition-colors z-10 focus:outline-none focus:ring-2 focus:ring-brand-400`}
+          className={`absolute top-4 ${isRTL ? 'left-4' : 'right-4'
+            } p-2 rounded-full text-slate-400 hover:text-white hover:bg-white/10 transition-colors z-10 focus:outline-none focus:ring-2 focus:ring-brand-400`}
         >
           <X className="w-4 h-4" />
         </button>
@@ -98,7 +97,7 @@ export function PWAPromotionModal({ forceOpen, onClose }: PWAPromotionModalProps
                 <div className="w-full h-full bg-[#0A0A16] rounded-[14px] flex items-center justify-center overflow-hidden">
                   <Image
                     src="/icon.svg"
-                    alt="Asteria App"
+                    alt="Play Truth & Dare App"
                     width={32}
                     height={32}
                     className="w-8 h-8 object-contain"

@@ -18,8 +18,10 @@ export function IOSInstallModal({ isOpen: controlledIsOpen, onClose }: IOSInstal
     setMounted(true);
 
     const handleOpen = () => setInternalOpen(true);
+    window.addEventListener('playtruthndare:open_ios_install', handleOpen);
     window.addEventListener('asteria:open_ios_install', handleOpen);
     return () => {
+      window.removeEventListener('playtruthndare:open_ios_install', handleOpen);
       window.removeEventListener('asteria:open_ios_install', handleOpen);
     };
   }, []);
@@ -73,7 +75,7 @@ export function IOSInstallModal({ isOpen: controlledIsOpen, onClose }: IOSInstal
             <Sparkles className="w-8 h-8 text-white" />
           </div>
           <h3 id="ios-install-title" className="font-display font-extrabold text-xl text-white">
-            Install Asteria on iPhone / iPad
+            Install Play Truth & Dare on iPhone / iPad
           </h3>
           <p className="text-xs text-slate-400 max-w-xs">
             Add to your home screen for full-screen standalone gameplay and offline access.
@@ -129,7 +131,7 @@ export function IOSInstallModal({ isOpen: controlledIsOpen, onClose }: IOSInstal
                 <Check className="w-3.5 h-3.5 text-emerald-400" />
               </p>
               <p className="text-slate-400 text-[11px] leading-relaxed">
-                Asteria will launch with zero browser bars like a native app.
+                Play Truth & Dare will launch with zero browser bars like a native app.
               </p>
             </div>
           </div>

@@ -56,7 +56,7 @@ export default function OfflineFallbackPage() {
           </div>
 
           <h1 className="font-display font-extrabold text-2xl sm:text-3xl text-white tracking-tight">
-            Asteria is currently offline. Please reconnect to continue playing.
+            Play Truth & Dare is currently offline. Please reconnect to continue playing.
           </h1>
 
           <p className="text-xs sm:text-sm text-slate-400 leading-relaxed max-w-md mx-auto">
@@ -90,7 +90,7 @@ export default function OfflineFallbackPage() {
             className="w-full font-bold gap-2 min-h-[48px]"
           >
             <RefreshCw className={`w-4 h-4 ${isRetrying ? 'animate-spin' : ''}`} />
-            <span>{isRetrying ? 'Reconnecting to Asteria...' : 'Try Reconnecting'}</span>
+            <span>{isRetrying ? 'Reconnecting to Play Truth & Dare...' : 'Try Reconnecting'}</span>
           </Button>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">

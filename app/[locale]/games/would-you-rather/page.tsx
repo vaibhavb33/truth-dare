@@ -26,7 +26,7 @@ export async function generateMetadata({ params }: LocalizedRatherPageProps): Pr
   return generateLocalizedMetadata({
     locale: locale as Locale,
     subpath: '/games/would-you-rather',
-    overrideTitle: `${dict.gamesList.wouldYouRather.name} — Asteria (${langMeta.nativeName})`,
+    overrideTitle: `${dict.gamesList.wouldYouRather.name} — Play Truth & Dare (${langMeta.nativeName})`,
     overrideDescription: dict.gamesList.wouldYouRather.tagline,
   });
 }

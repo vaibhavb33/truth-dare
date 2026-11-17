@@ -46,7 +46,7 @@ export class AzureSpeechProvider implements IVoiceProvider {
         'Ocp-Apim-Subscription-Key': this.apiKey!,
         'Content-Type': 'application/ssml+xml',
         'X-Microsoft-OutputFormat': 'audio-16khz-128kbitrate-mono-mp3',
-        'User-Agent': 'AsteriaPartyGame',
+        'User-Agent': 'PlayTruthNDarePartyGame',
       },
       body: ssml,
     });

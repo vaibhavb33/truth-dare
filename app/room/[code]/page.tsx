@@ -3,7 +3,7 @@ import type { Metadata } from 'next';
 import { RoomClient } from './RoomClient';
 
 export const metadata: Metadata = {
-  title: 'Multiplayer Party Room | Asteria',
+  title: 'Multiplayer Party Room | Play Truth & Dare',
   robots: {
     index: false,
     follow: false,

@@ -6,9 +6,12 @@ import { isGameplayActive, subscribeGameplayActive } from '@/lib/gameplay/gamepl
 import { sound } from '@/lib/audio/soundSynthesizer';
 
 export const PWA_STORAGE_KEYS = {
-  LAST_PROMPT_AT: 'asteria_pwa_last_prompt_at',
-  INSTALLED: 'asteria_pwa_installed',
-  SESSION_SHOWN: 'asteria_pwa_prompt_shown_session',
+  LAST_PROMPT_AT: 'playtruthndare_pwa_last_prompt_at',
+  INSTALLED: 'playtruthndare_pwa_installed',
+  SESSION_SHOWN: 'playtruthndare_pwa_prompt_shown_session',
+  LEGACY_LAST_PROMPT_AT: 'asteria_pwa_last_prompt_at',
+  LEGACY_INSTALLED: 'asteria_pwa_installed',
+  LEGACY_SESSION_SHOWN: 'asteria_pwa_prompt_shown_session',
 } as const;
 
 export const PWA_PROMOTION_CONFIG = {
@@ -60,7 +63,9 @@ export function checkPromotionEligibility(isInstalledState: boolean): boolean {
 
   // 1. App already installed (standalone mode, recorded install, or PWA hook state)
   if (isInstalledState) return false;
-  const storedInstalled = getSafeStorageItem(PWA_STORAGE_KEYS.INSTALLED);
+  const storedInstalled =
+    getSafeStorageItem(PWA_STORAGE_KEYS.INSTALLED) ||
+    getSafeStorageItem(PWA_STORAGE_KEYS.LEGACY_INSTALLED);
   if (storedInstalled === 'true') return false;
 
   // Check display-mode standalone
@@ -70,15 +75,20 @@ export function checkPromotionEligibility(isInstalledState: boolean): boolean {
     document.referrer.startsWith('android-app://');
   if (isStandalone) {
     setSafeStorageItem(PWA_STORAGE_KEYS.INSTALLED, 'true');
+    setSafeStorageItem(PWA_STORAGE_KEYS.LEGACY_INSTALLED, 'true');
     return false;
   }
 
   // 2. Prevent showing multiple times within the same browsing session
-  const shownThisSession = getSafeSessionItem(PWA_STORAGE_KEYS.SESSION_SHOWN);
+  const shownThisSession =
+    getSafeSessionItem(PWA_STORAGE_KEYS.SESSION_SHOWN) ||
+    getSafeSessionItem(PWA_STORAGE_KEYS.LEGACY_SESSION_SHOWN);
   if (shownThisSession === 'true') return false;
 
   // 3. Check 7-Day Cooldown from persistent storage
-  const lastPromptAtStr = getSafeStorageItem(PWA_STORAGE_KEYS.LAST_PROMPT_AT);
+  const lastPromptAtStr =
+    getSafeStorageItem(PWA_STORAGE_KEYS.LAST_PROMPT_AT) ||
+    getSafeStorageItem(PWA_STORAGE_KEYS.LEGACY_LAST_PROMPT_AT);
   if (lastPromptAtStr) {
     const lastPromptAt = parseInt(lastPromptAtStr, 10);
     if (!isNaN(lastPromptAt)) {
@@ -117,7 +127,9 @@ export function usePWAPromotion() {
     // Save timestamp immediately upon appearing (Rule 2)
     const now = Date.now();
     setSafeStorageItem(PWA_STORAGE_KEYS.LAST_PROMPT_AT, String(now));
+    setSafeStorageItem(PWA_STORAGE_KEYS.LEGACY_LAST_PROMPT_AT, String(now));
     setSafeSessionItem(PWA_STORAGE_KEYS.SESSION_SHOWN, 'true');
+    setSafeSessionItem(PWA_STORAGE_KEYS.LEGACY_SESSION_SHOWN, 'true');
 
     setIsOpen(true);
     setHasPrompted(true);
@@ -127,8 +139,11 @@ export function usePWAPromotion() {
   // Handle Dismissal ("Maybe Later", Close button, Escape, Backdrop)
   const dismissPromotion = useCallback(() => {
     // Record current timestamp to enforce 7-day cooldown (Rule 3 & 4)
-    setSafeStorageItem(PWA_STORAGE_KEYS.LAST_PROMPT_AT, String(Date.now()));
+    const now = Date.now();
+    setSafeStorageItem(PWA_STORAGE_KEYS.LAST_PROMPT_AT, String(now));
+    setSafeStorageItem(PWA_STORAGE_KEYS.LEGACY_LAST_PROMPT_AT, String(now));
     setSafeSessionItem(PWA_STORAGE_KEYS.SESSION_SHOWN, 'true');
+    setSafeSessionItem(PWA_STORAGE_KEYS.LEGACY_SESSION_SHOWN, 'true');
     setIsOpen(false);
     setShowDesktopHelp(false);
     sound.triggerHaptic(10);
@@ -143,6 +158,7 @@ export function usePWAPromotion() {
       setIsOpen(false);
       pwa.setShowIOSPrompt(true);
       if (typeof window !== 'undefined') {
+        window.dispatchEvent(new CustomEvent('playtruthndare:open_ios_install'));
         window.dispatchEvent(new CustomEvent('asteria:open_ios_install'));
       }
       return;
@@ -198,11 +214,13 @@ export function usePWAPromotion() {
     const cleanupListeners = () => {
       window.removeEventListener('click', handleMeaningfulInteraction);
       window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('playtruthndare:trigger_pwa_prompt', handleCustomTrigger);
       window.removeEventListener('asteria:trigger_pwa_prompt', handleCustomTrigger);
     };
 
     window.addEventListener('click', handleMeaningfulInteraction, { passive: true });
     window.addEventListener('scroll', handleScroll, { passive: true });
+    window.addEventListener('playtruthndare:trigger_pwa_prompt', handleCustomTrigger);
     window.addEventListener('asteria:trigger_pwa_prompt', handleCustomTrigger);
 
     // 3. Subscribe to gameplay state: If game becomes active, close or cancel timer

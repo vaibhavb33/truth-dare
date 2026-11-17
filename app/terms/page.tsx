@@ -5,26 +5,26 @@ import { Breadcrumbs } from '@/components/seo/Breadcrumbs';
 import { TermsClient } from '@/components/pages/TermsClient';
 import { getLocalizedAlternates } from '@/lib/i18n/seo';
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://truthordarequiz.com';
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://playtruthndare.com';
 
 export const metadata: Metadata = {
-  title: 'Terms of Service | Asteria Online Party Gaming',
+  title: 'Terms of Service | Play Truth & Dare Online Party Gaming',
   description:
-    'Read the Asteria Terms of Service. Review guidelines on player safety, consent, dispute disclaimers, and mature content.',
+    'Read the Play Truth & Dare Terms of Service. Review guidelines on player safety, consent, dispute disclaimers, and mature content.',
   alternates: getLocalizedAlternates('/terms', 'en'),
   openGraph: {
     type: 'website',
     url: `${siteUrl}/terms`,
-    title: 'Terms of Service | Asteria Online Party Gaming',
+    title: 'Terms of Service | Play Truth & Dare Online Party Gaming',
     description:
-      'Read the Asteria Terms of Service. Review guidelines on player safety, consent, dispute disclaimers, and mature content.',
+      'Read the Play Truth & Dare Terms of Service. Review guidelines on player safety, consent, dispute disclaimers, and mature content.',
     images: ['/og-image.png'],
   },
   twitter: {
     card: 'summary',
-    title: 'Terms of Service | Asteria Online Party Gaming',
+    title: 'Terms of Service | Play Truth & Dare Online Party Gaming',
     description:
-      'Read the Asteria Terms of Service. Review guidelines on player safety, consent, dispute disclaimers, and mature content.',
+      'Read the Play Truth & Dare Terms of Service. Review guidelines on player safety, consent, dispute disclaimers, and mature content.',
   },
 };
 
@@ -50,9 +50,9 @@ const termsBreadcrumbSchema = {
 const termsPageSchema = {
   '@context': 'https://schema.org',
   '@type': 'WebPage',
-  name: 'Asteria Terms of Service',
+  name: 'Play Truth & Dare Terms of Service',
   description:
-    'Legal agreement, consent rules, liability disclaimers, and terms for playing party games on Asteria.',
+    'Legal agreement, consent rules, liability disclaimers, and terms for playing party games on Play Truth & Dare.',
   url: `${siteUrl}/terms`,
 };
 

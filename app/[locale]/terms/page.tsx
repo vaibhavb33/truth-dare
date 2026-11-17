@@ -25,7 +25,7 @@ export async function generateMetadata({ params }: LocalizedTermsProps): Promise
   return generateLocalizedMetadata({
     locale: locale as Locale,
     subpath: '/terms',
-    overrideTitle: `${dict.terms.title} — Asteria (${langMeta.nativeName})`,
+    overrideTitle: `${dict.terms.title} — Play Truth & Dare (${langMeta.nativeName})`,
     overrideDescription: dict.terms.subtitle,
   });
 }

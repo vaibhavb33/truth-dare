@@ -227,22 +227,22 @@ describe('Global Multilingual & Internationalisation Engine (Task 10)', () => {
 
         // Canonical points to localized URL (or root for default locale)
         const expectedCanonical =
-          lang === 'en' && page === '/'
-            ? 'https://truthordarequiz.com'
-            : `https://truthordarequiz.com/${lang}${page === '/' ? '' : page}`;
+          lang === 'en'
+            ? `https://playtruthndare.com${page === '/' ? '' : page}`
+            : `https://playtruthndare.com/${lang}${page === '/' ? '' : page}`;
 
         expect(alternates.canonical).toBe(expectedCanonical);
 
         // Reciprocal alternates for all 8 languages
         for (const targetLang of supportedLanguages) {
           expect(alternates.languages[targetLang]).toBe(
-            `https://truthordarequiz.com/${targetLang}${page === '/' ? '' : page}`
+            `https://playtruthndare.com/${targetLang}${page === '/' ? '' : page}`
           );
         }
 
         // x-default points to base route
         const expectedDefault =
-          page === '/' ? 'https://truthordarequiz.com/' : `https://truthordarequiz.com${page}`;
+          page === '/' ? 'https://playtruthndare.com/' : `https://playtruthndare.com${page}`;
         expect(alternates.languages['x-default']).toBe(expectedDefault);
       }
     }

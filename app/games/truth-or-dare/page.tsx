@@ -5,36 +5,35 @@ import { Breadcrumbs } from '@/components/seo/Breadcrumbs';
 import { TruthOrDareGameClient } from '@/components/games/TruthOrDareGameClient';
 import { TruthOrDareHubLinks } from '@/components/games/TruthOrDareHubLinks';
 import { RelatedGames } from '@/components/games/RelatedGames';
+import { getLocalizedAlternates } from '@/lib/i18n/seo';
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://truthordarequiz.com';
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://playtruthndare.com';
 
 export const metadata: Metadata = {
-  title: 'Truth or Dare Online — Play Free Party Game in Browser',
+  title: 'Play Truth or Dare Online — Free 3D Card Game | Play Truth & Dare',
   description:
-    'Play Truth or Dare online with friends! 3D flip cards, customizable dare timer, 5 intensity levels, and zero ads. Play instantly now.',
-  alternates: {
-    canonical: `${siteUrl}/games/truth-or-dare`,
-  },
+    'Play the ultimate Truth or Dare game online with friends! 3D flip cards, customizable dare timer, couples & spicy decks, and zero ads. 100% free.',
+  alternates: getLocalizedAlternates('/games/truth-or-dare'),
   openGraph: {
     type: 'website',
     url: `${siteUrl}/games/truth-or-dare`,
-    title: 'Truth or Dare Online — Play Free Party Game in Browser',
+    title: 'Play Truth or Dare Online — Free 3D Card Game | Play Truth & Dare',
     description:
-      'Play Truth or Dare online with friends! 3D flip cards, customizable dare timer, 5 intensity levels, and zero ads. Play instantly now.',
+      'Play the ultimate Truth or Dare game online with friends! 3D flip cards, customizable dare timer, couples & spicy decks, and zero ads. 100% free.',
     images: [
       {
         url: '/og-image.png',
         width: 1200,
         height: 630,
-        alt: 'Truth or Dare Online Game',
+        alt: 'Play Truth or Dare Online Game',
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Truth or Dare Online — Play Free Party Game in Browser',
+    title: 'Play Truth or Dare Online — Free 3D Card Game | Play Truth & Dare',
     description:
-      'Play Truth or Dare online with friends! 3D flip cards, customizable dare timer, 5 intensity levels, and zero ads. Play instantly now.',
+      'Play the ultimate Truth or Dare game online with friends! 3D flip cards, customizable dare timer, couples & spicy decks, and zero ads. 100% free.',
     images: ['/og-image.png'],
   },
 };
@@ -42,7 +41,7 @@ export const metadata: Metadata = {
 const todWebAppSchema = {
   '@context': 'https://schema.org',
   '@type': 'WebApplication',
-  name: 'Truth or Dare Online — Project Asteria',
+  name: 'Truth or Dare Online — Play Truth & Dare',
   url: `${siteUrl}/games/truth-or-dare`,
   applicationCategory: 'GameApplication',
   operatingSystem: 'All modern web browsers (iOS, Android, Windows, macOS)',

@@ -53,7 +53,8 @@ export function RoomClient({ roomCode }: RoomClientProps) {
   const [copiedLink, setCopiedLink] = useState(false);
   const [isReconnecting, setIsReconnecting] = useState(false);
 
-  const storageKey = `asteria_multiplayer_session_${roomCode}`;
+  const storageKey = `playtruthndare_multiplayer_session_${roomCode}`;
+  const legacyStorageKey = `asteria_multiplayer_session_${roomCode}`;
 
   const isJoinedRef = React.useRef(isJoined);
   isJoinedRef.current = isJoined;
@@ -64,7 +65,7 @@ export function RoomClient({ roomCode }: RoomClientProps) {
   useEffect(() => {
     if (typeof window === 'undefined') return;
 
-    const savedSession = localStorage.getItem(storageKey);
+    const savedSession = localStorage.getItem(storageKey) || localStorage.getItem(legacyStorageKey);
     if (savedSession) {
       try {
         const parsed = JSON.parse(savedSession);
@@ -198,15 +199,14 @@ export function RoomClient({ roomCode }: RoomClientProps) {
 
         // Persist session token for automatic reconnection
         if (typeof window !== 'undefined') {
-          localStorage.setItem(
-            storageKey,
-            JSON.stringify({
-              roomCode,
-              playerId: data.playerId,
-              sessionToken: data.sessionToken,
-              playerName: cleanName,
-            })
-          );
+          const sessionPayload = JSON.stringify({
+            roomCode,
+            playerId: data.playerId,
+            sessionToken: data.sessionToken,
+            playerName: cleanName,
+          });
+          localStorage.setItem(storageKey, sessionPayload);
+          localStorage.setItem(legacyStorageKey, sessionPayload);
         }
 
         sound.playChime();
@@ -258,6 +258,7 @@ export function RoomClient({ roomCode }: RoomClientProps) {
 
     if (typeof window !== 'undefined') {
       localStorage.removeItem(storageKey);
+      localStorage.removeItem(legacyStorageKey);
     }
 
     router.push(`/${locale}`);
@@ -270,8 +271,8 @@ export function RoomClient({ roomCode }: RoomClientProps) {
 
     const shareUrl = `${window.location.origin}/room/${roomCode}`;
     const shareData = {
-      title: 'Asteria Truth or Dare Room',
-      text: `Join my Truth or Dare room (${roomCode}) on Asteria!`,
+      title: 'Play Truth & Dare Party Room',
+      text: `Join my Truth or Dare room (${roomCode}) on Play Truth & Dare!`,
       url: shareUrl,
     };
 

@@ -26,7 +26,7 @@ export async function generateMetadata({ params }: LocalizedMostLikelyProps): Pr
   return generateLocalizedMetadata({
     locale: locale as Locale,
     subpath: '/games/most-likely-to',
-    overrideTitle: `${dict.gamesList.mostLikelyTo.name} — Asteria (${langMeta.nativeName})`,
+    overrideTitle: `${dict.gamesList.mostLikelyTo.name} — Play Truth & Dare (${langMeta.nativeName})`,
     overrideDescription: dict.gamesList.mostLikelyTo.tagline,
   });
 }

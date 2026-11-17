@@ -194,7 +194,7 @@ export const ARTICLES: Record<string, ArticleData> = {
       {
         heading: 'Best Practices for Remote Game Hosts',
         paragraphs: [
-          'Always keep icebreaker rounds brief (under 10 minutes), keep participation strictly voluntary, and celebrate diverse viewpoints. Using web-based tools like Asteria allows distributed teams to join without installing software or registering accounts.',
+          'Always keep icebreaker rounds brief (under 10 minutes), keep participation strictly voluntary, and celebrate diverse viewpoints. Using web-based tools like Play Truth & Dare allows distributed teams to join without installing software or registering accounts.',
           'For corporate group fun, try running Never Have I Ever Online in wholesome mode or launch a rapid This or That preference session.',
         ],
       },
@@ -220,7 +220,7 @@ export async function generateMetadata({
     };
   }
 
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://truthordarequiz.com';
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://playtruthndare.com';
   const canonicalUrl = `${siteUrl}/blog/${article.slug}`;
 
   return {
@@ -236,7 +236,7 @@ export async function generateMetadata({
       description: article.metaDescription,
       publishedTime: article.datePublished,
       modifiedTime: article.dateModified,
-      authors: ['Asteria Game Studio'],
+      authors: ['Play Truth & Dare Studio'],
       images: [
         {
           url: '/og-image.png',
@@ -267,7 +267,7 @@ export default async function BlogArticlePage({
     notFound();
   }
 
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://truthordarequiz.com';
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://playtruthndare.com';
   const articleUrl = `${siteUrl}/blog/${article.slug}`;
 
   const articleSchema = {
@@ -277,12 +277,12 @@ export default async function BlogArticlePage({
     description: article.metaDescription,
     author: {
       '@type': 'Organization',
-      name: 'Asteria Game Studio',
+      name: 'Play Truth & Dare Studio',
       url: siteUrl,
     },
     publisher: {
       '@type': 'Organization',
-      name: 'Asteria Party Gaming',
+      name: 'Play Truth & Dare',
       logo: {
         '@type': 'ImageObject',
         url: `${siteUrl}/icon.svg`,
@@ -362,7 +362,7 @@ export default async function BlogArticlePage({
             <Calendar className="w-3.5 h-3.5" /> {article.date}
           </span>
           <span>•</span>
-          <span>By Asteria Game Studio</span>
+          <span>By Play Truth & Dare Studio</span>
         </div>
       </div>
 

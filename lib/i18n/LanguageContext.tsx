@@ -2,7 +2,14 @@
 
 import React, { createContext, useContext, useState, useEffect, useCallback, useMemo } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
-import { Locale, DEFAULT_LOCALE, SUPPORTED_LOCALES, LOCALE_COOKIE_NAME, ALL_LOCALES } from './config';
+import {
+  Locale,
+  DEFAULT_LOCALE,
+  SUPPORTED_LOCALES,
+  LOCALE_COOKIE_NAME,
+  LEGACY_LOCALE_COOKIE_NAME,
+  ALL_LOCALES,
+} from './config';
 import { getTranslations, TranslationDictionary } from './translations';
 
 interface LanguageContextType {
@@ -45,7 +52,8 @@ export function LanguageProvider({
     if (initialLocale && ALL_LOCALES.includes(initialLocale)) return initialLocale;
     if (pathLocale) return pathLocale;
     if (typeof window !== 'undefined') {
-      const stored = localStorage.getItem(LOCALE_COOKIE_NAME) as Locale;
+      const stored = (localStorage.getItem(LOCALE_COOKIE_NAME) ||
+        localStorage.getItem(LEGACY_LOCALE_COOKIE_NAME)) as Locale;
       if (stored && ALL_LOCALES.includes(stored)) return stored;
     }
     return DEFAULT_LOCALE;
@@ -74,7 +82,9 @@ export function LanguageProvider({
 
       if (typeof window !== 'undefined') {
         localStorage.setItem(LOCALE_COOKIE_NAME, newLocale);
+        localStorage.setItem(LEGACY_LOCALE_COOKIE_NAME, newLocale);
         document.cookie = `${LOCALE_COOKIE_NAME}=${newLocale}; path=/; max-age=31536000; SameSite=Lax`;
+        document.cookie = `${LEGACY_LOCALE_COOKIE_NAME}=${newLocale}; path=/; max-age=31536000; SameSite=Lax`;
 
         const meta = SUPPORTED_LOCALES[newLocale];
         document.documentElement.lang = meta.code;

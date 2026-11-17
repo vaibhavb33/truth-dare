@@ -1,14 +1,14 @@
 /**
- * Asteria Progressive Web App Service Worker
+ * Play Truth & Dare Progressive Web App Service Worker
  * Version: 1.0.0
  * Architecture: Stale-While-Revalidate for static assets, Network-First for navigation,
  * Strict Network-Only bypass for authenticated admin APIs and live multiplayer room states.
  */
 
 const CACHE_VERSION = 'v1';
-const SHELL_CACHE = `asteria-shell-${CACHE_VERSION}`;
-const STATIC_CACHE = `asteria-static-${CACHE_VERSION}`;
-const OFFLINE_CACHE = `asteria-offline-${CACHE_VERSION}`;
+const SHELL_CACHE = `playtruthndare-shell-${CACHE_VERSION}`;
+const STATIC_CACHE = `playtruthndare-static-${CACHE_VERSION}`;
+const OFFLINE_CACHE = `playtruthndare-offline-${CACHE_VERSION}`;
 
 const PRECACHE_ASSETS = [
   '/',
@@ -181,7 +181,7 @@ self.addEventListener('fetch', (event) => {
               return (
                 offlineResponse ||
                 new Response(
-                  '<!DOCTYPE html><html><body style="background:#0A0A16;color:#FFF;font-family:sans-serif;text-align:center;padding:50px;"><h2>Asteria is currently offline. Please reconnect to continue playing.</h2></body></html>',
+                  '<!DOCTYPE html><html><body style="background:#0A0A16;color:#FFF;font-family:sans-serif;text-align:center;padding:50px;"><h2>Play Truth & Dare is currently offline. Please reconnect to continue playing.</h2></body></html>',
                   {
                     headers: { 'Content-Type': 'text/html' },
                   }

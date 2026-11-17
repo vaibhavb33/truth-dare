@@ -28,6 +28,7 @@ import { cn } from '@/lib/utils';
 import { useTranslation } from '@/lib/i18n/LanguageContext';
 import { LanguageSelector } from '@/components/i18n/LanguageSelector';
 import { PWAInstallButton } from '@/components/pwa/PWAInstallButton';
+import { BrandIcon } from '@/components/branding';
 
 export function AppHeader() {
   const pathname = usePathname();
@@ -106,13 +107,15 @@ export function AppHeader() {
     <>
       <header className="sticky top-0 z-40 w-full h-16 bg-[#0A0A16]/85 backdrop-blur-xl border-b border-white/10 px-3 sm:px-4 md:px-8 flex items-center justify-between transition-colors">
         {/* Brand Logo */}
-        <Link href={loc('/')} className="flex items-center gap-2 sm:gap-2.5 group select-none shrink-0">
-          <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-gradient-to-tr from-brand-500 via-brand-600 to-indigo-500 flex items-center justify-center shadow-glow-brand group-hover:scale-105 group-hover:shadow-[0_0_25px_rgba(139,92,246,0.6)] transition-all">
-            <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
+        <Link href={loc('/')} className="flex items-center gap-2 sm:gap-2.5 group select-none shrink-0" aria-label="Play Truth & Dare Home">
+          <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-[#180C34] border border-brand-500/30 flex items-center justify-center shadow-glow-brand group-hover:scale-105 group-hover:border-brand-400 group-hover:shadow-[0_0_25px_rgba(139,92,246,0.6)] transition-all">
+            <BrandIcon size={24} className="w-5 h-5 sm:w-6 sm:h-6" idPrefix="header-brand-icon" />
           </div>
           <div className="flex flex-col">
-            <span className="font-display font-extrabold text-base sm:text-lg md:text-xl tracking-tight text-white flex items-center gap-1 sm:gap-1.5">
-              ASTERIA <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-brand-400 shadow-glow-brand animate-pulse"></span>
+            <span className="font-display font-extrabold text-sm xs:text-base md:text-xl tracking-tight text-white flex items-center gap-1 sm:gap-1.5 whitespace-nowrap">
+              <span className="hidden sm:inline">Play Truth & Dare</span>
+              <span className="inline sm:hidden">PlayTruthNDare</span>
+              <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-brand-400 shadow-glow-brand animate-pulse"></span>
             </span>
           </div>
         </Link>
@@ -202,10 +205,10 @@ export function AppHeader() {
                 onClick={() => setIsMobileMenuOpen(false)}
                 className="flex items-center gap-2"
               >
-                <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-brand-500 via-brand-600 to-indigo-500 flex items-center justify-center shadow-glow-brand">
-                  <Sparkles className="w-4 h-4 text-white" />
+                <div className="w-8 h-8 rounded-xl bg-[#180C34] border border-brand-500/30 flex items-center justify-center shadow-glow-brand">
+                  <BrandIcon size={20} className="w-5 h-5" idPrefix="drawer-brand-icon" />
                 </div>
-                <span className="font-display font-extrabold text-lg text-white">ASTERIA</span>
+                <span className="font-display font-extrabold text-lg text-white tracking-tight">Play Truth & Dare</span>
               </Link>
 
               <button
@@ -329,7 +332,7 @@ export function AppHeader() {
               {/* Informational & Company Links */}
               <div className="pt-2 border-t border-white/10 space-y-2">
                 <span className="text-[10px] font-bold uppercase tracking-widest text-slate-500">
-                  Asteria Platform
+                  Play Truth & Dare Platform
                 </span>
                 <div className="grid grid-cols-2 gap-2 text-xs text-slate-400">
                   <Link

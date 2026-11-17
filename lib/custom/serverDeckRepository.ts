@@ -1,5 +1,5 @@
 /**
- * Asteria Server-Side Custom Deck Repository & Security Engine
+ * Play Truth & Dare Server-Side Custom Deck Repository & Security Engine
  * Authoritative deck storage, creator ownership validation, version tracking,
  * and immutable room snapshot generation.
  */
@@ -293,15 +293,18 @@ class ServerDeckRepository {
       if (fs.existsSync(DATA_FILE)) {
         fs.unlinkSync(DATA_FILE);
       }
-    } catch {}
+    } catch { }
   }
 }
 
 const globalForDeckRepo = globalThis as unknown as {
+  __playtruthndare_server_deck_repo__?: ServerDeckRepository;
   __asteria_server_deck_repo__?: ServerDeckRepository;
 };
 
 export const serverDeckRepository =
-  globalForDeckRepo.__asteria_server_deck_repo__ ?? new ServerDeckRepository();
-globalForDeckRepo.__asteria_server_deck_repo__ = serverDeckRepository;
+  globalForDeckRepo.__playtruthndare_server_deck_repo__ ??
+  globalForDeckRepo.__asteria_server_deck_repo__ ??
+  new ServerDeckRepository();
+globalForDeckRepo.__playtruthndare_server_deck_repo__ = serverDeckRepository;
 

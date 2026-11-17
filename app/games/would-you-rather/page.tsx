@@ -5,7 +5,7 @@ import { Breadcrumbs } from '@/components/seo/Breadcrumbs';
 import { WouldYouRatherClient } from '@/components/games/WouldYouRatherClient';
 import { RelatedGames } from '@/components/games/RelatedGames';
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://truthordarequiz.com';
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://playtruthndare.com';
 
 export const metadata: Metadata = {
   title: 'Would You Rather Online — Dilemma Game with Live Stats',

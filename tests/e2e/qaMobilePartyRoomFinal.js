@@ -172,8 +172,7 @@ async function runFinalMobileQA() {
     }));
     const noDuplicateCopiedClip = !/copie/i.test(roomCodeCheck.text) && roomCodeCheck.unclipped;
     console.log(
-      `  ✓ [Copy Action] Mobile Copy button updates cleanly to Copied; Room Code box clean & unclipped: ${
-        noDuplicateCopiedClip ? 'YES' : 'FAIL'
+      `  ✓ [Copy Action] Mobile Copy button updates cleanly to Copied; Room Code box clean & unclipped: ${noDuplicateCopiedClip ? 'YES' : 'FAIL'
       } ("${roomCodeCheck.text.trim()}", ${roomCodeCheck.scrollWidth}/${roomCodeCheck.clientWidth}px)`
     );
     results.functionalRegressionTest.copyButtonWorked = true;
@@ -371,14 +370,14 @@ async function runFinalMobileQA() {
         hostOutsidePlayersBar:
           r.hostPill && r.playersBar
             ? r.hostPill.left < r.playersBar.left - 1 ||
-              r.hostPill.right > r.playersBar.right + 1 ||
-              r.hostPill.bottom > r.playersBar.bottom + 1
+            r.hostPill.right > r.playersBar.right + 1 ||
+            r.hostPill.bottom > r.playersBar.bottom + 1
             : true,
         startBtnOutsideLobby:
           r.startBtn && r.lobby
             ? r.startBtn.left < r.lobby.left - 1 ||
-              r.startBtn.right > r.lobby.right + 1 ||
-              r.startBtn.bottom > r.lobby.bottom + 1
+            r.startBtn.right > r.lobby.right + 1 ||
+            r.startBtn.bottom > r.lobby.bottom + 1
             : true,
       };
 
@@ -394,15 +393,13 @@ async function runFinalMobileQA() {
 
       console.log(`  ✓ Toolbar Controls (8 items): ${toolbarAllPass ? 'ALL PASS' : JSON.stringify(tc)}`);
       console.log(
-        `  ✓ Non-Overlap Flow (Header→Toolbar→Players→Host→Lobby→StartBtn): ${
-          !structuralOverlap ? 'CLEAN (PASS)' : JSON.stringify(overlaps)
+        `  ✓ Non-Overlap Flow (Header→Toolbar→Players→Host→Lobby→StartBtn): ${!structuralOverlap ? 'CLEAN (PASS)' : JSON.stringify(overlaps)
         }`
       );
       if (r.bottomNav) {
         const startGapPx = r.startBtn ? Math.round(r.bottomNav.top - r.startBtn.bottom) : null;
         console.log(
-          `  ✓ Bottom Nav Overlap Check (Initial View): StartBtn=${
-            overlaps.bottomNavVsStartBtnInitial ? 'OVERLAPS AT INITIAL LOAD (Needs Scroll)' : `CLEAR (+${startGapPx}px above dock)`
+          `  ✓ Bottom Nav Overlap Check (Initial View): StartBtn=${overlaps.bottomNavVsStartBtnInitial ? 'OVERLAPS AT INITIAL LOAD (Needs Scroll)' : `CLEAR (+${startGapPx}px above dock)`
           }, LobbyCard=${overlaps.bottomNavVsLobbyInitial ? 'OVERLAPS AT INITIAL LOAD (Needs Scroll)' : 'CLEAR'}, ScrollableToClear=${audit.canScrollToBottom}`
         );
       }

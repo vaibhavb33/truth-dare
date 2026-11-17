@@ -25,7 +25,7 @@ export async function generateMetadata({ params }: LocalizedGamesProps): Promise
   return generateLocalizedMetadata({
     locale: locale as Locale,
     subpath: '/games',
-    overrideTitle: `${dict.nav.allGames} — Asteria Party Games (${langMeta.nativeName})`,
+    overrideTitle: `${dict.nav.allGames} — Play Truth & Dare Party Games (${langMeta.nativeName})`,
     overrideDescription: dict.home.featuredGamesSubtitle,
   });
 }

@@ -60,3 +60,4 @@ Executed with two independent mobile browser contexts (`HostQA` and `GuestQA`, `
 ## 5. Known Boundaries / Observations
 
 - On ultra-short legacy viewports (`320×568px` iPhone SE 1st Gen height), `Start Game ->` extends `55.5px` past the fixed `MobileDock` at `scrollY = 0` due to physical screen height constraints; the page scrolls cleanly to reveal the entire Lobby card and CTA (`canScrollToBottom: true`, zero element overlap inside document flow).
+

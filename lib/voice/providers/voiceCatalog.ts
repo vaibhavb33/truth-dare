@@ -1,5 +1,5 @@
 /**
- * Asteria Neural Voice Catalog & SSML Prosody Configurations
+ * Play Truth & Dare Neural Voice Catalog & SSML Prosody Configurations
  * Maps all 8 supported internationalization languages to optimal neural voice identifiers
  * and conversational SSML templates.
  */

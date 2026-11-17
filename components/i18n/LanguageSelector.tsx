@@ -8,6 +8,7 @@ import { ALL_LOCALES, Locale, SUPPORTED_LOCALES } from '@/lib/i18n/config';
 import { sound } from '@/lib/audio/soundSynthesizer';
 import { cn } from '@/lib/utils';
 import { LanguageModal } from './LanguageModal';
+import { trackLanguageChanged } from '@/lib/analytics/gtm';
 
 interface LanguageSelectorProps {
   variant?: 'header' | 'compact' | 'gameSetup' | 'footer';
@@ -164,6 +165,9 @@ export function LanguageSelector({ variant = 'header', className }: LanguageSele
 
   const handleSelectLocale = (newLocale: Locale) => {
     sound.triggerHaptic(15);
+    if (newLocale !== locale) {
+      trackLanguageChanged({ from_locale: locale, to_locale: newLocale });
+    }
     setLocale(newLocale);
     setIsDropdownOpen(false);
   };

@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <!-- Dark Background Gradients -->
+    <linearGradient id="bgGradDark" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#180C34" />
+      <stop offset="50%" stop-color="#0E0822" />
+      <stop offset="100%" stop-color="#070414" />
+    </linearGradient>
+    <linearGradient id="cardGradDark" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#26164A" stop-opacity="0.8" />
+      <stop offset="100%" stop-color="#0F0924" stop-opacity="0.3" />
+    </linearGradient>
+
+    <!-- Light Background Gradients -->
+    <linearGradient id="bgGradLight" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF" />
+      <stop offset="100%" stop-color="#F1F5F9" />
+    </linearGradient>
+
+    <!-- Truth (Cyan to Violet) Gradient -->
+    <linearGradient id="truthGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#38BDF8" />
+      <stop offset="35%" stop-color="#22D3EE" />
+      <stop offset="70%" stop-color="#818CF8" />
+      <stop offset="100%" stop-color="#8B5CF6" />
+    </linearGradient>
+
+    <!-- Dare (Coral to Rose to Amber) Gradient -->
+    <linearGradient id="dareGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#F43F5E" />
+      <stop offset="60%" stop-color="#FB7185" />
+      <stop offset="100%" stop-color="#F59E0B" />
+    </linearGradient>
+
+    <!-- Spark Diamond Gradient -->
+    <linearGradient id="sparkGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFE4E6" />
+      <stop offset="40%" stop-color="#FB7185" />
+      <stop offset="100%" stop-color="#E11D48" />
+    </linearGradient>
+
+    <!-- Central Flame Core Gradient -->
+    <linearGradient id="coreGrad" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#8B5CF6" />
+      <stop offset="50%" stop-color="#F43F5E" />
+      <stop offset="100%" stop-color="#FBBF24" />
+    </linearGradient>
+
+    <!-- Ambient Shadow & Glow -->
+    <filter id="neonGlow" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="6" stdDeviation="16" flood-color="#8B5CF6" flood-opacity="0.4" />
+      <feDropShadow dx="0" dy="2" stdDeviation="6" flood-color="#22D3EE" flood-opacity="0.3" />
+    </filter>
+
+    <filter id="dareGlow" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="4" stdDeviation="12" flood-color="#FB7185" flood-opacity="0.5" />
+    </filter>
+  </defs>
+
+  
+      <rect width="512" height="512" rx="120" fill="url(#bgGradDark)" />
+      <rect width="508" height="508" x="2" y="2" rx="118" fill="none" stroke="rgba(139, 92, 246, 0.35)" stroke-width="3" />
+      <rect width="470" height="470" x="21" y="21" rx="104" fill="url(#cardGradDark)" opacity="0.6" />
+    
+
+  <!-- Emblem Master Group -->
+  <g transform="translate(0, 0)">
+    <!-- 1. Ambient Background Halo Aura -->
+    <circle cx="256" cy="245" r="150" fill="url(#truthGrad)" opacity="0.14" filter="blur(30px)" />
+    <circle cx="280" cy="275" r="110" fill="url(#dareGrad)" opacity="0.12" filter="blur(26px)" />
+
+    <!-- 2. The Play/Dare Dynamic Arrowhead & Exclamation Blade -->
+    <!-- Represents the "Dare" element and gaming action -->
+    <path
+      d="M256 160
+         C256 160 292 205 284 252
+         C278 288 256 304 256 304
+         C256 304 234 288 228 252
+         C220 205 256 160 256 160 Z"
+      fill="url(#coreGrad)"
+      filter="url(#dareGlow)"
+    />
+
+    <!-- Inner Core Glint -->
+    <path
+      d="M256 182
+         C256 182 274 214 269 246
+         C266 268 256 278 256 278
+         C256 278 246 268 243 246
+         C238 214 256 182 256 182 Z"
+      fill="#FFFFFF"
+      opacity="0.75"
+    />
+
+    <!-- 3. The Truth Question Mark Main Arc (Fluid 3D Ribbon) -->
+    <!-- Sweeps around from top right, loops over the head, down into the stem -->
+    <path
+      d="M212 304
+         C202 292 206 274 218 262
+         C236 244 266 226 288 206
+         C314 182 324 154 310 128
+         C294 98 254 90 220 102
+         C188 114 168 138 160 166
+         C157 176 147 182 136 179
+         C126 176 120 165 124 154
+         C136 114 166 78 212 64
+         C262 48 322 62 346 106
+         C368 146 352 190 316 224
+         C290 248 266 266 254 280
+         C248 288 246 296 244 306
+         C242 318 228 324 218 316
+         C215 313 213 309 212 304 Z"
+      fill="url(#truthGrad)"
+      filter="url(#neonGlow)"
+    />
+
+    <!-- Highlight stroke overlay for high-definition 3D bevel effect -->
+    <path
+      d="M138 156
+         C146 122 174 90 216 76
+         C262 60 316 74 338 114
+         C358 150 344 188 310 220
+         C284 244 262 262 250 278"
+      fill="none"
+      stroke="#FFFFFF"
+      stroke-width="5"
+      stroke-linecap="round"
+      opacity="0.45"
+    />
+
+    <!-- 4. The Iconic Diamond Star / Dot Pivot -->
+    <!-- Multifaceted 4-point star diamond anchoring the Question Mark -->
+    <g transform="translate(256, 382)" filter="url(#dareGlow)">
+      <!-- Outer radiant diamond -->
+      <path
+        d="M0 -34
+           C0 -10 10 0 34 0
+           C10 0 0 10 0 34
+           C0 10 -10 0 -34 0
+           C-10 0 0 -10 0 -34 Z"
+        fill="url(#sparkGrad)"
+      />
+      <!-- Inner sparkling core -->
+      <path
+        d="M0 -20
+           C0 -6 6 0 20 0
+           C6 0 0 6 0 20
+           C0 6 -6 0 -20 0
+           C-6 0 0 -6 0 -20 Z"
+        fill="#FFFFFF"
+        opacity="0.9"
+      />
+      <!-- Micro-faceted center flare -->
+      <circle cx="0" cy="0" r="4.5" fill="#FFE4E6" />
+    </g>
+
+    <!-- 5. Dynamic Orbiting Particle Sparks (Truth & Dare Energy) -->
+    <!-- Top-Right Cyan Sparkle -->
+    <path
+      d="M374 94
+         C374 104 380 110 390 110
+         C380 110 374 116 374 126
+         C374 116 368 110 358 110
+         C368 110 374 104 374 94 Z"
+      fill="#38BDF8"
+      opacity="0.85"
+    />
+    <!-- Bottom-Left Coral Sparkle -->
+    <path
+      d="M136 348
+         C136 356 141 361 149 361
+         C141 361 136 366 136 374
+         C136 366 131 361 123 361
+         C131 361 136 356 136 348 Z"
+      fill="#FB7185"
+      opacity="0.85"
+    />
+  </g>
+</svg>

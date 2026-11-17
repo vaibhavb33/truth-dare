@@ -5,7 +5,7 @@ import { Breadcrumbs } from '@/components/seo/Breadcrumbs';
 import { ThisOrThatClient } from '@/components/games/ThisOrThatClient';
 import { RelatedGames } from '@/components/games/RelatedGames';
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://truthordarequiz.com';
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://playtruthndare.com';
 
 export const metadata: Metadata = {
   title: 'This or That Online — Rapid Fire Preference Party Game',

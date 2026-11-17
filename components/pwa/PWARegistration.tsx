@@ -41,7 +41,7 @@ export function PWARegistration() {
                 installingWorker.state === 'installed' &&
                 navigator.serviceWorker.controller
               ) {
-                console.log('[PWA] New Asteria content is available; please refresh.');
+                console.log('[PWA] New Play Truth & Dare content is available; please refresh.');
               }
             });
           }

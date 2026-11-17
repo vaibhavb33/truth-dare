@@ -32,6 +32,7 @@ import {
   computeTargetRotation,
   quinticEaseOut,
 } from '@/lib/games/spinnerMath';
+import { trackSpinnerUsed } from '@/lib/analytics/gtm';
 
 // ========================================================
 // COLOR PALETTES & PRESET DATA
@@ -425,6 +426,7 @@ export function SpinnerWheelClient() {
     const prefersReducedMotion = typeof window !== 'undefined'
       && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     const duration = prefersReducedMotion ? 400 : 4500; // 4.5s smooth deceleration
+    trackSpinnerUsed({ slice_count: segments.length, duration_ms: duration });
 
     const startTime = performance.now();
     let lastPegIndex = -1;

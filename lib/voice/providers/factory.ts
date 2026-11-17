@@ -1,5 +1,5 @@
 /**
- * Asteria Voice Provider Factory
+ * Play Truth & Dare Voice Provider Factory
  * Resolves the active TTS provider according to environment variables and credentials.
  */
 

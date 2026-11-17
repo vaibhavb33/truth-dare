@@ -26,7 +26,7 @@ export async function generateMetadata({ params }: LocalizedNeverPageProps): Pro
   return generateLocalizedMetadata({
     locale: locale as Locale,
     subpath: '/games/never-have-i-ever',
-    overrideTitle: `${dict.gamesList.neverHaveIEver.name} — Asteria (${langMeta.nativeName})`,
+    overrideTitle: `${dict.gamesList.neverHaveIEver.name} — Play Truth & Dare (${langMeta.nativeName})`,
     overrideDescription: dict.gamesList.neverHaveIEver.tagline,
   });
 }

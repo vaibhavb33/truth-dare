@@ -1,5 +1,5 @@
 /**
- * Asteria Mock / Offline Neural Voice Provider
+ * Play Truth & Dare Mock / Offline Neural Voice Provider
  * Generates valid, standards-compliant RIFF/WAV audio buffers for unit testing,
  * CI/CD pipelines, and local development environments without requiring paid external API credentials.
  */

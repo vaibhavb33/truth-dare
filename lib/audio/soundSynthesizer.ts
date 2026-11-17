@@ -7,8 +7,10 @@ class SoundSynthesizer {
   private volume: number = 0.5;
 
   constructor() {
-    if (typeof window !== 'undefined') {
-      const savedMute = localStorage.getItem('asteria_sound_muted');
+    if (typeof window !== 'undefined' && typeof localStorage !== 'undefined') {
+      const savedMute =
+        localStorage.getItem('playtruthndare_sound_muted') ??
+        localStorage.getItem('asteria_sound_muted');
       if (savedMute !== null) {
         this.isMuted = savedMute === 'true';
       }
@@ -31,7 +33,8 @@ class SoundSynthesizer {
 
   public setMuted(muted: boolean) {
     this.isMuted = muted;
-    if (typeof window !== 'undefined') {
+    if (typeof window !== 'undefined' && typeof localStorage !== 'undefined') {
+      localStorage.setItem('playtruthndare_sound_muted', String(muted));
       localStorage.setItem('asteria_sound_muted', String(muted));
     }
   }

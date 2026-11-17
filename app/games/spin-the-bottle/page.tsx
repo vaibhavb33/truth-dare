@@ -4,36 +4,35 @@ import { JsonLd } from '@/components/seo/JsonLd';
 import { Breadcrumbs } from '@/components/seo/Breadcrumbs';
 import { SpinnerWheelClient } from '@/components/games/SpinnerWheelClient';
 import { RelatedGames } from '@/components/games/RelatedGames';
+import { getLocalizedAlternates } from '@/lib/i18n/seo';
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://truthordarequiz.com';
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://playtruthndare.com';
 
 export const metadata: Metadata = {
-  title: 'Spin the Bottle Online — Interactive 3D Spinner Wheel',
+  title: 'Spin the Bottle Online — Free Spinner Wheel | Play Truth & Dare',
   description:
-    'Spin the bottle online! 60 FPS deceleration physics wheel, custom slices, and instant turn picker for house parties and game nights.',
-  alternates: {
-    canonical: `${siteUrl}/games/spin-the-bottle`,
-  },
+    'Spin the bottle online with real physics and custom players. The classic party spinner wheel in your browser with zero ads.',
+  alternates: getLocalizedAlternates('/games/spin-the-bottle'),
   openGraph: {
     type: 'website',
     url: `${siteUrl}/games/spin-the-bottle`,
-    title: 'Spin the Bottle Online — Interactive 3D Spinner Wheel',
+    title: 'Spin the Bottle Online — Free Spinner Wheel | Play Truth & Dare',
     description:
-      'Spin the bottle online! 60 FPS deceleration physics wheel, custom slices, and instant turn picker for house parties and game nights.',
+      'Spin the bottle online with real physics and custom players. The classic party spinner wheel in your browser with zero ads.',
     images: [
       {
         url: '/og-image.png',
         width: 1200,
         height: 630,
-        alt: 'Spin the Bottle Online Wheel',
+        alt: 'Spin the Bottle Online Spinner Wheel',
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Spin the Bottle Online — Interactive 3D Spinner Wheel',
+    title: 'Spin the Bottle Online — Free Spinner Wheel | Play Truth & Dare',
     description:
-      'Spin the bottle online! 60 FPS deceleration physics wheel, custom slices, and instant turn picker for house parties and game nights.',
+      'Spin the bottle online with real physics and custom players. The classic party spinner wheel in your browser with zero ads.',
     images: ['/og-image.png'],
   },
 };

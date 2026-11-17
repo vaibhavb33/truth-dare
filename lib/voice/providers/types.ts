@@ -1,5 +1,5 @@
 /**
- * Asteria Neural Voice Engine: Provider Interface Types
+ * Play Truth & Dare Neural Voice Engine: Provider Interface Types
  * Reusable, provider-agnostic Text-to-Speech contract for Google Cloud TTS,
  * Microsoft Azure AI Speech, ElevenLabs, and Local/Mock Neural synthesis.
  */

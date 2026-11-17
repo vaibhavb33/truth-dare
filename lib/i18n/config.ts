@@ -78,4 +78,5 @@ export const SUPPORTED_LOCALES: Record<Locale, LanguageMeta> = {
 
 export const ALL_LOCALES = Object.keys(SUPPORTED_LOCALES) as Locale[];
 export const DEFAULT_LOCALE: Locale = 'en';
-export const LOCALE_COOKIE_NAME = 'asteria_locale';
+export const LOCALE_COOKIE_NAME = 'playtruthndare_locale';
+export const LEGACY_LOCALE_COOKIE_NAME = 'asteria_locale';

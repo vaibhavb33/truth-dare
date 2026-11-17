@@ -8,7 +8,7 @@ import {
   formatSegmentLabel,
 } from '@/lib/games/spinnerMath';
 
-describe('Asteria Spinner Wheel Mathematical Engine', () => {
+describe('Play Truth & Dare Spinner Wheel Mathematical Engine', () => {
   describe('normalizeAngle', () => {
     it('should keep angles in [0, 2*PI) unchanged', () => {
       expect(normalizeAngle(0)).toBeCloseTo(0);

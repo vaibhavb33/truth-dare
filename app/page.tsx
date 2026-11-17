@@ -2,38 +2,35 @@ import React from 'react';
 import type { Metadata } from 'next';
 import { JsonLd } from '@/components/seo/JsonLd';
 import { HomeClientContent } from '@/components/home/HomeClientContent';
+import { getLocalizedAlternates } from '@/lib/i18n/seo';
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://truthordarequiz.com';
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://playtruthndare.com';
 
 export const metadata: Metadata = {
-  title: {
-    absolute: 'Asteria — Free Online Party Games | Play in Browser',
-  },
+  title: 'Truth or Dare Online | Play With Friends Free — Play Truth & Dare',
   description:
-    'Play Truth or Dare, Never Have I Ever, and Would You Rather with friends. 100% free, zero ads, no app download required.',
-  alternates: {
-    canonical: siteUrl,
-  },
+    'Play Truth or Dare online for free! Challenge friends, create private rooms, enjoy multiplayer games and explore fun Truth and Dare questions.',
+  alternates: getLocalizedAlternates('/'),
   openGraph: {
     type: 'website',
     url: siteUrl,
-    title: 'Asteria — Free Online Party Games | Play in Browser',
+    title: 'Truth or Dare Online | Play With Friends Free — Play Truth & Dare',
     description:
-      'Play Truth or Dare, Never Have I Ever, and Would You Rather with friends. 100% free, zero ads, no app download required.',
+      'Play Truth or Dare online for free! Challenge friends, create private rooms, enjoy multiplayer games and explore fun Truth and Dare questions.',
     images: [
       {
         url: '/og-image.png',
         width: 1200,
         height: 630,
-        alt: 'Asteria — Free Online Party Games',
+        alt: 'Truth or Dare Online — Play With Friends Free',
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Asteria — Free Online Party Games | Play in Browser',
+    title: 'Truth or Dare Online | Play With Friends Free — Play Truth & Dare',
     description:
-      'Play Truth or Dare, Never Have I Ever, and Would You Rather with friends. 100% free, zero ads, no app download required.',
+      'Play Truth or Dare online for free! Challenge friends, create private rooms, enjoy multiplayer games and explore fun Truth and Dare questions.',
     images: ['/og-image.png'],
   },
 };
@@ -44,7 +41,7 @@ const homeFaqSchema = {
   mainEntity: [
     {
       '@type': 'Question',
-      name: 'Is Project Asteria completely free to play?',
+      name: 'Is Play Truth & Dare completely free to play?',
       acceptedAnswer: {
         '@type': 'Answer',
         text: 'Yes, 100% free! You can play all core party games, access hundreds of curated cards, and host online multiplayer rooms without paywalls or forced subscriptions.',
@@ -88,7 +85,7 @@ const homeFaqSchema = {
 const homeWebAppSchema = {
   '@context': 'https://schema.org',
   '@type': 'WebApplication',
-  name: 'Asteria Party Gaming Platform',
+  name: 'Play Truth & Dare Platform',
   url: siteUrl,
   applicationCategory: 'GameApplication',
   operatingSystem: 'All modern web browsers (iOS, Android, Windows, macOS, Linux)',

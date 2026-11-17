@@ -33,6 +33,7 @@ import {
 } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { sound } from '@/lib/audio/soundSynthesizer';
+import { trackCustomQuestionAdded, trackCustomDeckCreated } from '@/lib/analytics/gtm';
 import { EmptyState } from '@/components/ui/States';
 import { CustomDeck, CustomQuestion, SupportedLanguageCode, CategoryId } from '@/types';
 import { useTranslation } from '@/lib/i18n/LanguageContext';
@@ -43,7 +44,8 @@ import { SUPPORTED_LOCALES } from '@/lib/i18n/config';
 
 type TabView = 'editor' | 'library' | 'play';
 
-const DRAFT_STORAGE_KEY = 'asteria_custom_deck_draft';
+const DRAFT_STORAGE_KEY = 'playtruthndare_custom_deck_draft';
+const LEGACY_DRAFT_STORAGE_KEY = 'asteria_custom_deck_draft';
 
 export function CustomDeckClient() {
   const router = useRouter();
@@ -124,7 +126,7 @@ export function CustomDeckClient() {
       // Check for unsaved draft
       if (typeof window !== 'undefined') {
         try {
-          const draft = localStorage.getItem(DRAFT_STORAGE_KEY);
+          const draft = localStorage.getItem(DRAFT_STORAGE_KEY) || localStorage.getItem(LEGACY_DRAFT_STORAGE_KEY);
           if (draft) {
             const parsed = JSON.parse(draft);
             if (parsed.name) setDeckName(parsed.name);
@@ -133,7 +135,7 @@ export function CustomDeckClient() {
               setQuestions(parsed.questions);
             }
           }
-        } catch {}
+        } catch { }
       }
     }
   }, [locale]);
@@ -150,7 +152,7 @@ export function CustomDeckClient() {
             questions,
           })
         );
-      } catch {}
+      } catch { }
     }
   }, [deckName, deckLanguage, questions]);
 
@@ -256,6 +258,7 @@ export function CustomDeckClient() {
     // Phase 4: Success Behaviour
     // 1. Add new question to visible list
     setQuestions((prev) => [...prev, newQuestion]);
+    trackCustomQuestionAdded({ type: newPromptType, language: deckLanguage });
 
     // 2. Clear input
     setNewPromptText('');
@@ -360,6 +363,7 @@ export function CustomDeckClient() {
     if (saveResult.deck) {
       setCurrentDeckId(saveResult.deck.id);
       setDecks(deckStorage.getDecks());
+      trackCustomDeckCreated({ question_count: questions.length, language: deckLanguage });
 
       // Sync with server deck repository for multiplayer rooms
       if (typeof window !== 'undefined') {
@@ -438,7 +442,7 @@ export function CustomDeckClient() {
         fetch(`/api/custom-decks/${id}?creatorId=${creator}`, {
           method: 'DELETE',
           headers: { 'x-creator-id': creator },
-        }).catch(() => {});
+        }).catch(() => { });
       }
       const remaining = deckStorage.getDecks();
       setDecks(remaining);
@@ -508,16 +512,15 @@ export function CustomDeckClient() {
       const data = await res.json();
       if (data.success && data.roomCode) {
         if (typeof window !== 'undefined') {
-          localStorage.setItem(
-            `asteria_multiplayer_session_${data.roomCode}`,
-            JSON.stringify({
-              roomId: data.roomId,
-              roomCode: data.roomCode,
-              playerId: data.hostPlayerId,
-              sessionToken: data.sessionToken,
-              playerName: 'Host',
-            })
-          );
+          const sessionPayload = JSON.stringify({
+            roomId: data.roomId,
+            roomCode: data.roomCode,
+            playerId: data.hostPlayerId,
+            sessionToken: data.sessionToken,
+            playerName: 'Host',
+          });
+          localStorage.setItem(`playtruthndare_multiplayer_session_${data.roomCode}`, sessionPayload);
+          localStorage.setItem(`asteria_multiplayer_session_${data.roomCode}`, sessionPayload);
         }
         sound.playChime();
         router.push(`/room/${data.roomCode}`);
@@ -671,11 +674,10 @@ export function CustomDeckClient() {
             setActiveTab('editor');
             sound.triggerHaptic(10);
           }}
-          className={`flex-1 flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl text-xs sm:text-sm font-bold transition-all ${
-            activeTab === 'editor'
-              ? 'bg-brand-500 text-white shadow-glow-brand'
-              : 'text-slate-400 hover:text-white hover:bg-white/5'
-          }`}
+          className={`flex-1 flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl text-xs sm:text-sm font-bold transition-all ${activeTab === 'editor'
+            ? 'bg-brand-500 text-white shadow-glow-brand'
+            : 'text-slate-400 hover:text-white hover:bg-white/5'
+            }`}
         >
           <Edit2 className="w-3.5 h-3.5" />
           <span>Deck Editor</span>
@@ -687,11 +689,10 @@ export function CustomDeckClient() {
             setActiveTab('library');
             sound.triggerHaptic(10);
           }}
-          className={`flex-1 flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl text-xs sm:text-sm font-bold transition-all ${
-            activeTab === 'library'
-              ? 'bg-brand-500 text-white shadow-glow-brand'
-              : 'text-slate-400 hover:text-white hover:bg-white/5'
-          }`}
+          className={`flex-1 flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl text-xs sm:text-sm font-bold transition-all ${activeTab === 'library'
+            ? 'bg-brand-500 text-white shadow-glow-brand'
+            : 'text-slate-400 hover:text-white hover:bg-white/5'
+            }`}
         >
           <FolderHeart className="w-3.5 h-3.5" />
           <span>My Decks ({decks.length})</span>
@@ -703,11 +704,10 @@ export function CustomDeckClient() {
             setActiveTab('play');
             sound.triggerHaptic(10);
           }}
-          className={`flex-1 flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl text-xs sm:text-sm font-bold transition-all ${
-            activeTab === 'play'
-              ? 'bg-gradient-to-r from-truth-500 to-dare-500 text-white shadow-glow-dare'
-              : 'text-slate-400 hover:text-white hover:bg-white/5'
-          }`}
+          className={`flex-1 flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl text-xs sm:text-sm font-bold transition-all ${activeTab === 'play'
+            ? 'bg-gradient-to-r from-truth-500 to-dare-500 text-white shadow-glow-dare'
+            : 'text-slate-400 hover:text-white hover:bg-white/5'
+            }`}
         >
           <Play className="w-3.5 h-3.5 fill-current" />
           <span>Pass & Play</span>
@@ -899,11 +899,10 @@ export function CustomDeckClient() {
                   setNewPromptType('truth');
                   sound.triggerHaptic(10);
                 }}
-                className={`flex-1 sm:flex-none px-4 py-2 rounded-xl text-xs font-black uppercase tracking-wider border transition-all flex items-center justify-center gap-2 ${
-                  newPromptType === 'truth'
-                    ? 'bg-truth-500/25 border-truth-400 text-truth-300 shadow-glow-truth'
-                    : 'bg-canvas-base border-white/10 text-slate-400 hover:text-white'
-                }`}
+                className={`flex-1 sm:flex-none px-4 py-2 rounded-xl text-xs font-black uppercase tracking-wider border transition-all flex items-center justify-center gap-2 ${newPromptType === 'truth'
+                  ? 'bg-truth-500/25 border-truth-400 text-truth-300 shadow-glow-truth'
+                  : 'bg-canvas-base border-white/10 text-slate-400 hover:text-white'
+                  }`}
               >
                 <HelpCircle className="w-4 h-4" />
                 <span>TRUTH</span>
@@ -915,11 +914,10 @@ export function CustomDeckClient() {
                   setNewPromptType('dare');
                   sound.triggerHaptic(10);
                 }}
-                className={`flex-1 sm:flex-none px-4 py-2 rounded-xl text-xs font-black uppercase tracking-wider border transition-all flex items-center justify-center gap-2 ${
-                  newPromptType === 'dare'
-                    ? 'bg-dare-500/25 border-dare-400 text-dare-300 shadow-glow-dare'
-                    : 'bg-canvas-base border-white/10 text-slate-400 hover:text-white'
-                }`}
+                className={`flex-1 sm:flex-none px-4 py-2 rounded-xl text-xs font-black uppercase tracking-wider border transition-all flex items-center justify-center gap-2 ${newPromptType === 'dare'
+                  ? 'bg-dare-500/25 border-dare-400 text-dare-300 shadow-glow-dare'
+                  : 'bg-canvas-base border-white/10 text-slate-400 hover:text-white'
+                  }`}
               >
                 <Flame className="w-4 h-4 fill-current" />
                 <span>DARE</span>
@@ -942,11 +940,10 @@ export function CustomDeckClient() {
                   if (addedSuccess) setAddedSuccess(null);
                 }}
                 maxLength={300}
-                className={`flex-1 min-w-0 h-11 sm:h-12 px-3.5 rounded-xl bg-canvas-base border text-xs sm:text-sm text-white placeholder:text-slate-500 focus:outline-none transition-colors ${
-                  displayInlineError
-                    ? 'border-rose-500/60 focus:border-rose-400'
-                    : 'border-white/10 focus:border-brand-400'
-                }`}
+                className={`flex-1 min-w-0 h-11 sm:h-12 px-3.5 rounded-xl bg-canvas-base border text-xs sm:text-sm text-white placeholder:text-slate-500 focus:outline-none transition-colors ${displayInlineError
+                  ? 'border-rose-500/60 focus:border-rose-400'
+                  : 'border-white/10 focus:border-brand-400'
+                  }`}
                 aria-invalid={!!displayInlineError}
                 aria-describedby={displayInlineError ? 'question-inline-error' : undefined}
               />
@@ -979,11 +976,10 @@ export function CustomDeckClient() {
                   size="md"
                   disabled={!isInputValidToAdd || isSubmittingQuestion}
                   aria-disabled={!isInputValidToAdd || isSubmittingQuestion}
-                  className={`gap-1.5 shrink-0 h-11 sm:h-12 px-5 font-bold transition-all ${
-                    !isInputValidToAdd || isSubmittingQuestion
-                      ? 'opacity-40 cursor-not-allowed bg-slate-800 text-slate-500 border border-white/5 pointer-events-none'
-                      : 'shadow-glow-brand hover:scale-[1.02] active:scale-[0.98]'
-                  }`}
+                  className={`gap-1.5 shrink-0 h-11 sm:h-12 px-5 font-bold transition-all ${!isInputValidToAdd || isSubmittingQuestion
+                    ? 'opacity-40 cursor-not-allowed bg-slate-800 text-slate-500 border border-white/5 pointer-events-none'
+                    : 'shadow-glow-brand hover:scale-[1.02] active:scale-[0.98]'
+                    }`}
                 >
                   {isSubmittingQuestion ? (
                     <span className="flex items-center gap-2">
@@ -1054,22 +1050,20 @@ export function CustomDeckClient() {
                           <button
                             type="button"
                             onClick={() => setEditingType('truth')}
-                            className={`px-2.5 py-1 rounded-lg text-[10px] font-bold uppercase transition-colors ${
-                              editingType === 'truth'
-                                ? 'bg-truth-500 text-white shadow-glow-truth'
-                                : 'bg-canvas-base text-slate-400 border border-white/10'
-                            }`}
+                            className={`px-2.5 py-1 rounded-lg text-[10px] font-bold uppercase transition-colors ${editingType === 'truth'
+                              ? 'bg-truth-500 text-white shadow-glow-truth'
+                              : 'bg-canvas-base text-slate-400 border border-white/10'
+                              }`}
                           >
                             Truth
                           </button>
                           <button
                             type="button"
                             onClick={() => setEditingType('dare')}
-                            className={`px-2.5 py-1 rounded-lg text-[10px] font-bold uppercase transition-colors ${
-                              editingType === 'dare'
-                                ? 'bg-dare-500 text-white shadow-glow-dare'
-                                : 'bg-canvas-base text-slate-400 border border-white/10'
-                            }`}
+                            className={`px-2.5 py-1 rounded-lg text-[10px] font-bold uppercase transition-colors ${editingType === 'dare'
+                              ? 'bg-dare-500 text-white shadow-glow-dare'
+                              : 'bg-canvas-base text-slate-400 border border-white/10'
+                              }`}
                           >
                             Dare
                           </button>
@@ -1114,11 +1108,10 @@ export function CustomDeckClient() {
                             {idx + 1}.
                           </span>
                           <span
-                            className={`px-2 py-0.5 rounded-lg font-black text-[10px] uppercase tracking-wider border shrink-0 ${
-                              q.type === 'truth'
-                                ? 'bg-truth-500/15 text-truth-300 border-truth-400/30'
-                                : 'bg-dare-500/15 text-dare-300 border-dare-400/30'
-                            }`}
+                            className={`px-2 py-0.5 rounded-lg font-black text-[10px] uppercase tracking-wider border shrink-0 ${q.type === 'truth'
+                              ? 'bg-truth-500/15 text-truth-300 border-truth-400/30'
+                              : 'bg-dare-500/15 text-dare-300 border-dare-400/30'
+                              }`}
                           >
                             {q.type.toUpperCase()}
                           </span>
@@ -1218,9 +1211,8 @@ export function CustomDeckClient() {
                 size="lg"
                 onClick={handleSaveAndPlay}
                 disabled={questions.length < 2}
-                className={`w-full sm:flex-1 gap-2 min-h-[46px] font-black text-white bg-gradient-to-r from-truth-500 to-dare-500 hover:from-truth-400 hover:to-dare-400 shadow-glow-dare transition-all ${
-                  questions.length < 2 ? 'opacity-40 cursor-not-allowed' : ''
-                }`}
+                className={`w-full sm:flex-1 gap-2 min-h-[46px] font-black text-white bg-gradient-to-r from-truth-500 to-dare-500 hover:from-truth-400 hover:to-dare-400 shadow-glow-dare transition-all ${questions.length < 2 ? 'opacity-40 cursor-not-allowed' : ''
+                  }`}
               >
                 <Play className="w-4 h-4 fill-current" />
                 <span>Save Deck & Play</span>
@@ -1282,9 +1274,8 @@ export function CustomDeckClient() {
                 return (
                   <div
                     key={deck.id}
-                    className={`p-4 sm:p-5 rounded-2xl sm:rounded-3xl bg-surface-elevated/90 border transition-all flex flex-col justify-between gap-3.5 backdrop-blur-sm ${
-                      isSelected ? 'border-brand-400/60 shadow-glow-brand' : 'border-white/10 hover:border-white/20'
-                    }`}
+                    className={`p-4 sm:p-5 rounded-2xl sm:rounded-3xl bg-surface-elevated/90 border transition-all flex flex-col justify-between gap-3.5 backdrop-blur-sm ${isSelected ? 'border-brand-400/60 shadow-glow-brand' : 'border-white/10 hover:border-white/20'
+                      }`}
                   >
                     <div className="space-y-2">
                       <div className="flex items-start justify-between gap-2">
@@ -1546,11 +1537,10 @@ export function CustomDeckClient() {
                   <div className="space-y-5 w-full max-w-xl animate-fade-in">
                     <div className="flex items-center justify-center gap-2">
                       <span
-                        className={`px-3 py-1 rounded-full text-xs font-black uppercase tracking-wider border ${
-                          currentCard?.type === 'truth'
-                            ? 'bg-truth-500/20 text-truth-300 border-truth-400/40 shadow-glow-truth'
-                            : 'bg-dare-500/20 text-dare-300 border-dare-400/40 shadow-glow-dare'
-                        }`}
+                        className={`px-3 py-1 rounded-full text-xs font-black uppercase tracking-wider border ${currentCard?.type === 'truth'
+                          ? 'bg-truth-500/20 text-truth-300 border-truth-400/40 shadow-glow-truth'
+                          : 'bg-dare-500/20 text-dare-300 border-dare-400/40 shadow-glow-dare'
+                          }`}
                       >
                         {currentCard?.type === 'truth' ? 'TRUTH' : 'DARE'}
                       </span>
@@ -1619,11 +1609,10 @@ export function CustomDeckClient() {
                             <span className="text-slate-200">{h.card.prompt}</span>
                           </div>
                           <span
-                            className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase shrink-0 ${
-                              h.outcome === 'completed'
-                                ? 'bg-emerald-500/20 text-emerald-300'
-                                : 'bg-rose-500/20 text-rose-300'
-                            }`}
+                            className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase shrink-0 ${h.outcome === 'completed'
+                              ? 'bg-emerald-500/20 text-emerald-300'
+                              : 'bg-rose-500/20 text-rose-300'
+                              }`}
                           >
                             {h.outcome}
                           </span>
@@ -1694,11 +1683,10 @@ export function CustomDeckClient() {
 
             <div className="p-5 rounded-2xl bg-canvas-base border border-white/10 space-y-3">
               <span
-                className={`px-3 py-1 rounded-full text-xs font-black uppercase tracking-wider border ${
-                  previewQuestion.type === 'truth'
-                    ? 'bg-truth-500/20 text-truth-300 border-truth-400/40'
-                    : 'bg-dare-500/20 text-dare-300 border-dare-400/40'
-                }`}
+                className={`px-3 py-1 rounded-full text-xs font-black uppercase tracking-wider border ${previewQuestion.type === 'truth'
+                  ? 'bg-truth-500/20 text-truth-300 border-truth-400/40'
+                  : 'bg-dare-500/20 text-dare-300 border-dare-400/40'
+                  }`}
               >
                 {previewQuestion.type.toUpperCase()}
               </span>

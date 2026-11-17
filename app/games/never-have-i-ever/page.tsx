@@ -5,7 +5,7 @@ import { Breadcrumbs } from '@/components/seo/Breadcrumbs';
 import { NeverHaveIEverClient } from '@/components/games/NeverHaveIEverClient';
 import { RelatedGames } from '@/components/games/RelatedGames';
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://truthordarequiz.com';
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://playtruthndare.com';
 
 export const metadata: Metadata = {
   title: 'Never Have I Ever Online — 10 Fingers Down Game',

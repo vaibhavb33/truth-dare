@@ -1,61 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
   <defs>
-    <linearGradient id="maskBgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#0A0A16" />
-      <stop offset="100%" stop-color="#07070F" />
+    <linearGradient id="maskBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#180C34" />
+      <stop offset="50%" stop-color="#0E0822" />
+      <stop offset="100%" stop-color="#070414" />
     </linearGradient>
 
-    <linearGradient id="maskBrandGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#A78BFA" />
-      <stop offset="45%" stop-color="#8B5CF6" />
-      <stop offset="100%" stop-color="#6366F1" />
+    <linearGradient id="mTruthGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#38BDF8" />
+      <stop offset="35%" stop-color="#22D3EE" />
+      <stop offset="70%" stop-color="#818CF8" />
+      <stop offset="100%" stop-color="#8B5CF6" />
     </linearGradient>
 
-    <linearGradient id="maskStarGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#FFFFFF" />
-      <stop offset="100%" stop-color="#F1F5F9" />
+    <linearGradient id="mDareGrad" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#8B5CF6" />
+      <stop offset="50%" stop-color="#F43F5E" />
+      <stop offset="100%" stop-color="#FBBF24" />
+    </linearGradient>
+
+    <linearGradient id="mSparkGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFE4E6" />
+      <stop offset="40%" stop-color="#FB7185" />
+      <stop offset="100%" stop-color="#E11D48" />
     </linearGradient>
   </defs>
 
-  <!-- Full Bleed Background for Safe-Zone Masking -->
-  <rect width="512" height="512" fill="url(#maskBgGrad)" />
+  <!-- Solid Full-bleed canvas for safe edge-to-edge adaptive icon cropping -->
+  <rect width="512" height="512" fill="url(#maskBg)" />
 
-  <!-- Center Brand Emblem (Within 80% Safe Area: 51.2px to 460.8px) -->
-  <rect x="96" y="96" width="320" height="320" rx="72" fill="url(#maskBrandGrad)" />
-  <rect x="98" y="98" width="316" height="316" rx="70" fill="none" stroke="rgba(255, 255, 255, 0.25)" stroke-width="2" />
+  <!-- Centered safe-zone scaled emblem (scaled to 78% for safe maskable area) -->
+  <g transform="translate(256, 256) scale(0.78) translate(-256, -256)">
+    <!-- Dare Blade -->
+    <path
+      d="M256 160 C256 160 292 205 284 252 C278 288 256 304 256 304 C256 304 234 288 228 252 C220 205 256 160 256 160 Z"
+      fill="url(#mDareGrad)"
+    />
+    <path
+      d="M256 182 C256 182 274 214 269 246 C266 268 256 278 256 278 C256 278 246 268 243 246 C238 214 256 182 256 182 Z"
+      fill="#FFFFFF"
+      opacity="0.8"
+    />
 
-  <!-- Center Primary Sparkle Star -->
-  <path
-    d="M256 160
-       C256 208 281 234 329 234
-       C281 234 256 259 256 307
-       C256 259 231 234 183 234
-       C231 234 256 208 256 160 Z"
-    fill="url(#maskStarGrad)"
-  />
+    <!-- Truth Question Mark Hook -->
+    <path
+      d="M212 304 C202 292 206 274 218 262 C236 244 266 226 288 206 C314 182 324 154 310 128 C294 98 254 90 220 102 C188 114 168 138 160 166 C157 176 147 182 136 179 C126 176 120 165 124 154 C136 114 166 78 212 64 C262 48 322 62 346 106 C368 146 352 190 316 224 C290 248 266 266 254 280 C248 288 246 296 244 306 C242 318 228 324 218 316 C215 313 213 309 212 304 Z"
+      fill="url(#mTruthGrad)"
+    />
 
-  <!-- Top-Right Cyan Sparkle -->
-  <path
-    d="M336 184
-       C336 201 345 210 362 210
-       C345 210 336 219 336 236
-       C336 219 327 210 310 210
-       C327 210 336 201 336 184 Z"
-    fill="#22D3EE"
-  />
+    <!-- Highlight stroke overlay -->
+    <path
+      d="M138 156 C146 122 174 90 216 76 C262 60 316 74 338 114 C358 150 344 188 310 220 C284 244 262 262 250 278"
+      fill="none"
+      stroke="#FFFFFF"
+      stroke-width="5"
+      stroke-linecap="round"
+      opacity="0.45"
+    />
 
-  <!-- Bottom-Left Coral Sparkle -->
-  <path
-    d="M184 296
-       C184 312 192 320 208 320
-       C192 320 184 328 184 344
-       C184 328 176 320 160 320
-       C176 320 184 312 184 296 Z"
-    fill="#FB7185"
-  />
-
-  <!-- Ambient Stars -->
-  <circle cx="216" cy="196" r="4.5" fill="#FFFFFF" opacity="0.8" />
-  <circle cx="296" cy="276" r="5" fill="#C4B5FD" opacity="0.9" />
+    <!-- Diamond Dot -->
+    <g transform="translate(256, 382)">
+      <path
+        d="M0 -34 C0 -10 10 0 34 0 C10 0 0 10 0 34 C0 10 -10 0 -34 0 C-10 0 0 -10 0 -34 Z"
+        fill="url(#mSparkGrad)"
+      />
+      <circle cx="0" cy="0" r="5" fill="#FFFFFF" />
+    </g>
+  </g>
 </svg>
-

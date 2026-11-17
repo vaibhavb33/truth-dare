@@ -1,5 +1,5 @@
 /**
- * Asteria Voice Audio Cache & Privacy Enforcement Engine
+ * Play Truth & Dare Voice Audio Cache & Privacy Enforcement Engine
  * - LRU memory caching for standard questions to minimize API spend and latency.
  * - Strict Privacy Boundary: Custom user-created questions are NEVER cached or shared.
  * - Rate limiting to prevent API exhaustion.
@@ -23,7 +23,7 @@ export class VoiceCache {
   private maxEntries: number = 300; // ~15MB memory ceiling
   private ipRateLimits: Map<string, { count: number; resetAt: number }> = new Map();
 
-  private constructor() {}
+  private constructor() { }
 
   public static getInstance(): VoiceCache {
     if (!VoiceCache.instance) {

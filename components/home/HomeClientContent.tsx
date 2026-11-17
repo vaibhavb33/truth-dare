@@ -28,6 +28,7 @@ import { useTranslation } from '@/lib/i18n/LanguageContext';
 import { ALL_LOCALES, SUPPORTED_LOCALES, Locale } from '@/lib/i18n/config';
 import { deckStorage, getCreatorId } from '@/lib/custom/deckStorage';
 import { CustomDeck } from '@/types';
+import { trackRoomCreated, trackRoomJoined } from '@/lib/analytics/gtm';
 
 export function HomeClientContent() {
   const router = useRouter();
@@ -98,19 +99,19 @@ export function HomeClientContent() {
       const data = await res.json();
       if (data.success && data.roomCode) {
         if (typeof window !== 'undefined') {
-          localStorage.setItem(
-            `asteria_multiplayer_session_${data.roomCode}`,
-            JSON.stringify({
-              roomId: data.roomId,
-              roomCode: data.roomCode,
-              playerId: data.hostPlayerId,
-              sessionToken: data.sessionToken,
-              playerName: hostName.trim() || 'Host',
-            })
-          );
+          const sessionPayload = JSON.stringify({
+            roomId: data.roomId,
+            roomCode: data.roomCode,
+            playerId: data.hostPlayerId,
+            sessionToken: data.sessionToken,
+            playerName: hostName.trim() || 'Host',
+          });
+          localStorage.setItem(`playtruthndare_multiplayer_session_${data.roomCode}`, sessionPayload);
+          localStorage.setItem(`asteria_multiplayer_session_${data.roomCode}`, sessionPayload);
         }
         sound.playChime();
         setShowCreateModal(false);
+        trackRoomCreated({ game_type: 'truth-or-dare' });
         router.push(`/room/${data.roomCode}`);
       } else {
         setCreateError(data.error || 'Failed to create room.');
@@ -131,6 +132,7 @@ export function HomeClientContent() {
       return;
     }
     sound.triggerHaptic(15);
+    trackRoomJoined({ game_type: 'multiplayer' });
     router.push(`/room/${cleanCode}`);
   };
 
@@ -195,7 +197,7 @@ export function HomeClientContent() {
 
   const faqs = [
     {
-      q: 'Is Project Asteria completely free to play?',
+      q: 'Is Play Truth & Dare completely free to play?',
       a: 'Yes, 100% free! You can play all core party games, access hundreds of curated cards, and host online multiplayer rooms without paywalls or forced subscriptions.',
     },
     {
@@ -682,12 +684,12 @@ export function HomeClientContent() {
         </div>
       </section>
 
-      {/* SECTION 6: WHY CHOOSE ASTERIA */}
+      {/* SECTION 6: WHY CHOOSE PLAY TRUTH & DARE */}
       <section className="py-16 md:py-20 px-4 md:px-8 border-b border-white/10 bg-surface-elevated/30">
         <div className="max-w-6xl mx-auto space-y-12">
           <div className="text-center space-y-2">
             <span className="text-xs font-bold uppercase tracking-widest text-brand-400">The Premium Difference</span>
-            <h2 className="font-display font-bold text-3xl text-white">Why Party Hosts Choose Asteria</h2>
+            <h2 className="font-display font-bold text-3xl text-white">Why Party Hosts Choose Play Truth & Dare</h2>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -767,10 +769,10 @@ export function HomeClientContent() {
       <section className="py-12 md:py-16 px-4 md:px-8 bg-canvas-deep text-slate-400 text-xs leading-relaxed border-b border-white/5">
         <div className="max-w-4xl mx-auto space-y-4">
           <h3 className="font-display font-bold text-sm text-slate-200">
-            The Ultimate Guide to Playing Truth or Dare Online
+            The Ultimate Guide to Playing Truth or Dare Online With Friends
           </h3>
           <p>
-            Truth or Dare is universally recognized as the quintessential party game for icebreakers, dorm hangouts, road trips, and intimate date nights. Unlike dated static websites that force users to read through cluttered text lists or endure intrusive video advertisements, Project Asteria modernizes the classic party experience. You can{' '}
+            Truth or Dare is universally recognized as the quintessential party game for icebreakers, dorm hangouts, road trips, and intimate date nights. Unlike dated static websites that force users to read through cluttered text lists or endure intrusive video advertisements, Play Truth &amp; Dare modernizes the classic party experience. You can{' '}
             <Link href="/games/truth-or-dare" className="text-brand-300 font-semibold hover:underline">
               play Truth or Dare online
             </Link>{' '}
@@ -785,17 +787,40 @@ export function HomeClientContent() {
             .
           </p>
           <p>
-            Whether you are hosting a living room gathering with friends using our Pass & Play turn rotation, hanging out with long-distance best friends on Discord, or enjoying an intimate date night at home, our hand-curated question categories ensure the right energy, intensity, and safety level for your crowd. Learn the standard parliamentary guidelines in our{' '}
+            Whether you want to play{' '}
+            <Link href="/games/truth-or-dare" className="text-brand-300 font-semibold hover:underline">
+              Truth or Dare with friends
+            </Link>{' '}
+            using our Pass &amp; Play turn rotation, connect via instant{' '}
+            <Link href="#join-room" className="text-brand-300 font-semibold hover:underline">
+              multiplayer rooms
+            </Link>{' '}
+            over FaceTime or Discord, or explore romantic{' '}
+            <Link href="/games/truth-or-dare?category=couples-flirty" className="text-brand-300 font-semibold hover:underline">
+              Truth or Dare for couples
+            </Link>
+            , our curated decks ensure the right intensity and safety level for every crowd.
+          </p>
+          <p>
+            Need quick inspiration? Browse our handpicked{' '}
+            <Link href="/questions?type=truth" className="text-brand-300 font-semibold hover:underline">
+              Truth questions
+            </Link>{' '}
+            and bold{' '}
+            <Link href="/questions?type=dare" className="text-brand-300 font-semibold hover:underline">
+              Dare questions
+            </Link>
+            , discover hilarious{' '}
+            <Link href="/questions?category=classic-party" className="text-brand-300 font-semibold hover:underline">
+              funny Truth or Dare questions
+            </Link>
+            , read our{' '}
             <Link href="/blog/official-truth-or-dare-rules" className="text-brand-300 font-semibold hover:underline">
               official party game rules guide
             </Link>
-            , author inside jokes in our{' '}
+            , or author your own questions in the{' '}
             <Link href="/custom" className="text-brand-300 font-semibold hover:underline">
               Custom Deck Studio
-            </Link>
-            , or copy favorite challenges from our library of{' '}
-            <Link href="/questions" className="text-brand-300 font-semibold hover:underline">
-              500+ Truth or Dare questions
             </Link>
             .
           </p>

@@ -1,11 +1,47 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
-import { ALL_LOCALES, DEFAULT_LOCALE, LOCALE_COOKIE_NAME, Locale } from '@/lib/i18n/config';
+import {
+  ALL_LOCALES,
+  DEFAULT_LOCALE,
+  LOCALE_COOKIE_NAME,
+  LEGACY_LOCALE_COOKIE_NAME,
+  Locale,
+} from '@/lib/i18n/config';
 
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // 1. Skip system paths, api, static files, and admin
+  // 1. Hostname & Protocol Canonicalization (Phase 2 & Phase 4)
+  const host = (request.headers.get('host') || '').toLowerCase();
+  const proto = (request.headers.get('x-forwarded-proto') || '').toLowerCase();
+  const isLocal = !host || host.includes('localhost') || host.includes('127.0.0.1') || host.includes('0.0.0.0');
+
+  if (!isLocal) {
+    const isCanonicalHost = host === 'playtruthndare.com';
+    const isWww = host === 'www.playtruthndare.com';
+    const isLegacyDomain =
+      host.includes('truthordarequiz.com') ||
+      host.includes('asteria.games') ||
+      host.includes('asteria-games.vercel.app');
+
+    // 1a. Permanent 301 redirect for alternative hostnames and legacy domains
+    if (isWww || isLegacyDomain) {
+      const targetUrl = new URL(`https://playtruthndare.com${pathname}${request.nextUrl.search}`);
+      const response = NextResponse.redirect(targetUrl, 301);
+      response.headers.set('Cache-Control', 'public, max-age=31536000, immutable');
+      return response;
+    }
+
+    // 1b. Permanent 301 redirect HTTP -> HTTPS on canonical host (no redirect loops)
+    if (isCanonicalHost && proto === 'http') {
+      const targetUrl = new URL(`https://playtruthndare.com${pathname}${request.nextUrl.search}`);
+      const response = NextResponse.redirect(targetUrl, 301);
+      response.headers.set('Cache-Control', 'public, max-age=31536000, immutable');
+      return response;
+    }
+  }
+
+  // 2. Skip system paths, api, static files, and admin
   if (
     pathname.startsWith('/_next') ||
     pathname.startsWith('/api') ||
@@ -22,11 +58,18 @@ export function middleware(request: NextRequest) {
 
   if (firstSegment && ALL_LOCALES.includes(firstSegment)) {
     // If the URL has a locale prefix, ensure the preference cookie is in sync
-    const currentCookie = request.cookies.get(LOCALE_COOKIE_NAME)?.value;
+    const currentCookie =
+      request.cookies.get(LOCALE_COOKIE_NAME)?.value ||
+      request.cookies.get(LEGACY_LOCALE_COOKIE_NAME)?.value;
     const response = NextResponse.next();
 
     if (currentCookie !== firstSegment) {
       response.cookies.set(LOCALE_COOKIE_NAME, firstSegment, {
+        path: '/',
+        maxAge: 31536000,
+        sameSite: 'lax',
+      });
+      response.cookies.set(LEGACY_LOCALE_COOKIE_NAME, firstSegment, {
         path: '/',
         maxAge: 31536000,
         sameSite: 'lax',
@@ -40,6 +83,6 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/((?!_next|api|admin|room|.*\\..*).*)'],
+  matcher: ['/((?!_next/static|_next/image|favicon.ico).*)'],
 };
 

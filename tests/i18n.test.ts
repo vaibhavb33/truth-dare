@@ -3,7 +3,7 @@ import { ALL_LOCALES, SUPPORTED_LOCALES, DEFAULT_LOCALE } from '@/lib/i18n/confi
 import { getTranslations, dictionaries } from '@/lib/i18n/translations';
 import { getLocalizedAlternates } from '@/lib/i18n/seo';
 
-describe('Asteria Internationalisation & Multilingual Engine', () => {
+describe('Play Truth & Dare Internationalisation & Multilingual Engine', () => {
   it('supports all 8 required languages with exact names and codes', () => {
     expect(ALL_LOCALES).toEqual(['en', 'hi', 'es', 'pt', 'fr', 'id', 'ar', 'de']);
 
@@ -71,15 +71,15 @@ describe('Asteria Internationalisation & Multilingual Engine', () => {
     const alternates = getLocalizedAlternates('/truth-or-dare', 'es');
 
     // Self-referencing canonical for Spanish
-    expect(alternates.canonical).toBe('https://truthordarequiz.com/es/truth-or-dare');
+    expect(alternates.canonical).toBe('https://playtruthndare.com/es/truth-or-dare');
 
     // Reciprocal hreflang for all 8 languages
     ALL_LOCALES.forEach((loc) => {
-      expect(alternates.languages[loc]).toBe(`https://truthordarequiz.com/${loc}/truth-or-dare`);
+      expect(alternates.languages[loc]).toBe(`https://playtruthndare.com/${loc}/truth-or-dare`);
     });
 
     // x-default points to default fallback
-    expect(alternates.languages['x-default']).toBe('https://truthordarequiz.com/truth-or-dare');
+    expect(alternates.languages['x-default']).toBe('https://playtruthndare.com/truth-or-dare');
   });
 
   it('defaults to English when an unsupported locale is requested', () => {

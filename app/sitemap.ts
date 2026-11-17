@@ -2,7 +2,7 @@ import type { MetadataRoute } from 'next';
 import { ALL_LOCALES } from '@/lib/i18n/config';
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://truthordarequiz.com';
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://playtruthndare.com';
   const now = new Date();
 
   function makeAlternates(subpath: string) {

@@ -63,7 +63,7 @@ async function runTechnicalSeoAudit() {
       // Canonical check: Root apex for EN homepage or /{loc} for others
       const canonicalMatch = html.match(/<link[^>]*rel="canonical"[^>]*href="([^"]*)"/i);
       const canonical = canonicalMatch ? canonicalMatch[1] : '';
-      const hasCanonical = canonical.includes('truthordarequiz.com') && (loc === 'en' ? (canonical === 'https://truthordarequiz.com' || canonical.includes('/en')) : canonical.includes(loc));
+      const hasCanonical = canonical.includes('playtruthndare.com') && (loc === 'en' ? (canonical === 'https://playtruthndare.com' || canonical.includes('/en')) : canonical.includes(loc));
       record(pagePath, 'Canonical URL', hasCanonical ? 'PASS' : 'FAIL', `Canonical: ${canonical}`);
 
       // Hreflang check: should have alternates

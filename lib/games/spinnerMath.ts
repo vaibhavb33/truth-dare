@@ -1,5 +1,5 @@
 /**
- * Asteria Spinner Wheel Mathematical Engine
+ * Play Truth & Dare Spinner Wheel Mathematical Engine
  * Pure physics and geometric algorithms for wheel-pointer alignment,
  * target angle calculation, quintic deceleration curves, and winner resolution.
  */

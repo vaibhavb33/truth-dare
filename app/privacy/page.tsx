@@ -5,26 +5,26 @@ import { Breadcrumbs } from '@/components/seo/Breadcrumbs';
 import { PrivacyClient } from '@/components/pages/PrivacyClient';
 import { getLocalizedAlternates } from '@/lib/i18n/seo';
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://truthordarequiz.com';
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://playtruthndare.com';
 
 export const metadata: Metadata = {
-  title: 'Privacy Policy | Asteria Online Party Gaming',
+  title: 'Privacy Policy | Play Truth & Dare Online Party Gaming',
   description:
-    'Read the Asteria Privacy Policy. Learn how we safeguard your data, respect local storage privacy, and never sell personal information.',
+    'Read the Play Truth & Dare Privacy Policy. Learn how we safeguard your data, respect local storage privacy, and never sell personal information.',
   alternates: getLocalizedAlternates('/privacy', 'en'),
   openGraph: {
     type: 'website',
     url: `${siteUrl}/privacy`,
-    title: 'Privacy Policy | Asteria Online Party Gaming',
+    title: 'Privacy Policy | Play Truth & Dare Online Party Gaming',
     description:
-      'Read the Asteria Privacy Policy. Learn how we safeguard your data, respect local storage privacy, and never sell personal information.',
+      'Read the Play Truth & Dare Privacy Policy. Learn how we safeguard your data, respect local storage privacy, and never sell personal information.',
     images: ['/og-image.png'],
   },
   twitter: {
     card: 'summary',
-    title: 'Privacy Policy | Asteria Online Party Gaming',
+    title: 'Privacy Policy | Play Truth & Dare Online Party Gaming',
     description:
-      'Read the Asteria Privacy Policy. Learn how we safeguard your data, respect local storage privacy, and never sell personal information.',
+      'Read the Play Truth & Dare Privacy Policy. Learn how we safeguard your data, respect local storage privacy, and never sell personal information.',
   },
 };
 
@@ -50,7 +50,7 @@ const privacyBreadcrumbSchema = {
 const privacyPageSchema = {
   '@context': 'https://schema.org',
   '@type': 'WebPage',
-  name: 'Asteria Privacy Policy',
+  name: 'Play Truth & Dare Privacy Policy',
   description:
     'Information regarding ephemeral room storage, cookies, local storage, and user privacy safeguards.',
   url: `${siteUrl}/privacy`,

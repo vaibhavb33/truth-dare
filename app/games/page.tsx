@@ -5,36 +5,35 @@ import { Sparkles, PlusCircle, ArrowRight } from 'lucide-react';
 import { JsonLd } from '@/components/seo/JsonLd';
 import { Breadcrumbs } from '@/components/seo/Breadcrumbs';
 import { GamesDirectoryClient } from '@/components/games/GamesDirectoryClient';
+import { getLocalizedAlternates } from '@/lib/i18n/seo';
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://truthordarequiz.com';
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://playtruthndare.com';
 
 export const metadata: Metadata = {
-  title: 'Online Party Games Directory | Free Browser Games',
+  title: 'Online Party Games Directory — Play Free in Browser | Play Truth & Dare',
   description:
-    'Browse all free online party games on Asteria. Play Truth or Dare, Spinner Wheel, Never Have I Ever, and Would You Rather instantly.',
-  alternates: {
-    canonical: `${siteUrl}/games`,
-  },
+    'Browse the best free online party games on Play Truth & Dare. Play Truth or Dare, Spinner Wheel, Never Have I Ever, and Would You Rather with friends.',
+  alternates: getLocalizedAlternates('/games'),
   openGraph: {
     type: 'website',
     url: `${siteUrl}/games`,
-    title: 'Online Party Games Directory | Free Browser Games',
+    title: 'Online Party Games Directory — Play Free in Browser | Play Truth & Dare',
     description:
-      'Browse all free online party games on Asteria. Play Truth or Dare, Spinner Wheel, Never Have I Ever, and Would You Rather instantly.',
+      'Browse the best free online party games on Play Truth & Dare. Play Truth or Dare, Spinner Wheel, Never Have I Ever, and Would You Rather with friends.',
     images: [
       {
         url: '/og-image.png',
         width: 1200,
         height: 630,
-        alt: 'Asteria Party Game Directory',
+        alt: 'Play Truth & Dare Game Directory',
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Online Party Games Directory | Free Browser Games',
+    title: 'Online Party Games Directory — Play Free in Browser | Play Truth & Dare',
     description:
-      'Browse all free online party games on Asteria. Play Truth or Dare, Spinner Wheel, Never Have I Ever, and Would You Rather instantly.',
+      'Browse the best free online party games on Play Truth & Dare. Play Truth or Dare, Spinner Wheel, Never Have I Ever, and Would You Rather with friends.',
     images: ['/og-image.png'],
   },
 };
@@ -61,7 +60,7 @@ const gamesDirectoryBreadcrumb = {
 const gamesDirectoryItemList = {
   '@context': 'https://schema.org',
   '@type': 'ItemList',
-  name: 'Asteria Online Party Games',
+  name: 'Play Truth & Dare Online Party Games',
   description: 'Complete collection of free, zero-download web party game engines.',
   itemListElement: [
     {

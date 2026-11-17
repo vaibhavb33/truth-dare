@@ -5,6 +5,7 @@ import { Download, Smartphone } from 'lucide-react';
 import { usePWA } from '@/lib/pwa/usePWA';
 import { cn } from '@/lib/utils';
 import { IOSInstallModal } from './IOSInstallModal';
+import { trackPwaInstallClicked } from '@/lib/analytics/gtm';
 
 interface PWAInstallButtonProps {
   variant?: 'header' | 'drawer' | 'footer' | 'pill';
@@ -24,14 +25,19 @@ export function PWAInstallButton({ variant = 'header', className }: PWAInstallBu
     return null;
   }
 
+  const handleInstallClick = () => {
+    trackPwaInstallClicked({ source: variant });
+    promptInstall();
+  };
+
   return (
     <>
       {variant === 'header' && (
         <button
-          onClick={promptInstall}
+          onClick={handleInstallClick}
           type="button"
-          aria-label="Install Asteria App"
-          title="Install Asteria App on your device"
+          aria-label="Install Play Truth & Dare App"
+          title="Install Play Truth & Dare App on your device"
           className={cn(
             'hidden sm:inline-flex items-center gap-1.5 text-xs font-bold px-3 py-2 rounded-xl bg-brand-500/15 hover:bg-brand-500/25 border border-brand-400/40 text-brand-300 hover:text-white transition-all shadow-sm active:scale-95',
             className
@@ -44,7 +50,7 @@ export function PWAInstallButton({ variant = 'header', className }: PWAInstallBu
 
       {variant === 'drawer' && (
         <button
-          onClick={promptInstall}
+          onClick={handleInstallClick}
           type="button"
           className={cn(
             'w-full p-3 rounded-2xl bg-brand-500/20 hover:bg-brand-500/30 border border-brand-400/40 flex items-center justify-between text-xs font-bold text-brand-300 transition-all active:scale-[0.99]',
@@ -53,7 +59,7 @@ export function PWAInstallButton({ variant = 'header', className }: PWAInstallBu
         >
           <span className="flex items-center gap-2.5">
             <Smartphone className="w-4 h-4 text-brand-400" />
-            <span>Install Asteria App (Offline Ready)</span>
+            <span>Install Play Truth & Dare App (Offline Ready)</span>
           </span>
           <Download className="w-4 h-4 text-brand-300" />
         </button>
@@ -61,7 +67,7 @@ export function PWAInstallButton({ variant = 'header', className }: PWAInstallBu
 
       {variant === 'footer' && (
         <button
-          onClick={promptInstall}
+          onClick={handleInstallClick}
           type="button"
           className={cn(
             'inline-flex items-center gap-1.5 text-xs text-brand-400 hover:text-brand-300 font-semibold transition-colors',
@@ -69,13 +75,13 @@ export function PWAInstallButton({ variant = 'header', className }: PWAInstallBu
           )}
         >
           <Download className="w-3.5 h-3.5" />
-          <span>Install Asteria (PWA)</span>
+          <span>Install Play Truth & Dare (PWA)</span>
         </button>
       )}
 
       {variant === 'pill' && (
         <button
-          onClick={promptInstall}
+          onClick={handleInstallClick}
           type="button"
           className={cn(
             'inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-brand-500/20 hover:bg-brand-500/30 border border-brand-400/40 text-xs font-bold text-brand-300 transition-all active:scale-95 shadow-glow-brand',

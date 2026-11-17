@@ -36,7 +36,7 @@ export async function generateMetadata({ params }: LocalizedArticleProps): Promi
   return generateLocalizedMetadata({
     locale: locale as Locale,
     subpath: `/blog/${slug}`,
-    overrideTitle: `${article.metaTitle} — Asteria (${langMeta.nativeName})`,
+    overrideTitle: `${article.metaTitle} — Play Truth & Dare (${langMeta.nativeName})`,
     overrideDescription: article.metaDescription,
   });
 }

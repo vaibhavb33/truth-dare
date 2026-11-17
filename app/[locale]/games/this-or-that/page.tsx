@@ -26,7 +26,7 @@ export async function generateMetadata({ params }: LocalizedThisOrThatProps): Pr
   return generateLocalizedMetadata({
     locale: locale as Locale,
     subpath: '/games/this-or-that',
-    overrideTitle: `${dict.gamesList.thisOrThat.name} — Asteria (${langMeta.nativeName})`,
+    overrideTitle: `${dict.gamesList.thisOrThat.name} — Play Truth & Dare (${langMeta.nativeName})`,
     overrideDescription: dict.gamesList.thisOrThat.tagline,
   });
 }

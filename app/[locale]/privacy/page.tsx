@@ -25,7 +25,7 @@ export async function generateMetadata({ params }: LocalizedPrivacyProps): Promi
   return generateLocalizedMetadata({
     locale: locale as Locale,
     subpath: '/privacy',
-    overrideTitle: `${dict.privacy.title} — Asteria (${langMeta.nativeName})`,
+    overrideTitle: `${dict.privacy.title} — Play Truth & Dare (${langMeta.nativeName})`,
     overrideDescription: dict.privacy.subtitle,
   });
 }

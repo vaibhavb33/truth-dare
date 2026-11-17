@@ -1,5 +1,5 @@
 /**
- * Asteria Unified Hybrid Speech Engine
+ * Play Truth & Dare Unified Hybrid Speech Engine
  * Next-generation audio system combining:
  * 1. Primary: Server-authoritative Neural TTS (Google Cloud Neural2 / Azure / ElevenLabs)
  * 2. Fallback: High-grade client-side Web Speech API (window.speechSynthesis)
@@ -42,7 +42,7 @@ export interface SpeakParams {
   onError?: (error: string) => void;
 }
 
-// Canonical BCP-47 language targets for Asteria's 8 supported languages
+// Canonical BCP-47 language targets for Play Truth & Dare's 8 supported languages
 export const LANGUAGE_LOCALE_MAP: Record<
   SupportedLanguageCode,
   { bcp47: string; fallbackPrefix: string; label: string }
@@ -84,7 +84,9 @@ export class SpeechService {
     let savedRate = 1.0;
     if (typeof window !== 'undefined' && typeof window.localStorage !== 'undefined') {
       try {
-        const storedRate = window.localStorage.getItem('asteria_voice_rate');
+        const storedRate =
+          window.localStorage.getItem('playtruthndare_voice_rate') ??
+          window.localStorage.getItem('asteria_voice_rate');
         if (storedRate) {
           const parsed = parseFloat(storedRate);
           if (!isNaN(parsed) && parsed >= 0.5 && parsed <= 2.0) {
@@ -287,6 +289,7 @@ export class SpeechService {
 
     if (typeof window !== 'undefined' && typeof window.localStorage !== 'undefined') {
       try {
+        window.localStorage.setItem('playtruthndare_voice_rate', clamped.toString());
         window.localStorage.setItem('asteria_voice_rate', clamped.toString());
       } catch { }
     }
@@ -376,7 +379,10 @@ export class SpeechService {
         throw new Error(`Neural synthesis server returned ${response.status}`);
       }
 
-      const providerHeader = response.headers.get('X-Asteria-Voice-Provider') || 'neural';
+      const providerHeader =
+        response.headers.get('X-PlayTruthNDare-Voice-Provider') ||
+        response.headers.get('X-Asteria-Voice-Provider') ||
+        'neural';
       const audioBlob = await response.blob();
       const audioUrl = URL.createObjectURL(audioBlob);
       this.activeAudioUrl = audioUrl;
@@ -498,6 +504,7 @@ export class SpeechService {
       // Retain utterance globally to shield against Chromium / WebKit garbage collection bug
       this.activeUtterance = utterance;
       if (typeof window !== 'undefined') {
+        (window as any).__playtruthndare_speech_utterance__ = utterance;
         (window as any).__asteria_speech_utterance__ = utterance;
       }
 
@@ -531,6 +538,7 @@ export class SpeechService {
         if (keepAliveInterval) clearInterval(keepAliveInterval);
         this.activeUtterance = null;
         if (typeof window !== 'undefined') {
+          (window as any).__playtruthndare_speech_utterance__ = null;
           (window as any).__asteria_speech_utterance__ = null;
         }
         this.notifyState({
@@ -547,6 +555,7 @@ export class SpeechService {
         if (keepAliveInterval) clearInterval(keepAliveInterval);
         this.activeUtterance = null;
         if (typeof window !== 'undefined') {
+          (window as any).__playtruthndare_speech_utterance__ = null;
           (window as any).__asteria_speech_utterance__ = null;
         }
 
@@ -663,6 +672,7 @@ export class SpeechService {
 
     this.activeUtterance = null;
     if (typeof window !== 'undefined') {
+      (window as any).__playtruthndare_speech_utterance__ = null;
       (window as any).__asteria_speech_utterance__ = null;
     }
     this.notifyState({

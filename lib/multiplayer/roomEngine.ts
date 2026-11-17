@@ -1,5 +1,5 @@
 /**
- * Asteria Production Multiplayer Room Engine
+ * Play Truth & Dare Production Multiplayer Room Engine
  * Server-authoritative state transitions, real-time lobby, synchronized turns,
  * concurrency locks, duplicate prevention, host migration, and session restoration.
  */
@@ -115,17 +115,17 @@ export class RoomEngine {
     const language = params.customDeckSnapshot?.language || params.language || 'en';
     const customDeckSnapshot = params.customDeckSnapshot
       ? {
-          id: params.customDeckSnapshot.id,
-          deckId: params.customDeckSnapshot.deckId || params.customDeckSnapshot.id,
-          roomId,
-          version: params.customDeckSnapshot.version || 1,
-          name: params.customDeckSnapshot.name,
-          language: params.customDeckSnapshot.language,
-          questions: params.customDeckSnapshot.questions.map((q) => ({ ...q })),
-          truthQuestions: (params.customDeckSnapshot.truthQuestions || params.customDeckSnapshot.questions.filter((q) => q.type === 'truth')).map((q) => ({ ...q })),
-          dareQuestions: (params.customDeckSnapshot.dareQuestions || params.customDeckSnapshot.questions.filter((q) => q.type === 'dare')).map((q) => ({ ...q })),
-          snapshotCreatedAt: params.customDeckSnapshot.snapshotCreatedAt || Date.now(),
-        }
+        id: params.customDeckSnapshot.id,
+        deckId: params.customDeckSnapshot.deckId || params.customDeckSnapshot.id,
+        roomId,
+        version: params.customDeckSnapshot.version || 1,
+        name: params.customDeckSnapshot.name,
+        language: params.customDeckSnapshot.language,
+        questions: params.customDeckSnapshot.questions.map((q) => ({ ...q })),
+        truthQuestions: (params.customDeckSnapshot.truthQuestions || params.customDeckSnapshot.questions.filter((q) => q.type === 'truth')).map((q) => ({ ...q })),
+        dareQuestions: (params.customDeckSnapshot.dareQuestions || params.customDeckSnapshot.questions.filter((q) => q.type === 'dare')).map((q) => ({ ...q })),
+        snapshotCreatedAt: params.customDeckSnapshot.snapshotCreatedAt || Date.now(),
+      }
       : null;
 
     const nowUtc = Date.now();
@@ -530,17 +530,17 @@ export class RoomEngine {
           const snapshot = params.payload.customDeckSnapshot as MultiplayerRoom['customDeckSnapshot'];
           room.customDeckSnapshot = snapshot
             ? {
-                id: snapshot.id,
-                deckId: snapshot.deckId || snapshot.id,
-                roomId: room.id,
-                version: snapshot.version || 1,
-                name: snapshot.name,
-                language: snapshot.language,
-                questions: snapshot.questions.map((q) => ({ ...q })),
-                truthQuestions: (snapshot.truthQuestions || snapshot.questions.filter((q) => q.type === 'truth')).map((q) => ({ ...q })),
-                dareQuestions: (snapshot.dareQuestions || snapshot.questions.filter((q) => q.type === 'dare')).map((q) => ({ ...q })),
-                snapshotCreatedAt: snapshot.snapshotCreatedAt || Date.now(),
-              }
+              id: snapshot.id,
+              deckId: snapshot.deckId || snapshot.id,
+              roomId: room.id,
+              version: snapshot.version || 1,
+              name: snapshot.name,
+              language: snapshot.language,
+              questions: snapshot.questions.map((q) => ({ ...q })),
+              truthQuestions: (snapshot.truthQuestions || snapshot.questions.filter((q) => q.type === 'truth')).map((q) => ({ ...q })),
+              dareQuestions: (snapshot.dareQuestions || snapshot.questions.filter((q) => q.type === 'dare')).map((q) => ({ ...q })),
+              snapshotCreatedAt: snapshot.snapshotCreatedAt || Date.now(),
+            }
             : null;
           if (snapshot?.language) {
             room.language = snapshot.language;
@@ -870,8 +870,14 @@ export class RoomEngine {
 
 // Global singleton instance bound to globalThis for Next.js consistency across module reloads
 const globalForRoomEngine = globalThis as unknown as {
+  __playtruthndare_room_engine__?: RoomEngine;
   __asteria_room_engine__?: RoomEngine;
 };
 
-export const roomEngine = globalForRoomEngine.__asteria_room_engine__ ?? new RoomEngine();
+export const roomEngine =
+  globalForRoomEngine.__playtruthndare_room_engine__ ??
+  globalForRoomEngine.__asteria_room_engine__ ??
+  new RoomEngine();
+
+globalForRoomEngine.__playtruthndare_room_engine__ = roomEngine;
 globalForRoomEngine.__asteria_room_engine__ = roomEngine;

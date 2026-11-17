@@ -26,7 +26,7 @@ export async function generateMetadata({ params }: LocalizedSpinnerPageProps): P
   return generateLocalizedMetadata({
     locale: locale as Locale,
     subpath: '/games/spin-the-bottle',
-    overrideTitle: `${dict.gamesList.spinTheBottle.name} — Asteria (${langMeta.nativeName})`,
+    overrideTitle: `${dict.gamesList.spinTheBottle.name} — Play Truth & Dare (${langMeta.nativeName})`,
     overrideDescription: dict.gamesList.spinTheBottle.tagline,
   });
 }

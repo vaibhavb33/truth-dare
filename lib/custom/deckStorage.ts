@@ -1,5 +1,5 @@
 /**
- * Asteria Custom Deck Local Storage & Management Repository
+ * Play Truth & Dare Custom Deck Local Storage & Management Repository
  * Handles multi-deck library persistence, creator ownership, and legacy migrations.
  * Features hybrid storage (localStorage with automatic in-memory fallback for SSR & Vitest environments).
  */
@@ -7,9 +7,11 @@
 import { CustomDeck, CustomQuestion, Question } from '@/types';
 import { questionEngine } from '@/lib/questions/engine';
 
-const STORAGE_KEY_DECKS = 'asteria_custom_decks';
+const STORAGE_KEY_DECKS = 'playtruthndare_custom_decks';
+const STORAGE_KEY_LEGACY_DECKS = 'asteria_custom_decks';
 const STORAGE_KEY_LEGACY = 'asteria_custom_deck';
-const STORAGE_KEY_USER = 'asteria_user_id';
+const STORAGE_KEY_USER = 'playtruthndare_user_id';
+const STORAGE_KEY_LEGACY_USER = 'asteria_user_id';
 
 // Memory storage fallback for Node.js / Vitest / SSR environments
 const memoryStorage: Record<string, string> = {};
@@ -45,7 +47,7 @@ function removeStorageItem(key: string): void {
  * Retrieves or establishes an anonymous persistent creator ID for the current browser
  */
 export function getCreatorId(): string {
-  let uid = getStorageItem(STORAGE_KEY_USER);
+  let uid = getStorageItem(STORAGE_KEY_USER) || getStorageItem(STORAGE_KEY_LEGACY_USER);
   if (!uid) {
     uid = 'usr_' + Math.random().toString(36).substring(2, 9) + '_' + Date.now().toString(36);
     setStorageItem(STORAGE_KEY_USER, uid);
@@ -168,7 +170,7 @@ export const deckStorage = {
     const creatorId = getCreatorId();
 
     try {
-      const raw = getStorageItem(STORAGE_KEY_DECKS);
+      const raw = getStorageItem(STORAGE_KEY_DECKS) || getStorageItem(STORAGE_KEY_LEGACY_DECKS);
       if (raw) {
         const parsed = JSON.parse(raw);
         if (Array.isArray(parsed) && parsed.length > 0) {
@@ -307,7 +309,7 @@ export const deckStorage = {
   },
 
   /**
-   * Injects the custom deck questions into Asteria's Question Engine for instant gameplay
+   * Injects the custom deck questions into Play Truth & Dare's Question Engine for instant gameplay
    */
   syncToQuestionEngine(deck: CustomDeck) {
     if (!deck.questions || deck.questions.length === 0) return;

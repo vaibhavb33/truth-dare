@@ -370,8 +370,8 @@ async function runComprehensiveFinalQA() {
       const manifest = await manifestRes.json();
 
       const manifestValid =
-        manifest.name === 'Asteria - Truth or Dare' &&
-        manifest.short_name === 'Asteria' &&
+        manifest.name === 'Play Truth & Dare' &&
+        manifest.short_name === 'PlayTruthNDare' &&
         manifest.display === 'standalone' &&
         Array.isArray(manifest.icons) &&
         manifest.icons.some((i) => i.sizes === '192x192') &&

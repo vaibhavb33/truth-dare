@@ -5,7 +5,7 @@ import { Breadcrumbs } from '@/components/seo/Breadcrumbs';
 import { MostLikelyToClient } from '@/components/games/MostLikelyToClient';
 import { RelatedGames } from '@/components/games/RelatedGames';
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://truthordarequiz.com';
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://playtruthndare.com';
 
 export const metadata: Metadata = {
   title: 'Most Likely To Online — Secret Ballot Group Party Game',
