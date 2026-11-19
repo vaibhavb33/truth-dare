@@ -4,6 +4,7 @@
  * concurrency locks, duplicate prevention, host migration, and session restoration.
  */
 
+import { randomBytes } from 'node:crypto';
 import {
   MultiplayerRoom,
   Player,
@@ -26,7 +27,7 @@ function sanitizeName(rawName: string): string {
 }
 
 function generateSessionToken(): string {
-  return 'tok-' + Math.random().toString(36).substring(2, 12) + Date.now().toString(36);
+  return randomBytes(32).toString('hex');
 }
 
 function generateCanonicalRoomId(): string {
@@ -476,9 +477,17 @@ export class RoomEngine {
       return { success: false, code: 'PERMISSION_DENIED', error: 'Player not found in this room.' };
     }
 
-    // Validate session token if provided
-    if (params.sessionToken && player.sessionToken && params.sessionToken !== player.sessionToken) {
-      return { success: false, code: 'PERMISSION_DENIED', error: 'Invalid session token authorization.' };
+    // Validate session token (mandatory)
+    if (
+      !params.sessionToken ||
+      !player.sessionToken ||
+      params.sessionToken !== player.sessionToken
+    ) {
+      return {
+        success: false,
+        code: 'PERMISSION_DENIED',
+        error: 'Invalid or missing session token.',
+      };
     }
 
     const isCurrentActive = room.activePlayerId === player.id;

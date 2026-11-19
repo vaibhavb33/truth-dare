@@ -156,7 +156,7 @@ describe('Global Multilingual & Internationalisation Engine (Task 10)', () => {
 
   it('maintains strict room question language selected by host while allowing participant localized UI', () => {
     // 1. Host creates room with language = 'hi' (Hindi)
-    const { room: hostRoom, hostPlayerId } = roomEngine.createRoom({
+    const { room: hostRoom, hostPlayerId, sessionToken } = roomEngine.createRoom({
       gameId: 'truth-or-dare',
       categoryId: 'classic-party',
       hostName: 'Arjun',
@@ -170,12 +170,14 @@ describe('Global Multilingual & Internationalisation Engine (Task 10)', () => {
     roomEngine.dispatchAction({
       roomCode: hostRoom.roomCode,
       playerId: hostPlayerId,
+      sessionToken,
       action: 'START_GAME',
     });
 
     const flipResult = roomEngine.dispatchAction({
       roomCode: hostRoom.roomCode,
       playerId: hostPlayerId,
+      sessionToken,
       action: 'FLIP_CARD',
       payload: { type: 'truth' },
     });

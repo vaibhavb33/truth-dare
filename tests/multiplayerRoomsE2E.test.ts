@@ -592,13 +592,14 @@ describe('Real-Time Multiplayer Rooms - Multi-Client Simulation Test Suite', () 
       expect(guest.room?.players[1].name).toBe('Attacker');
     });
 
-    it('rejects actions with mismatched session tokens', () => {
-      const { room, hostPlayerId } = roomEngine.createRoom({
+    it('rejects actions with mismatched or missing session tokens', () => {
+      const { room, hostPlayerId, sessionToken } = roomEngine.createRoom({
         gameId: 'truth-or-dare',
         categoryId: 'classic-party',
         hostName: 'Alice',
       });
 
+      // Mismatched token
       const forgedAction = roomEngine.dispatchAction({
         roomCode: room.roomCode,
         playerId: hostPlayerId,
@@ -607,7 +608,32 @@ describe('Real-Time Multiplayer Rooms - Multi-Client Simulation Test Suite', () 
       });
 
       expect(forgedAction.success).toBe(false);
-      expect(forgedAction.error).toContain('Invalid session token authorization');
+      expect(forgedAction.code).toBe('PERMISSION_DENIED');
+      expect(forgedAction.error).toBe('Invalid or missing session token.');
+
+      // Missing token
+      const missingTokenAction = roomEngine.dispatchAction({
+        roomCode: room.roomCode,
+        playerId: hostPlayerId,
+        action: 'START_GAME',
+      });
+
+      expect(missingTokenAction.success).toBe(false);
+      expect(missingTokenAction.code).toBe('PERMISSION_DENIED');
+      expect(missingTokenAction.error).toBe('Invalid or missing session token.');
+
+      // Valid token succeeds (with 2 players)
+      const bob = roomEngine.joinRoom({
+        roomCode: room.roomCode,
+        playerName: 'Bob',
+      });
+      const validAction = roomEngine.dispatchAction({
+        roomCode: room.roomCode,
+        playerId: hostPlayerId,
+        sessionToken,
+        action: 'START_GAME',
+      });
+      expect(validAction.success).toBe(true);
     });
   });
 

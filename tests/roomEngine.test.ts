@@ -33,7 +33,7 @@ describe('Multiplayer RoomEngine Unit Tests', () => {
   });
 
   it('dispatches actions and rotates player turns', () => {
-    const { room, hostPlayerId } = roomEngine.createRoom({
+    const { room, hostPlayerId, sessionToken } = roomEngine.createRoom({
       gameId: 'truth-or-dare',
       categoryId: 'classic-party',
       hostName: 'Player1',
@@ -48,6 +48,7 @@ describe('Multiplayer RoomEngine Unit Tests', () => {
     roomEngine.dispatchAction({
       roomCode: room.roomCode,
       playerId: hostPlayerId,
+      sessionToken,
       action: 'START_GAME',
     });
 
@@ -55,6 +56,7 @@ describe('Multiplayer RoomEngine Unit Tests', () => {
     const flipResult = roomEngine.dispatchAction({
       roomCode: room.roomCode,
       playerId: hostPlayerId,
+      sessionToken,
       action: 'FLIP_CARD',
       payload: { type: 'dare' },
     });
@@ -66,6 +68,7 @@ describe('Multiplayer RoomEngine Unit Tests', () => {
     const completeResult = roomEngine.dispatchAction({
       roomCode: room.roomCode,
       playerId: hostPlayerId,
+      sessionToken,
       action: 'COMPLETE_DARE',
     });
 
@@ -92,6 +95,72 @@ describe('Multiplayer RoomEngine Unit Tests', () => {
 
     expect(result.success).toBe(false);
     expect(result.error).toContain('Room not found');
+  });
+
+  it('generates cryptographically secure 256-bit (64 hex char) session tokens for players', () => {
+    const { room, sessionToken: hostToken } = roomEngine.createRoom({
+      gameId: 'truth-or-dare',
+      categoryId: 'classic-party',
+      hostName: 'HostPlayer',
+    });
+
+    expect(hostToken).toBeDefined();
+    expect(typeof hostToken).toBe('string');
+    expect(hostToken.length).toBe(64);
+    expect(/^[0-9a-f]{64}$/.test(hostToken)).toBe(true);
+
+    const joinResult = roomEngine.joinRoom({
+      roomCode: room.roomCode,
+      playerName: 'GuestPlayer',
+    });
+
+    expect(joinResult.sessionToken).toBeDefined();
+    expect(joinResult.sessionToken?.length).toBe(64);
+    expect(/^[0-9a-f]{64}$/.test(joinResult.sessionToken!)).toBe(true);
+    expect(joinResult.sessionToken).not.toBe(hostToken);
+  });
+
+  it('mandates valid session tokens in dispatchAction', () => {
+    const { room, hostPlayerId, sessionToken } = roomEngine.createRoom({
+      gameId: 'truth-or-dare',
+      categoryId: 'classic-party',
+      hostName: 'HostPlayer',
+    });
+
+    roomEngine.joinRoom({
+      roomCode: room.roomCode,
+      playerName: 'GuestPlayer',
+    });
+
+    // 1. Missing session token
+    const missingRes = roomEngine.dispatchAction({
+      roomCode: room.roomCode,
+      playerId: hostPlayerId,
+      action: 'START_GAME',
+    });
+    expect(missingRes.success).toBe(false);
+    expect(missingRes.code).toBe('PERMISSION_DENIED');
+    expect(missingRes.error).toBe('Invalid or missing session token.');
+
+    // 2. Mismatched session token
+    const mismatchRes = roomEngine.dispatchAction({
+      roomCode: room.roomCode,
+      playerId: hostPlayerId,
+      sessionToken: 'tampered-token-12345',
+      action: 'START_GAME',
+    });
+    expect(mismatchRes.success).toBe(false);
+    expect(mismatchRes.code).toBe('PERMISSION_DENIED');
+    expect(mismatchRes.error).toBe('Invalid or missing session token.');
+
+    // 3. Valid session token
+    const validRes = roomEngine.dispatchAction({
+      roomCode: room.roomCode,
+      playerId: hostPlayerId,
+      sessionToken,
+      action: 'START_GAME',
+    });
+    expect(validRes.success).toBe(true);
   });
 });
 

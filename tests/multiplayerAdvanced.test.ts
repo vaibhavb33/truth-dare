@@ -7,7 +7,7 @@ describe('Advanced Multiplayer Concurrency & Security Tests', () => {
   });
 
   it('prevents non-active guest from flipping card during another player turn', () => {
-    const { room, hostPlayerId } = roomEngine.createRoom({
+    const { room, hostPlayerId, sessionToken } = roomEngine.createRoom({
       gameId: 'truth-or-dare',
       categoryId: 'classic-party',
       hostName: 'HostPlayer',
@@ -22,6 +22,7 @@ describe('Advanced Multiplayer Concurrency & Security Tests', () => {
     roomEngine.dispatchAction({
       roomCode: room.roomCode,
       playerId: hostPlayerId,
+      sessionToken,
       action: 'START_GAME',
     });
 
@@ -31,6 +32,7 @@ describe('Advanced Multiplayer Concurrency & Security Tests', () => {
     const unauthorizedFlip = roomEngine.dispatchAction({
       roomCode: room.roomCode,
       playerId: guest.playerId!,
+      sessionToken: guest.sessionToken,
       action: 'FLIP_CARD',
       payload: { type: 'dare' },
     });
@@ -40,7 +42,7 @@ describe('Advanced Multiplayer Concurrency & Security Tests', () => {
   });
 
   it('prevents duplicate FLIP_CARD actions before resolving current card', () => {
-    const { room, hostPlayerId } = roomEngine.createRoom({
+    const { room, hostPlayerId, sessionToken } = roomEngine.createRoom({
       gameId: 'truth-or-dare',
       categoryId: 'classic-party',
       hostName: 'HostPlayer',
@@ -49,6 +51,7 @@ describe('Advanced Multiplayer Concurrency & Security Tests', () => {
     roomEngine.dispatchAction({
       roomCode: room.roomCode,
       playerId: hostPlayerId,
+      sessionToken,
       action: 'START_GAME',
     });
 
@@ -56,6 +59,7 @@ describe('Advanced Multiplayer Concurrency & Security Tests', () => {
     const flip1 = roomEngine.dispatchAction({
       roomCode: room.roomCode,
       playerId: hostPlayerId,
+      sessionToken,
       action: 'FLIP_CARD',
       payload: { type: 'truth' },
     });
@@ -66,6 +70,7 @@ describe('Advanced Multiplayer Concurrency & Security Tests', () => {
     const flip2 = roomEngine.dispatchAction({
       roomCode: room.roomCode,
       playerId: hostPlayerId,
+      sessionToken,
       action: 'FLIP_CARD',
       payload: { type: 'dare' },
     });
@@ -74,7 +79,7 @@ describe('Advanced Multiplayer Concurrency & Security Tests', () => {
   });
 
   it('prevents score theft by non-active player calling COMPLETE_DARE', () => {
-    const { room, hostPlayerId } = roomEngine.createRoom({
+    const { room, hostPlayerId, sessionToken } = roomEngine.createRoom({
       gameId: 'truth-or-dare',
       categoryId: 'classic-party',
       hostName: 'Alice',
@@ -88,12 +93,14 @@ describe('Advanced Multiplayer Concurrency & Security Tests', () => {
     roomEngine.dispatchAction({
       roomCode: room.roomCode,
       playerId: hostPlayerId,
+      sessionToken,
       action: 'START_GAME',
     });
 
     roomEngine.dispatchAction({
       roomCode: room.roomCode,
       playerId: hostPlayerId,
+      sessionToken,
       action: 'FLIP_CARD',
       payload: { type: 'truth' },
     });
@@ -102,6 +109,7 @@ describe('Advanced Multiplayer Concurrency & Security Tests', () => {
     const bobAttempt = roomEngine.dispatchAction({
       roomCode: room.roomCode,
       playerId: bob.playerId!,
+      sessionToken: bob.sessionToken,
       action: 'COMPLETE_DARE',
     });
 
@@ -110,7 +118,7 @@ describe('Advanced Multiplayer Concurrency & Security Tests', () => {
   });
 
   it('correctly migrates active player when current active player leaves mid-turn', () => {
-    const { room, hostPlayerId } = roomEngine.createRoom({
+    const { room, hostPlayerId, sessionToken } = roomEngine.createRoom({
       gameId: 'truth-or-dare',
       categoryId: 'classic-party',
       hostName: 'HostAlice',
@@ -124,6 +132,7 @@ describe('Advanced Multiplayer Concurrency & Security Tests', () => {
     roomEngine.dispatchAction({
       roomCode: room.roomCode,
       playerId: hostPlayerId,
+      sessionToken,
       action: 'START_GAME',
     });
 
