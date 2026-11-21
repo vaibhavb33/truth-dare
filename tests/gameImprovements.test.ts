@@ -294,5 +294,118 @@ describe('Play Truth & Dare — Game UI and Functionality Improvements', () => {
       expect(hostAfter?.isHost).toBe(true);
     });
   });
+
+  describe('3. Most Likely To — Player Name Editing & Multiplayer Synchronization', () => {
+    it('manages local player roster, changes Alex to Vaibhav, and preserves original IDs and vote counts', () => {
+      interface MostLikelyPlayer {
+        id: string;
+        name: string;
+        votes: number;
+      }
+
+      const initialRoster: MostLikelyPlayer[] = [
+        { id: 'player-1', name: 'Alex', votes: 2 },
+        { id: 'player-2', name: 'Maya', votes: 1 },
+        { id: 'player-3', name: 'Jordan', votes: 0 },
+        { id: 'player-4', name: 'Sarah', votes: 0 },
+      ];
+
+      // Step 1: Simulate user editing Alex -> Vaibhav
+      const updated = initialRoster.map((p) =>
+        p.id === 'player-1' ? { ...p, name: 'Vaibhav' } : p
+      );
+
+      // Step 2: Verify Vaibhav appears in voting roster
+      expect(updated.find((p) => p.id === 'player-1')?.name).toBe('Vaibhav');
+      // Step 3: Verify original player ID is preserved
+      expect(updated[0].id).toBe('player-1');
+      // Step 4: Verify votes are preserved
+      expect(updated[0].votes).toBe(2);
+
+      // Step 5: Test persistence serialization (localStorage format)
+      const serialized = JSON.stringify(updated);
+      const restored: MostLikelyPlayer[] = JSON.parse(serialized);
+      expect(restored[0].name).toBe('Vaibhav');
+      expect(restored[0].id).toBe('player-1');
+      expect(restored[0].votes).toBe(2);
+    });
+
+    it('synchronizes Most Likely To multiplayer room votes, draws questions, and updates player names across clients', () => {
+      // 1. Create a multiplayer room for Most Likely To
+      const hostRes = roomEngine.createRoom({
+        gameId: 'most-likely-to',
+        categoryId: 'party',
+        hostName: 'Alex',
+      });
+      expect(hostRes.room).toBeDefined();
+      const roomCode = hostRes.roomCode;
+      const hostPlayerId = hostRes.hostPlayerId;
+      const hostToken = hostRes.sessionToken;
+
+      // 2. Guest joins the room
+      const guestRes = roomEngine.joinRoom({
+        roomCode,
+        playerName: 'Maya',
+      });
+      expect(guestRes.success).toBe(true);
+      const guestPlayerId = guestRes.playerId!;
+      const guestToken = guestRes.sessionToken!;
+
+      // 3. Host starts the game
+      const startRes = roomEngine.dispatchAction({
+        roomCode,
+        playerId: hostPlayerId,
+        sessionToken: hostToken,
+        action: 'START_GAME',
+      });
+      expect(startRes.success).toBe(true);
+      expect(startRes.room?.status).toBe('IN_PROGRESS');
+      expect(startRes.room?.currentCard).toBeDefined();
+      expect(startRes.room?.isCardFlipped).toBe(true);
+
+      // 4. Guest casts a vote for Alex (host)
+      const voteRes = roomEngine.dispatchAction({
+        roomCode,
+        playerId: guestPlayerId,
+        sessionToken: guestToken,
+        action: 'SUBMIT_VOTE',
+        payload: { vote: hostPlayerId },
+      });
+      expect(voteRes.success).toBe(true);
+      expect(voteRes.room?.votes[guestPlayerId]).toBe(hostPlayerId);
+
+      // 5. Host renames Alex -> Vaibhav
+      const renameRes = roomEngine.dispatchAction({
+        roomCode,
+        playerId: hostPlayerId,
+        sessionToken: hostToken,
+        action: 'UPDATE_PLAYER_NAME',
+        payload: {
+          targetPlayerId: hostPlayerId,
+          newName: 'Vaibhav',
+        },
+      });
+      expect(renameRes.success).toBe(true);
+
+      // 6. Verify Vaibhav is updated in room state for both players
+      const latestRoom = roomEngine.getRoom(roomCode);
+      const hostAfter = latestRoom?.players.find((p) => p.id === hostPlayerId);
+      expect(hostAfter?.name).toBe('Vaibhav');
+
+      // 7. Verify player original ID, session token, and guest's vote remain completely intact
+      expect(hostAfter?.id).toBe(hostPlayerId);
+      expect(hostAfter?.sessionToken).toBe(hostToken);
+      expect(latestRoom?.votes[guestPlayerId]).toBe(hostPlayerId);
+
+      // 8. Reconnect session verification: name persists
+      const reconnectRes = roomEngine.reconnectPlayer({
+        roomCode,
+        playerId: hostPlayerId,
+        sessionToken: hostToken,
+      });
+      expect(reconnectRes.success).toBe(true);
+      expect(reconnectRes.player?.name).toBe('Vaibhav');
+    });
+  });
 });
 

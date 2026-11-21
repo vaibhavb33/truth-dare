@@ -1268,59 +1268,145 @@ export function RoomClient({ roomCode }: RoomClientProps) {
                 </button>
               </div>
 
-              {/* Synchronized 3D Card */}
-              <div className="w-full flex flex-col items-center justify-center my-auto">
-                <Card3D
-                  question={cleanQuestion(room?.currentCard || null)}
-                  isFlipped={room?.isCardFlipped || false}
-                  onChooseType={(type) => {
-                    if (isHost || isMyTurn) {
-                      dispatch('FLIP_CARD', { type });
-                    }
-                  }}
-                  onListenType={(type) => {
-                    if (isHost || isMyTurn) {
-                      dispatch('FLIP_CARD', { type });
-                    }
-                  }}
-                />
-              </div>
+              {/* Synchronized Game Arena (Most Likely To Voting vs Truth or Dare 3D Card) */}
+              {room?.gameId === 'most-likely-to' ? (
+                <div className="w-full max-w-xl mx-auto space-y-4 sm:space-y-6 my-auto">
+                  {/* Most Likely To Prompt Card */}
+                  <div className="w-full p-5 sm:p-8 rounded-3xl bg-surface-elevated border border-amber-400/30 shadow-[0_0_35px_rgba(245,158,11,0.25)] text-center space-y-3">
+                    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-500/10 text-amber-400 text-xs font-bold uppercase tracking-wider">
+                      <Users className="w-3.5 h-3.5" /> Most Likely To Online
+                    </span>
+                    <p className="font-display font-bold text-lg sm:text-2xl md:text-3xl text-white leading-relaxed break-words">
+                      {cleanQuestionPrompt(
+                        room?.currentCard?.prompt ||
+                          room?.currentCard?.question_text ||
+                          'Who in the room is most likely to do this?'
+                      )}
+                    </p>
+                  </div>
+
+                  {/* Connected Players Voting Grid */}
+                  <div className="w-full space-y-2.5">
+                    <div className="flex items-center justify-between px-1">
+                      <p className="text-xs font-bold uppercase tracking-wider text-slate-400">
+                        Cast your secret vote for:
+                      </p>
+                      <span className="text-[11px] font-mono text-brand-300">
+                        {Object.keys(room?.votes || {}).length} / {room?.players.length || 0} Voted
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-2 sm:gap-3">
+                      {room?.players.map((p) => {
+                        const hasMyVote = room.votes?.[playerId] === p.id;
+                        const voteCount = Object.values(room.votes || {}).filter((v) => v === p.id).length;
+                        return (
+                          <button
+                            key={p.id}
+                            type="button"
+                            onClick={() => {
+                              sound.playVictory();
+                              sound.triggerHaptic([20, 30]);
+                              dispatch('SUBMIT_VOTE', { vote: p.id });
+                            }}
+                            className={`p-2.5 sm:p-3.5 rounded-2xl border flex items-center justify-between gap-1.5 min-w-0 transition-all ${
+                              hasMyVote
+                                ? 'bg-amber-500/25 border-amber-400 text-white shadow-glow-brand scale-[1.02]'
+                                : 'bg-surface-elevated hover:bg-surface-highlight border-white/10 text-slate-200'
+                            }`}
+                          >
+                            <div className="flex items-center gap-2 min-w-0">
+                              <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-brand-600 flex items-center justify-center font-bold text-xs text-white shrink-0">
+                                {p.name.charAt(0).toUpperCase()}
+                              </div>
+                              <span className="font-bold text-xs sm:text-sm truncate">{p.name}</span>
+                            </div>
+                            {voteCount > 0 && (
+                              <span className="px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 text-[10px] font-mono font-bold shrink-0">
+                                {voteCount} {voteCount === 1 ? 'vote' : 'votes'}
+                              </span>
+                            )}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  {/* Host / Turn Control to advance prompt */}
+                  {(isHost || isMyTurn) && (
+                    <div className="pt-2 flex justify-center">
+                      <Button
+                        variant="primary"
+                        size="lg"
+                        onClick={() => {
+                          triggerConfetti();
+                          sound.playChime();
+                          dispatch('NEXT_TURN');
+                        }}
+                        className="w-full max-w-sm font-bold min-h-[46px]"
+                      >
+                        Next Prompt →
+                      </Button>
+                    </div>
+                  )}
+                </div>
+              ) : (
+                /* Synchronized 3D Card */
+                <div className="w-full flex flex-col items-center justify-center my-auto">
+                  <Card3D
+                    question={cleanQuestion(room?.currentCard || null)}
+                    isFlipped={room?.isCardFlipped || false}
+                    onChooseType={(type) => {
+                      if (isHost || isMyTurn) {
+                        dispatch('FLIP_CARD', { type });
+                      }
+                    }}
+                    onListenType={(type) => {
+                      if (isHost || isMyTurn) {
+                        dispatch('FLIP_CARD', { type });
+                      }
+                    }}
+                  />
+                </div>
+              )}
 
               {/* Host & Active Player Turn Controls */}
               <div className="w-full max-w-md space-y-2.5 sm:space-y-3">
-                {room?.isCardFlipped && (isHost || isMyTurn) ? (
-                  <div className="grid grid-cols-2 gap-2 sm:gap-3">
-                    <Button
-                      data-testid="skip-turn-btn"
-                      variant="skip"
-                      size="lg"
-                      onClick={() => dispatch('SKIP_TURN')}
-                      className="w-full gap-1 sm:gap-1.5 px-2 sm:px-4 text-xs sm:text-sm font-bold min-h-[48px]"
-                    >
-                      <SkipForward className="w-4 h-4 shrink-0" />
-                      <span className="truncate">{dict.multiplayer.skipTurn}</span>
-                    </Button>
-                    <Button
-                      data-testid="complete-dare-btn"
-                      variant="primary"
-                      size="lg"
-                      onClick={() => {
-                        triggerConfetti();
-                        sound.playVictory();
-                        dispatch('COMPLETE_DARE');
-                      }}
-                      className="w-full gap-1 sm:gap-1.5 px-2 sm:px-4 text-xs sm:text-sm font-bold min-h-[48px]"
-                    >
-                      <CheckCircle className="w-4 h-4 text-emerald-300 shrink-0" />
-                      <span className="truncate">{dict.multiplayer.completeDare}</span>
-                    </Button>
-                  </div>
-                ) : (
-                  <p className="text-center text-xs text-slate-500">
-                    {isMyTurn
-                      ? dict.game.choosePath
-                      : t('multiplayer.waitingForTurn', { name: activePlayer?.name || 'Player' })}
-                  </p>
+                {room?.gameId !== 'most-likely-to' && (
+                  room?.isCardFlipped && (isHost || isMyTurn) ? (
+                    <div className="grid grid-cols-2 gap-2 sm:gap-3">
+                      <Button
+                        data-testid="skip-turn-btn"
+                        variant="skip"
+                        size="lg"
+                        onClick={() => dispatch('SKIP_TURN')}
+                        className="w-full gap-1 sm:gap-1.5 px-2 sm:px-4 text-xs sm:text-sm font-bold min-h-[48px]"
+                      >
+                        <SkipForward className="w-4 h-4 shrink-0" />
+                        <span className="truncate">{dict.multiplayer.skipTurn}</span>
+                      </Button>
+                      <Button
+                        data-testid="complete-dare-btn"
+                        variant="primary"
+                        size="lg"
+                        onClick={() => {
+                          triggerConfetti();
+                          sound.playVictory();
+                          dispatch('COMPLETE_DARE');
+                        }}
+                        className="w-full gap-1 sm:gap-1.5 px-2 sm:px-4 text-xs sm:text-sm font-bold min-h-[48px]"
+                      >
+                        <CheckCircle className="w-4 h-4 text-emerald-300 shrink-0" />
+                        <span className="truncate">{dict.multiplayer.completeDare}</span>
+                      </Button>
+                    </div>
+                  ) : (
+                    <p className="text-center text-xs text-slate-500">
+                      {isMyTurn
+                        ? dict.game.choosePath
+                        : t('multiplayer.waitingForTurn', { name: activePlayer?.name || 'Player' })}
+                    </p>
+                  )
                 )}
 
                 {/* Floating Emoji Reactions Stream */}

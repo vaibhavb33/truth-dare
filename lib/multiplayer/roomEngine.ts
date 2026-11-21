@@ -18,7 +18,7 @@ import {
 } from '@/types';
 import { generateRoomCode } from '@/lib/utils';
 import { questionEngine } from '@/lib/questions/engine';
-import { cleanQuestionPrompt } from '@/lib/questions/cleanPrompt';
+import { cleanQuestionPrompt, cleanQuestion } from '@/lib/questions/cleanPrompt';
 
 function sanitizeName(rawName: string): string {
   return rawName
@@ -512,6 +512,18 @@ export class RoomEngine {
         room.status = 'IN_PROGRESS';
         room.roundNumber = 1;
         room.activePlayerId = room.players[0]?.id || player.id;
+
+        if (room.gameId === 'most-likely-to' && !room.currentCard) {
+          const firstCardResult = questionEngine.drawNextCard({
+            gameId: 'most-likely-to',
+            language: room.language || 'en',
+            drawnCardIds: [],
+          });
+          room.currentCard = cleanQuestion(firstCardResult.card);
+          room.isCardFlipped = true;
+          room.votes = {};
+        }
+
         room.updatedAt = Date.now();
         this.emitEvent(room.roomCode, 'GAME_STARTED', { roundNumber: room.roundNumber });
         break;
@@ -674,6 +686,19 @@ export class RoomEngine {
         }
 
         this.advanceTurn(room);
+
+        if (room.gameId === 'most-likely-to') {
+          const drawnIds = (room.questionHistory || []).map((h) => h.questionId);
+          const nextCardResult = questionEngine.drawNextCard({
+            gameId: 'most-likely-to',
+            language: room.language || 'en',
+            drawnCardIds: drawnIds,
+          });
+          room.currentCard = cleanQuestion(nextCardResult.card);
+          room.isCardFlipped = true;
+          room.votes = {};
+        }
+
         room.updatedAt = Date.now();
         this.emitEvent(room.roomCode, 'TURN_ADVANCED', { activePlayerId: room.activePlayerId });
         break;
@@ -696,6 +721,19 @@ export class RoomEngine {
         }
 
         this.advanceTurn(room);
+
+        if (room.gameId === 'most-likely-to') {
+          const drawnIds = (room.questionHistory || []).map((h) => h.questionId);
+          const nextCardResult = questionEngine.drawNextCard({
+            gameId: 'most-likely-to',
+            language: room.language || 'en',
+            drawnCardIds: drawnIds,
+          });
+          room.currentCard = cleanQuestion(nextCardResult.card);
+          room.isCardFlipped = true;
+          room.votes = {};
+        }
+
         room.updatedAt = Date.now();
         this.emitEvent(room.roomCode, 'TURN_SKIPPED', { activePlayerId: room.activePlayerId });
         break;
