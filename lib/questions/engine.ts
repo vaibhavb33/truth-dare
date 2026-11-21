@@ -1,5 +1,6 @@
 import { Question, GameType, CategoryId, QuestionType, SupportedLanguageCode, QuestionCategory } from '@/types';
 import { ALL_QUESTIONS, LEGACY_CATEGORY_MAP } from './database';
+import { cleanQuestion } from './cleanPrompt';
 
 export interface DrawCardParams {
   gameId: GameType;
@@ -150,7 +151,7 @@ export class QuestionEngine {
     const selectedCard = eligible[randomIndex];
 
     return {
-      card: selectedCard,
+      card: cleanQuestion(selectedCard),
       isExhausted: false,
       remainingCount: eligible.length - 1,
       language: targetLang,

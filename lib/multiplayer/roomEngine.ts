@@ -18,6 +18,7 @@ import {
 } from '@/types';
 import { generateRoomCode } from '@/lib/utils';
 import { questionEngine } from '@/lib/questions/engine';
+import { cleanQuestionPrompt } from '@/lib/questions/cleanPrompt';
 
 function sanitizeName(rawName: string): string {
   return rawName
@@ -590,6 +591,7 @@ export class RoomEngine {
           const eligible = pool.filter((q) => (drawCounts.get(q.id) || 0) === minCount);
           const chosen = eligible[Math.floor(Math.random() * eligible.length)];
 
+          const cleanPromptText = cleanQuestionPrompt(chosen.prompt);
           card = {
             id: chosen.id,
             game_type: 'truth-or-dare',
@@ -597,7 +599,7 @@ export class RoomEngine {
             language_code: room.language || room.customDeckSnapshot.language || 'en',
             category: 'custom',
             difficulty: (Math.max(1, Math.min(5, chosen.intensity || 3)) as 1 | 2 | 3 | 4 | 5),
-            question_text: chosen.prompt,
+            question_text: cleanPromptText,
             content_rating: 'PG-13',
             age_group: 'all-ages',
             is_active: true,
@@ -607,7 +609,7 @@ export class RoomEngine {
             gameId: 'truth-or-dare',
             categoryId: 'custom',
             type: chosen.type,
-            prompt: chosen.prompt,
+            prompt: cleanPromptText,
             intensity: (Math.max(1, Math.min(5, chosen.intensity || 3)) as 1 | 2 | 3 | 4 | 5),
             isNsfw: false,
           };
@@ -736,6 +738,57 @@ export class RoomEngine {
 
       case 'LEAVE_ROOM': {
         this.leaveRoom(room.roomCode, player.id);
+        break;
+      }
+
+      case 'UPDATE_PLAYER_NAME': {
+        const targetPlayerId = (params.payload?.targetPlayerId as string) || player.id;
+        const rawNewName = (params.payload?.newName as string) || '';
+        const cleanName = rawNewName.trim().replace(/\s+/g, ' ');
+
+        if (!cleanName) {
+          return { success: false, error: 'Player name cannot be empty.' };
+        }
+
+        if (cleanName.length > 24) {
+          return { success: false, error: 'Player name must be 24 characters or less.' };
+        }
+
+        if (/<[^>]*>/g.test(cleanName)) {
+          return { success: false, error: 'Player name contains invalid characters.' };
+        }
+
+        // Host can edit any player's name; non-host can only edit their own name
+        if (targetPlayerId !== player.id && !isHost) {
+          return {
+            success: false,
+            code: 'PERMISSION_DENIED',
+            error: 'Only the room host can edit other players’ names.',
+          };
+        }
+
+        const targetPlayer = room.players.find((p) => p.id === targetPlayerId);
+        if (!targetPlayer) {
+          return { success: false, error: 'Target player not found in this room.' };
+        }
+
+        // Check for duplicate names among other players in the room (case-insensitive)
+        const nameCollision = room.players.some(
+          (p) => p.id !== targetPlayerId && p.name.trim().toLowerCase() === cleanName.toLowerCase()
+        );
+        if (nameCollision) {
+          return { success: false, error: 'A player with this name already exists in the room.' };
+        }
+
+        const oldName = targetPlayer.name;
+        targetPlayer.name = cleanName;
+
+        room.updatedAt = Date.now();
+        this.emitEvent(room.roomCode, 'PLAYER_NAME_UPDATED', {
+          playerId: targetPlayerId,
+          oldName,
+          newName: cleanName,
+        });
         break;
       }
 

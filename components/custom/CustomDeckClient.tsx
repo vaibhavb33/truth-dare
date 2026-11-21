@@ -38,6 +38,7 @@ import { EmptyState } from '@/components/ui/States';
 import { CustomDeck, CustomQuestion, SupportedLanguageCode, CategoryId } from '@/types';
 import { useTranslation } from '@/lib/i18n/LanguageContext';
 import { QuestionVoiceControls } from '@/components/voice/QuestionVoiceControls';
+import { cleanQuestionPrompt } from '@/lib/questions/cleanPrompt';
 import { deckStorage, getCreatorId } from '@/lib/custom/deckStorage';
 import { validateCustomQuestion } from '@/lib/custom/safetyFilter';
 import { SUPPORTED_LOCALES } from '@/lib/i18n/config';
@@ -1116,14 +1117,14 @@ export function CustomDeckClient() {
                             {q.type.toUpperCase()}
                           </span>
                           <span className="text-white font-medium text-xs sm:text-sm leading-relaxed break-words min-w-0">
-                            {q.prompt}
+                            {cleanQuestionPrompt(q.prompt)}
                           </span>
                         </div>
 
                         <div className="flex items-center gap-1 shrink-0 self-end sm:self-center">
                           {/* Speaker Button for Saved Questions */}
                           <QuestionVoiceControls
-                            text={q.prompt}
+                            text={cleanQuestionPrompt(q.prompt)}
                             language={q.language || deckLanguage}
                             type={q.type}
                             variant="compact"
@@ -1547,13 +1548,13 @@ export function CustomDeckClient() {
                     </div>
 
                     <p className="font-display font-extrabold text-lg sm:text-2xl text-white leading-relaxed px-2">
-                      &ldquo;{currentCard?.prompt}&rdquo;
+                      &ldquo;{cleanQuestionPrompt(currentCard?.prompt)}&rdquo;
                     </p>
 
                     {/* Voice Controls */}
                     <div className="flex justify-center pt-1">
                       <QuestionVoiceControls
-                        text={currentCard?.prompt || ''}
+                        text={cleanQuestionPrompt(currentCard?.prompt || '')}
                         language={currentCard?.language || deckLanguage}
                         type={currentCard?.type || 'truth'}
                         variant="card"
@@ -1692,13 +1693,13 @@ export function CustomDeckClient() {
               </span>
 
               <p className="font-display font-extrabold text-base sm:text-lg text-white">
-                &ldquo;{previewQuestion.prompt}&rdquo;
+                &ldquo;{cleanQuestionPrompt(previewQuestion.prompt)}&rdquo;
               </p>
 
               {/* Voice in Preview */}
               <div className="flex justify-center pt-2">
                 <QuestionVoiceControls
-                  text={previewQuestion.prompt}
+                  text={cleanQuestionPrompt(previewQuestion.prompt)}
                   language={previewQuestion.language || deckLanguage}
                   type={previewQuestion.type}
                   variant="card"

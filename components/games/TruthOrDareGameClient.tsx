@@ -15,6 +15,8 @@ import {
   Users,
   Settings,
   Trophy,
+  Edit3,
+  UserCheck,
 } from 'lucide-react';
 import { Card3D } from '@/components/game/Card3D';
 import { DareTimerRing } from '@/components/game/DareTimerRing';
@@ -108,6 +110,10 @@ function TruthOrDareInner() {
   ]);
   const [newPlayerName, setNewPlayerName] = useState('');
   const [showAgeGate, setShowAgeGate] = useState(false);
+  const [showManagePlayersModal, setShowManagePlayersModal] = useState(false);
+  const [editingPlayerId, setEditingPlayerId] = useState<string | null>(null);
+  const [editingPlayerNameInput, setEditingPlayerNameInput] = useState('');
+  const [playerNameError, setPlayerNameError] = useState('');
 
   // If page was loaded directly with spicy-18 in URL query, verify age consent
   useEffect(() => {
@@ -213,6 +219,52 @@ function TruthOrDareInner() {
     if (players.length <= 2) return;
     setPlayers(players.filter((p) => p.id !== id));
     sound.triggerHaptic(15);
+  };
+
+  const handleStartEditPlayer = (playerIdToEdit: string) => {
+    const target = players.find((p) => p.id === playerIdToEdit);
+    if (!target) return;
+    setEditingPlayerId(target.id);
+    setEditingPlayerNameInput(target.name);
+    setPlayerNameError('');
+    setShowManagePlayersModal(true);
+    sound.triggerHaptic(10);
+  };
+
+  const handleSavePlayerName = (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+    if (!editingPlayerId) return;
+
+    const cleanName = editingPlayerNameInput.trim().replace(/\s+/g, ' ');
+    if (!cleanName) {
+      setPlayerNameError('Player name cannot be empty.');
+      sound.triggerHaptic(20);
+      return;
+    }
+
+    if (cleanName.length > 24) {
+      setPlayerNameError('Player name must be 24 characters or less.');
+      sound.triggerHaptic(20);
+      return;
+    }
+
+    const isDuplicate = players.some(
+      (p) => p.id !== editingPlayerId && p.name.trim().toLowerCase() === cleanName.toLowerCase()
+    );
+    if (isDuplicate) {
+      setPlayerNameError('A player with this name already exists.');
+      sound.triggerHaptic(20);
+      return;
+    }
+
+    setPlayers((prev) =>
+      prev.map((p) => (p.id === editingPlayerId ? { ...p, name: cleanName } : p))
+    );
+    sound.playChime();
+    sound.triggerHaptic(15);
+    setEditingPlayerId(null);
+    setEditingPlayerNameInput('');
+    setPlayerNameError('');
   };
 
   // Start Session
@@ -402,14 +454,25 @@ function TruthOrDareInner() {
               {players.map((p) => (
                 <div
                   key={p.id}
-                  className="inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-xl bg-surface-highlight border border-white/10 text-xs font-semibold text-white max-w-full"
+                  className="inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-xl bg-surface-highlight border border-white/10 text-xs font-semibold text-white max-w-full group hover:border-brand-500/40 transition-colors"
                 >
                   <span className="max-w-[110px] sm:max-w-[180px] truncate">{p.name}</span>
+                  <button
+                    type="button"
+                    onClick={() => handleStartEditPlayer(p.id)}
+                    className="text-slate-400 hover:text-brand-300 ml-0.5 shrink-0 p-0.5 rounded-lg hover:bg-white/5 transition-colors"
+                    title={`Edit ${p.name}`}
+                    aria-label={`Edit ${p.name}`}
+                  >
+                    <Edit3 className="w-3.5 h-3.5" />
+                  </button>
                   {players.length > 2 && (
                     <button
+                      type="button"
                       onClick={() => handleRemovePlayer(p.id)}
-                      className="text-slate-400 hover:text-rose-400 ml-0.5 sm:ml-1 shrink-0 p-0.5"
+                      className="text-slate-400 hover:text-rose-400 shrink-0 p-0.5 rounded-lg hover:bg-white/5 transition-colors"
                       aria-label={`Remove ${p.name}`}
+                      title={`Remove ${p.name}`}
                     >
                       <X className="w-3.5 h-3.5" />
                     </button>
@@ -493,17 +556,38 @@ function TruthOrDareInner() {
           {/* Header Bar: Turn & Progress Indicator */}
           <div className="w-full flex items-center justify-between text-xs font-semibold px-1 pt-0.5 sm:pt-1 gap-1.5 sm:gap-2 shrink-0">
             {/* Active Player Pill */}
-            <div className="flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3 py-1 rounded-full bg-brand-500/20 border border-brand-400/40 text-brand-300 shadow-glow-brand min-w-0 flex-1 max-w-[62%] sm:max-w-[65%]">
+            <button
+              type="button"
+              onClick={() => handleStartEditPlayer(activePlayer.id)}
+              title="Click to edit current player name"
+              className="flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3 py-1 rounded-full bg-brand-500/20 border border-brand-400/40 text-brand-300 shadow-glow-brand min-w-0 flex-1 max-w-[48%] sm:max-w-[52%] hover:bg-brand-500/30 transition-colors cursor-pointer text-left group"
+            >
               <Users className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-brand-400 shrink-0" />
               <span className="truncate">{t('game.playerTurn', { name: activePlayer.name })}</span>
-            </div>
+              <Edit3 className="w-3 h-3 text-brand-400/70 group-hover:text-brand-300 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity" />
+            </button>
 
             {/* Score & Exit Actions */}
             <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
+              <button
+                type="button"
+                onClick={() => {
+                  setEditingPlayerId(null);
+                  setPlayerNameError('');
+                  setShowManagePlayersModal(true);
+                  sound.triggerHaptic(10);
+                }}
+                className="px-2 sm:px-2.5 py-1 rounded-lg bg-brand-500/15 hover:bg-brand-500/25 border border-brand-400/30 text-[10px] sm:text-xs text-brand-300 hover:text-white transition-colors min-h-[30px] flex items-center gap-1 font-semibold active:scale-95 shadow-sm"
+                title="Edit Players"
+              >
+                <UserCheck className="w-3.5 h-3.5 text-brand-400 shrink-0" />
+                <span>Edit Players</span>
+              </button>
               <span className="text-slate-400 text-[10px] sm:text-xs font-medium px-2 py-1 rounded-lg bg-surface-elevated border border-white/5">
                 Score: <strong className="text-white font-mono">{activePlayer.score}</strong>
               </span>
               <button
+                type="button"
                 onClick={() => {
                   setIsPlaying(false);
                   if (typeof window !== 'undefined') window.scrollTo({ top: 0, behavior: 'instant' });
@@ -627,6 +711,191 @@ function TruthOrDareInner() {
                 {categoryUnavailableNotice ? 'Choose Another Category' : t('game.backToSetup')}
               </Button>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* =========================================================
+          MANAGE / EDIT PLAYERS MODAL
+         ========================================================= */}
+      {showManagePlayersModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-canvas-deep/85 backdrop-blur-md pt-[max(0.75rem,env(safe-area-inset-top))] pb-[max(0.75rem,env(safe-area-inset-bottom))] animate-in fade-in duration-200">
+          <div className="w-full max-w-md p-5 sm:p-6 rounded-3xl bg-surface-elevated border border-white/10 text-left space-y-4 max-h-[calc(100dvh-2rem)] overflow-y-auto custom-scrollbar shadow-elevation-3 relative">
+            {/* Modal Header */}
+            <div className="flex items-center justify-between pb-3 border-b border-white/10">
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 rounded-xl bg-brand-500/20 text-brand-400 flex items-center justify-center border border-brand-400/30">
+                  <Users className="w-4 h-4" />
+                </div>
+                <div>
+                  <h3 className="font-display font-extrabold text-base sm:text-lg text-white">
+                    {editingPlayerId ? 'Edit Player Name' : 'Manage Players'}
+                  </h3>
+                  <p className="text-[11px] text-slate-400">
+                    {editingPlayerId
+                      ? 'Update the player name for this game session.'
+                      : `${players.length} players currently in the game.`}
+                  </p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => {
+                  setShowManagePlayersModal(false);
+                  setEditingPlayerId(null);
+                  setPlayerNameError('');
+                }}
+                className="p-1 rounded-xl text-slate-400 hover:text-white hover:bg-white/10 transition-colors"
+                aria-label="Close modal"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* ERROR BANNER */}
+            {playerNameError && (
+              <div className="p-2.5 rounded-xl bg-rose-500/20 border border-rose-400/40 text-rose-300 text-xs font-semibold flex items-center justify-between">
+                <span>{playerNameError}</span>
+                <button
+                  type="button"
+                  onClick={() => setPlayerNameError('')}
+                  className="p-0.5 text-rose-300 hover:text-white"
+                >
+                  <X className="w-3.5 h-3.5" />
+                </button>
+              </div>
+            )}
+
+            {/* EDIT SINGLE PLAYER FORM */}
+            {editingPlayerId ? (
+              <form onSubmit={handleSavePlayerName} className="space-y-4 pt-1">
+                <div className="space-y-1.5">
+                  <label className="text-xs font-bold uppercase tracking-wider text-slate-300">
+                    Player Name
+                  </label>
+                  <div className="relative">
+                    <input
+                      type="text"
+                      autoFocus
+                      maxLength={24}
+                      value={editingPlayerNameInput}
+                      onChange={(e) => {
+                        setEditingPlayerNameInput(e.target.value);
+                        if (playerNameError) setPlayerNameError('');
+                      }}
+                      placeholder="Enter player name..."
+                      className="w-full h-11 px-3.5 pr-14 rounded-xl bg-canvas-base border border-white/10 text-white font-semibold text-sm placeholder:text-slate-500 focus:outline-none focus:border-brand-400 transition-colors"
+                    />
+                    <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] font-mono text-slate-500">
+                      {editingPlayerNameInput.length}/24
+                    </span>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-2 pt-2">
+                  <Button
+                    type="button"
+                    variant="secondary"
+                    size="md"
+                    onClick={() => {
+                      setEditingPlayerId(null);
+                      setPlayerNameError('');
+                    }}
+                    className="flex-1"
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    type="submit"
+                    variant="primary"
+                    size="md"
+                    className="flex-1 font-bold shadow-glow-brand"
+                  >
+                    Save Changes
+                  </Button>
+                </div>
+              </form>
+            ) : (
+              /* PLAYER ROSTER LIST */
+              <div className="space-y-3 pt-1">
+                <div className="space-y-2 max-h-56 overflow-y-auto custom-scrollbar pr-1">
+                  {players.map((p, idx) => (
+                    <div
+                      key={p.id}
+                      className="flex items-center justify-between p-2.5 rounded-xl bg-canvas-base border border-white/5 hover:border-white/10 transition-colors"
+                    >
+                      <div className="flex items-center gap-2.5 min-w-0 flex-1">
+                        <span className="w-6 h-6 rounded-lg bg-surface-highlight flex items-center justify-center text-[10px] font-mono font-bold text-slate-400 shrink-0">
+                          #{idx + 1}
+                        </span>
+                        <div className="min-w-0 flex-1">
+                          <p className="text-xs sm:text-sm font-bold text-white truncate">{p.name}</p>
+                          <p className="text-[10px] text-slate-400 font-mono">
+                            {p.score} pts • {p.skips} skips
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="flex items-center gap-1.5 shrink-0">
+                        <button
+                          type="button"
+                          onClick={() => handleStartEditPlayer(p.id)}
+                          className="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-surface-highlight hover:bg-brand-500/20 hover:text-brand-300 text-slate-300 text-xs font-semibold border border-white/5 transition-all"
+                          title={`Edit ${p.name}`}
+                        >
+                          <Edit3 className="w-3 h-3 text-brand-400" />
+                          <span>Edit</span>
+                        </button>
+
+                        {players.length > 2 && (
+                          <button
+                            type="button"
+                            onClick={() => handleRemovePlayer(p.id)}
+                            className="p-1.5 rounded-lg text-slate-400 hover:text-rose-400 hover:bg-rose-500/10 transition-colors"
+                            title={`Remove ${p.name}`}
+                          >
+                            <X className="w-3.5 h-3.5" />
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Add new player inline */}
+                <form onSubmit={handleAddPlayer} className="flex gap-2 pt-2 border-t border-white/5">
+                  <input
+                    type="text"
+                    placeholder="Add new player..."
+                    value={newPlayerName}
+                    onChange={(e) => setNewPlayerName(e.target.value)}
+                    maxLength={24}
+                    className="flex-1 h-10 px-3 rounded-xl bg-canvas-base border border-white/10 text-xs text-white placeholder:text-slate-500 focus:outline-none focus:border-brand-400"
+                  />
+                  <Button
+                    type="submit"
+                    variant="secondary"
+                    size="sm"
+                    className="gap-1 px-3 text-xs font-semibold h-10 shrink-0"
+                  >
+                    <Plus className="w-3.5 h-3.5" />
+                    <span>Add</span>
+                  </Button>
+                </form>
+
+                <div className="pt-2">
+                  <Button
+                    type="button"
+                    variant="primary"
+                    size="md"
+                    onClick={() => setShowManagePlayersModal(false)}
+                    className="w-full font-bold"
+                  >
+                    Done
+                  </Button>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       )}

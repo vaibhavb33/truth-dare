@@ -22,6 +22,8 @@ import {
   Sparkles,
   Wifi,
   WifiOff,
+  Edit3,
+  UserCheck,
 } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Card3D } from '@/components/game/Card3D';
@@ -31,6 +33,7 @@ import { speechService } from '@/lib/voice/speechService';
 import { MultiplayerRoom, Player, SupportedLanguageCode, CategoryId } from '@/types';
 import { useTranslation } from '@/lib/i18n/LanguageContext';
 import { SUPPORTED_LOCALES, ALL_LOCALES, Locale } from '@/lib/i18n/config';
+import { cleanQuestionPrompt, cleanQuestion } from '@/lib/questions/cleanPrompt';
 
 interface RoomClientProps {
   roomCode: string;
@@ -52,6 +55,11 @@ export function RoomClient({ roomCode }: RoomClientProps) {
   const [showSettingsModal, setShowSettingsModal] = useState(false);
   const [copiedLink, setCopiedLink] = useState(false);
   const [isReconnecting, setIsReconnecting] = useState(false);
+  const [showEditPlayersModal, setShowEditPlayersModal] = useState(false);
+  const [editingTargetPlayer, setEditingTargetPlayer] = useState<{ id: string; name: string } | null>(null);
+  const [editPlayerInputName, setEditPlayerInputName] = useState('');
+  const [editPlayerError, setEditPlayerError] = useState('');
+  const [isSavingPlayerName, setIsSavingPlayerName] = useState(false);
 
   const storageKey = `playtruthndare_multiplayer_session_${roomCode}`;
   const legacyStorageKey = `asteria_multiplayer_session_${roomCode}`;
@@ -307,6 +315,104 @@ export function RoomClient({ roomCode }: RoomClientProps) {
   const roomQuestionLang = room?.language || 'en';
   const roomLangMeta = SUPPORTED_LOCALES[roomQuestionLang as Locale] || SUPPORTED_LOCALES.en;
 
+  const openEditPlayerModal = (targetPlayer?: { id: string; name: string }) => {
+    sound.triggerHaptic(10);
+    setEditPlayerError('');
+    if (targetPlayer) {
+      setEditingTargetPlayer(targetPlayer);
+      setEditPlayerInputName(targetPlayer.name);
+    } else if (!isHost) {
+      // Non-host player edits own name
+      setEditingTargetPlayer({ id: playerId, name: playerName });
+      setEditPlayerInputName(playerName);
+    } else {
+      // Host opening manager view
+      setEditingTargetPlayer(null);
+      setEditPlayerInputName('');
+    }
+    setShowEditPlayersModal(true);
+  };
+
+  const handleSavePlayerName = async (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+    if (!editingTargetPlayer) return;
+
+    const clean = editPlayerInputName.trim().replace(/\s+/g, ' ');
+    if (!clean) {
+      setEditPlayerError('Player name cannot be empty.');
+      sound.triggerHaptic(20);
+      return;
+    }
+
+    if (clean.length > 24) {
+      setEditPlayerError('Player name must be 24 characters or less.');
+      sound.triggerHaptic(20);
+      return;
+    }
+
+    const isDuplicate = room?.players.some(
+      (p) => p.id !== editingTargetPlayer.id && p.name.trim().toLowerCase() === clean.toLowerCase()
+    );
+    if (isDuplicate) {
+      setEditPlayerError('A player with this name already exists in the room.');
+      sound.triggerHaptic(20);
+      return;
+    }
+
+    setIsSavingPlayerName(true);
+    setEditPlayerError('');
+
+    try {
+      const res = await fetch('/api/rooms/action', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          roomCode,
+          playerId,
+          sessionToken,
+          action: 'UPDATE_PLAYER_NAME',
+          payload: {
+            targetPlayerId: editingTargetPlayer.id,
+            newName: clean,
+          },
+        }),
+      });
+
+      const data = await res.json();
+      setIsSavingPlayerName(false);
+
+      if (data.success && data.room) {
+        setRoom(data.room);
+        if (editingTargetPlayer.id === playerId) {
+          setPlayerName(clean);
+          if (typeof window !== 'undefined') {
+            const saved = localStorage.getItem(storageKey) || localStorage.getItem(legacyStorageKey);
+            if (saved) {
+              try {
+                const parsed = JSON.parse(saved);
+                parsed.playerName = clean;
+                localStorage.setItem(storageKey, JSON.stringify(parsed));
+                localStorage.setItem(legacyStorageKey, JSON.stringify(parsed));
+              } catch {}
+            }
+          }
+        }
+        sound.playChime();
+        sound.triggerHaptic(15);
+        setEditingTargetPlayer(null);
+        setEditPlayerInputName('');
+        setShowEditPlayersModal(false);
+      } else {
+        setEditPlayerError(data.error || 'Failed to update player name.');
+        sound.triggerHaptic(20);
+      }
+    } catch {
+      setIsSavingPlayerName(false);
+      setEditPlayerError('Network error while updating player name.');
+      sound.triggerHaptic(20);
+    }
+  };
+
   // Lifecycle state helpers
   const isLobby = room?.status === 'WAITING' || room?.status === 'lobby';
   const isInGame = room?.status === 'IN_PROGRESS' || room?.status === 'in_game';
@@ -548,6 +654,184 @@ export function RoomClient({ roomCode }: RoomClientProps) {
             <Button variant="primary" size="md" onClick={() => setShowSettingsModal(false)} className="w-full font-bold">
               Save Settings
             </Button>
+          </div>
+        </div>
+      )}
+
+      {/* ========================================================
+          EDIT / MANAGE PLAYERS MODAL
+         ======================================================== */}
+      {showEditPlayersModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-canvas-deep/85 backdrop-blur-md animate-fade-in pt-[max(0.75rem,env(safe-area-inset-top))] pb-[max(0.75rem,env(safe-area-inset-bottom))]">
+          <div className="w-full max-w-md p-5 sm:p-6 rounded-3xl bg-surface-elevated border border-white/10 space-y-4 text-left max-h-[calc(100dvh-2rem)] overflow-y-auto custom-scrollbar shadow-elevation-3">
+            {/* Header */}
+            <div className="flex items-center justify-between border-b border-white/10 pb-3">
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 rounded-xl bg-brand-500/20 text-brand-400 flex items-center justify-center border border-brand-400/30">
+                  <Users className="w-4 h-4" />
+                </div>
+                <div>
+                  <h3 className="font-display font-bold text-base sm:text-lg text-white">
+                    {editingTargetPlayer ? 'Edit Player Name' : 'Manage Room Players'}
+                  </h3>
+                  <p className="text-[11px] text-slate-400">
+                    {editingTargetPlayer
+                      ? `Updating name for player in room ${roomCode}.`
+                      : `${room?.players.length || 0} players connected.`}
+                  </p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => {
+                  setShowEditPlayersModal(false);
+                  setEditingTargetPlayer(null);
+                  setEditPlayerError('');
+                }}
+                className="text-slate-400 hover:text-white p-1 rounded-xl hover:bg-white/5 transition-colors"
+                aria-label="Close modal"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Error Message */}
+            {editPlayerError && (
+              <div className="p-2.5 rounded-xl bg-rose-500/20 border border-rose-400/40 text-rose-300 text-xs font-semibold flex items-center justify-between">
+                <span>{editPlayerError}</span>
+                <button
+                  type="button"
+                  onClick={() => setEditPlayerError('')}
+                  className="p-0.5 text-rose-300 hover:text-white"
+                >
+                  <X className="w-3.5 h-3.5" />
+                </button>
+              </div>
+            )}
+
+            {/* Form when editing a specific player */}
+            {editingTargetPlayer ? (
+              <form onSubmit={handleSavePlayerName} className="space-y-4 pt-1">
+                <div className="space-y-1.5">
+                  <div className="flex items-center justify-between text-xs font-bold text-slate-300 uppercase tracking-wider">
+                    <span>Player Name</span>
+                    <span className="text-[10px] text-slate-400 font-normal">
+                      Current: <strong className="text-white font-semibold">{editingTargetPlayer.name}</strong>
+                    </span>
+                  </div>
+                  <div className="relative">
+                    <input
+                      type="text"
+                      autoFocus
+                      maxLength={24}
+                      value={editPlayerInputName}
+                      onChange={(e) => {
+                        setEditPlayerInputName(e.target.value);
+                        if (editPlayerError) setEditPlayerError('');
+                      }}
+                      placeholder="Enter new player name..."
+                      disabled={isSavingPlayerName}
+                      className="w-full h-11 px-3.5 pr-14 rounded-xl bg-canvas-base border border-white/10 text-white font-semibold text-sm placeholder:text-slate-500 focus:outline-none focus:border-brand-400 transition-colors disabled:opacity-50"
+                    />
+                    <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] font-mono text-slate-500">
+                      {editPlayerInputName.length}/24
+                    </span>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-2 pt-2">
+                  <Button
+                    type="button"
+                    variant="secondary"
+                    size="md"
+                    disabled={isSavingPlayerName}
+                    onClick={() => {
+                      if (isHost && room && room.players.length > 1) {
+                        setEditingTargetPlayer(null);
+                        setEditPlayerError('');
+                      } else {
+                        setShowEditPlayersModal(false);
+                        setEditingTargetPlayer(null);
+                        setEditPlayerError('');
+                      }
+                    }}
+                    className="flex-1"
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    type="submit"
+                    variant="primary"
+                    size="md"
+                    disabled={isSavingPlayerName}
+                    className="flex-1 font-bold shadow-glow-brand"
+                  >
+                    {isSavingPlayerName ? 'Saving...' : 'Save Name'}
+                  </Button>
+                </div>
+              </form>
+            ) : (
+              /* Host Roster List when no single player selected */
+              <div className="space-y-3 pt-1">
+                <div className="space-y-2 max-h-60 overflow-y-auto custom-scrollbar pr-1">
+                  {room?.players.map((p, idx) => {
+                    const isSelf = p.id === playerId;
+                    return (
+                      <div
+                        key={p.id}
+                        className="flex items-center justify-between p-2.5 rounded-xl bg-canvas-base border border-white/5 hover:border-white/10 transition-colors"
+                      >
+                        <div className="flex items-center gap-2.5 min-w-0 flex-1">
+                          <span className="w-6 h-6 rounded-lg bg-surface-highlight flex items-center justify-center text-[10px] font-mono font-bold text-slate-400 shrink-0">
+                            #{idx + 1}
+                          </span>
+                          <div className="min-w-0 flex-1">
+                            <div className="flex items-center gap-1.5">
+                              {p.isHost && <Crown className="w-3.5 h-3.5 text-amber-400 shrink-0" />}
+                              <p className="text-xs sm:text-sm font-bold text-white truncate">
+                                {p.name}
+                                {isSelf && (
+                                  <span className="ml-1 text-[10px] font-normal text-brand-300">(You)</span>
+                                )}
+                              </p>
+                            </div>
+                            <p className="text-[10px] text-slate-400 font-mono">
+                              {p.score} pts • {p.skips} skips
+                            </p>
+                          </div>
+                        </div>
+
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setEditingTargetPlayer({ id: p.id, name: p.name });
+                            setEditPlayerInputName(p.name);
+                            setEditPlayerError('');
+                          }}
+                          className="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-surface-highlight hover:bg-brand-500/20 hover:text-brand-300 text-slate-300 text-xs font-semibold border border-white/5 transition-all shrink-0"
+                          title={`Edit name for ${p.name}`}
+                        >
+                          <Edit3 className="w-3 h-3 text-brand-400" />
+                          <span>Edit</span>
+                        </button>
+                      </div>
+                    );
+                  })}
+                </div>
+
+                <div className="pt-2">
+                  <Button
+                    type="button"
+                    variant="secondary"
+                    size="md"
+                    onClick={() => setShowEditPlayersModal(false)}
+                    className="w-full font-bold"
+                  >
+                    Close
+                  </Button>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       )}
@@ -832,15 +1116,27 @@ export function RoomClient({ roomCode }: RoomClientProps) {
                 <Users className="w-3.5 h-3.5 text-brand-400" />
                 {room?.players.length || 0} / {room?.maxPlayers || 12} Players Connected
               </span>
-              <span className="text-[11px] font-bold text-brand-300">
-                {isHost ? dict.multiplayer.hostBadge : dict.multiplayer.guestBadge}
-              </span>
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => openEditPlayerModal()}
+                  className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-brand-500/15 hover:bg-brand-500/25 border border-brand-400/30 text-brand-300 hover:text-white text-[11px] font-bold transition-all active:scale-95 shadow-sm"
+                  title={isHost ? 'Manage player names' : 'Edit my name'}
+                >
+                  <Edit3 className="w-3 h-3 text-brand-400 shrink-0" />
+                  <span>{isHost ? 'Manage Players' : 'Edit My Name'}</span>
+                </button>
+                <span className="text-[11px] font-bold text-brand-300">
+                  {isHost ? dict.multiplayer.hostBadge : dict.multiplayer.guestBadge}
+                </span>
+              </div>
             </div>
 
             <div className="flex flex-wrap gap-1.5 sm:gap-2">
               {room?.players.map((p) => {
                 const isActive = p.id === room?.activePlayerId;
                 const isOnline = p.isConnected !== false;
+                const canEditThisPlayer = isHost || p.id === playerId;
                 return (
                   <div
                     key={p.id}
@@ -860,6 +1156,20 @@ export function RoomClient({ roomCode }: RoomClientProps) {
                     {p.isHost && <Crown className="w-3 h-3 text-amber-400 shrink-0" />}
                     <span className="max-w-[100px] sm:max-w-[140px] truncate">{p.name}</span>
                     <span className="text-[10px] text-brand-400 font-mono shrink-0">({p.score}pts)</span>
+                    {canEditThisPlayer && (
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          openEditPlayerModal({ id: p.id, name: p.name });
+                        }}
+                        className="text-slate-400 hover:text-brand-300 p-0.5 rounded hover:bg-white/10 transition-colors ml-0.5"
+                        title={`Edit ${p.name}`}
+                        aria-label={`Edit ${p.name}`}
+                      >
+                        <Edit3 className="w-3 h-3" />
+                      </button>
+                    )}
                   </div>
                 );
               })}
@@ -931,25 +1241,37 @@ export function RoomClient({ roomCode }: RoomClientProps) {
                 ACTIVE IN-GAME ARENA (Phase 4: Synchronized Gameplay)
                ======================================================== */
             <div className="w-full flex-1 flex flex-col items-center justify-between space-y-4 sm:space-y-6">
-              {/* Active Player Turn Banner */}
-              <div
-                className={`px-3 sm:px-4 py-1.5 rounded-full border text-xs font-bold shadow-glow-brand flex items-center gap-1.5 sm:gap-2 max-w-full ${
-                  isMyTurn
-                    ? 'bg-brand-500 text-white border-brand-300 animate-pulse'
-                    : 'bg-brand-500/20 border-brand-400/30 text-brand-300'
-                }`}
-              >
-                <span className="truncate">
-                  {isMyTurn
-                    ? `🎯 ${dict.multiplayer.yourTurn}`
-                    : t('multiplayer.playerTurn', { name: activePlayer?.name || 'Player' })}
-                </span>
+              {/* Active Player Turn Banner & Edit Players Button */}
+              <div className="flex items-center gap-2 max-w-full">
+                <div
+                  className={`px-3 sm:px-4 py-1.5 rounded-full border text-xs font-bold shadow-glow-brand flex items-center gap-1.5 sm:gap-2 max-w-full ${
+                    isMyTurn
+                      ? 'bg-brand-500 text-white border-brand-300 animate-pulse'
+                      : 'bg-brand-500/20 border-brand-400/30 text-brand-300'
+                  }`}
+                >
+                  <span className="truncate">
+                    {isMyTurn
+                      ? `🎯 ${dict.multiplayer.yourTurn}`
+                      : t('multiplayer.playerTurn', { name: activePlayer?.name || 'Player' })}
+                  </span>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => openEditPlayerModal()}
+                  className="px-2.5 sm:px-3 py-1.5 rounded-full bg-surface-elevated hover:bg-surface-highlight border border-white/10 text-slate-300 hover:text-white text-xs font-semibold flex items-center gap-1 transition-all active:scale-95 shadow-sm"
+                  title={isHost ? 'Manage Room Players' : 'Edit My Name'}
+                >
+                  <Edit3 className="w-3.5 h-3.5 text-brand-400 shrink-0" />
+                  <span className="hidden xs:inline">{isHost ? 'Manage Players' : 'Edit Name'}</span>
+                </button>
               </div>
 
               {/* Synchronized 3D Card */}
               <div className="w-full flex flex-col items-center justify-center my-auto">
                 <Card3D
-                  question={room?.currentCard || null}
+                  question={cleanQuestion(room?.currentCard || null)}
                   isFlipped={room?.isCardFlipped || false}
                   onChooseType={(type) => {
                     if (isHost || isMyTurn) {

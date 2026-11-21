@@ -19,6 +19,7 @@ import { INITIAL_QUESTIONS } from '@/lib/questions/database';
 import { sound } from '@/lib/audio/soundSynthesizer';
 import { EmptyState } from '@/components/ui/States';
 import { QuestionVoiceControls } from '@/components/voice/QuestionVoiceControls';
+import { cleanQuestionPrompt } from '@/lib/questions/cleanPrompt';
 
 export function QuestionsClient() {
   const [searchQuery, setSearchQuery] = useState('');
@@ -161,21 +162,21 @@ export function QuestionsClient() {
                   </div>
 
                   <p className="font-bold text-sm md:text-base text-white leading-relaxed">
-                    {q.prompt}
+                    {cleanQuestionPrompt(q.prompt)}
                   </p>
                 </div>
 
                 <div className="pt-3 border-t border-white/5 flex flex-wrap items-center justify-between gap-2">
                   <div className="flex items-center gap-3">
                     <QuestionVoiceControls
-                      text={q.prompt}
+                      text={cleanQuestionPrompt(q.prompt)}
                       language={q.language_code || 'en'}
                       type={isTruth ? 'truth' : 'dare'}
                       variant="compact"
                     />
 
                     <button
-                      onClick={() => handleCopy(q.id, q.prompt)}
+                      onClick={() => handleCopy(q.id, cleanQuestionPrompt(q.prompt))}
                       className="inline-flex items-center gap-1.5 text-xs text-slate-400 hover:text-white transition-colors"
                     >
                       {copiedId === q.id ? (

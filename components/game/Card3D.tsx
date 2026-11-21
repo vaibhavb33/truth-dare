@@ -8,6 +8,7 @@ import { sound } from '@/lib/audio/soundSynthesizer';
 import { DareTimerRing } from '@/components/game/DareTimerRing';
 import { useTranslation } from '@/lib/i18n/LanguageContext';
 import { QuestionVoiceControls } from '@/components/voice/QuestionVoiceControls';
+import { cleanQuestionPrompt } from '@/lib/questions/cleanPrompt';
 
 interface Card3DProps {
   question: Question | null;
@@ -31,10 +32,12 @@ export function Card3D({
   const isDare = question?.type === 'dare';
   const [copied, setCopied] = useState(false);
 
+  const cleanedPrompt = cleanQuestionPrompt(question?.prompt);
+
   const handleCopyPrompt = (e: React.MouseEvent) => {
     e.stopPropagation();
-    if (!question?.prompt) return;
-    navigator.clipboard.writeText(question.prompt);
+    if (!cleanedPrompt) return;
+    navigator.clipboard.writeText(cleanedPrompt);
     sound.triggerHaptic(20);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
@@ -229,10 +232,10 @@ export function Card3D({
 
             {/* Quick Actions: Voice Player + Copy */}
             <div className="flex items-center gap-1.5">
-              {question?.prompt && (
+              {cleanedPrompt && (
                 <QuestionVoiceControls
-                  text={question.prompt}
-                  language={question.language_code}
+                  text={cleanedPrompt}
+                  language={question?.language_code}
                   type={isDare ? 'dare' : 'truth'}
                   variant="card"
                   isCustom={Boolean(
@@ -261,7 +264,7 @@ export function Card3D({
           {/* Center Challenge Statement with auto-scroll if long */}
           <div className="relative z-10 my-auto py-1 sm:py-2 px-1 max-w-full max-h-[170px] sm:max-h-[200px] overflow-y-auto custom-scrollbar flex items-center justify-center">
             <p className="font-display font-bold text-[clamp(0.95rem,2.8vw+0.15rem,1.25rem)] text-white leading-relaxed text-center select-text break-words">
-              {question?.prompt || t('game.revealQuestion')}
+              {cleanedPrompt || t('game.revealQuestion')}
             </p>
           </div>
 

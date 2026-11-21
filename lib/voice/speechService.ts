@@ -9,6 +9,7 @@
  */
 
 import { SupportedLanguageCode } from '@/types';
+import { cleanQuestionPrompt } from '@/lib/questions/cleanPrompt';
 
 export interface VoiceState {
   isSupported: boolean;
@@ -316,7 +317,7 @@ export class SpeechService {
    * 2. Automatically falls back to Web Speech API if neural is offline or unavailable
    */
   public speak(params: SpeakParams): { success: boolean; error?: string } {
-    const cleanText = params.text.trim();
+    const cleanText = cleanQuestionPrompt(params.text);
     if (!cleanText) {
       return { success: false, error: 'Cannot speak an empty prompt.' };
     }
