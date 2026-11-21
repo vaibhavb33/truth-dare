@@ -20,7 +20,7 @@ describe('Contact Form & Resend Email Integration', () => {
       });
 
       expect(rendered.subject).toBe('[Play Truth & Dare] New Contact Form Message from Jordan Smith');
-      
+
       // HTML assertions
       expect(rendered.html).toContain('Play Truth &amp; Dare');
       expect(rendered.html).toContain('Jordan Smith');
@@ -102,12 +102,11 @@ describe('Contact Form & Resend Email Integration', () => {
         error: null,
       });
 
-      // @ts-expect-error accessing private for unit mock
-      contactEmailService.resendClient = {
+      // Mock client directly
+      (contactEmailService as unknown as { resendClient: unknown; apiKey: unknown }).resendClient = {
         emails: { send: mockSend },
-      } as unknown as import('resend').Resend;
-      // @ts-expect-error accessing private for unit mock
-      contactEmailService.apiKey = process.env.RESEND_API_KEY;
+      };
+      (contactEmailService as unknown as { resendClient: unknown; apiKey: unknown }).apiKey = process.env.RESEND_API_KEY;
 
       const result = await contactEmailService.sendContactNotification({
         name: 'Resend Tester',
@@ -141,12 +140,11 @@ describe('Contact Form & Resend Email Integration', () => {
         error: { message: 'Domain playtruthndare.com is not verified.' },
       });
 
-      // @ts-expect-error accessing private for unit mock
-      contactEmailService.resendClient = {
+      // Mock client directly
+      (contactEmailService as unknown as { resendClient: unknown; apiKey: unknown }).resendClient = {
         emails: { send: mockSend },
-      } as unknown as import('resend').Resend;
-      // @ts-expect-error accessing private for unit mock
-      contactEmailService.apiKey = process.env.RESEND_API_KEY;
+      };
+      (contactEmailService as unknown as { resendClient: unknown; apiKey: unknown }).apiKey = process.env.RESEND_API_KEY;
 
       const result = await contactEmailService.sendContactNotification({
         name: 'Fail Tester',

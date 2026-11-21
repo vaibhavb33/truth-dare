@@ -149,6 +149,7 @@ export async function POST(request: NextRequest) {
     });
 
     if (!result.success) {
+      console.error(`[ContactAPI] Email dispatch failure from IP ${clientIp}:`, result.error);
       return NextResponse.json(
         {
           success: false,
@@ -160,6 +161,9 @@ export async function POST(request: NextRequest) {
 
     // Register duplicate lock
     recentSubmissions.set(duplicateKey, Date.now());
+    console.log(
+      `[ContactAPI] Contact submission processed successfully for ${cleanEmail} (Message ID: ${result.messageId})`
+    );
 
     return NextResponse.json({
       success: true,

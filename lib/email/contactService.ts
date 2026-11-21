@@ -80,17 +80,32 @@ export class ContactEmailService {
     const client = this.getClient();
 
     if (!client) {
-      console.warn(
-        `[ContactEmailService] RESEND_API_KEY is not defined. Email simulated for destination: ${destinationEmail}`
+      if (process.env.NODE_ENV === 'test' || process.env.MOCK_EMAIL === 'true') {
+        console.warn(
+          `[ContactEmailService] RESEND_API_KEY is not defined. Email simulated in test mode for: ${destinationEmail}`
+        );
+        return {
+          success: true,
+          mocked: true,
+          messageId: `mock-${Date.now()}-${Math.random().toString(36).substring(2, 8)}`,
+        };
+      }
+
+      console.error(
+        `[ContactEmailService] CRITICAL: RESEND_API_KEY environment variable is not configured on the server. Cannot dispatch email to ${destinationEmail}.`
       );
       return {
-        success: true,
-        mocked: true,
-        messageId: `mock-${Date.now()}-${Math.random().toString(36).substring(2, 8)}`,
+        success: false,
+        error:
+          'Email delivery service is currently not configured on this server (missing RESEND_API_KEY). Please contact borkarvaibhav98@gmail.com directly.',
       };
     }
 
     try {
+      console.log(
+        `[ContactEmailService] Initiating Resend dispatch | From: ${fromEmail} | To: ${destinationEmail} | Reply-To: ${params.email.trim()}`
+      );
+
       const response = await client.emails.send({
         from: fromEmail,
         to: destinationEmail,
@@ -101,12 +116,18 @@ export class ContactEmailService {
       });
 
       if (response.error) {
-        console.error('[ContactEmailService] Resend API returned error:', response.error);
+        console.error(
+          `[ContactEmailService] Resend API dispatch error: [${response.error.name}] ${response.error.message}`
+        );
         return {
           success: false,
           error: response.error.message || 'Email delivery failed through provider.',
         };
       }
+
+      console.log(
+        `[ContactEmailService] Email successfully accepted by Resend! Message ID: ${response.data?.id} | Destination: ${destinationEmail}`
+      );
 
       return {
         success: true,
@@ -114,7 +135,7 @@ export class ContactEmailService {
       };
     } catch (err) {
       const errorMsg = err instanceof Error ? err.message : 'Unknown email dispatch exception.';
-      console.error('[ContactEmailService] Exception during email dispatch:', err);
+      console.error('[ContactEmailService] Exception during Resend dispatch:', err);
       return {
         success: false,
         error: errorMsg,
