@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Sparkles, Heart } from 'lucide-react';
+import { Sparkles, Heart, Mail } from 'lucide-react';
 import { useTranslation } from '@/lib/i18n/LanguageContext';
 import { LanguageSelector } from '@/components/i18n/LanguageSelector';
 import { PWAInstallButton } from '@/components/pwa/PWAInstallButton';
@@ -51,6 +51,20 @@ export function AppFooter() {
           </p>
           <div className="p-3 rounded-xl bg-surface-elevated/60 border border-white/5 text-[11px] text-slate-400 leading-relaxed">
             🛡️ {t('footer.safeSkipping')}
+          </div>
+          <div>
+            <a
+              href="mailto:borkarvaibhav98@gmail.com"
+              className="inline-flex items-center gap-2 text-xs text-slate-300 hover:text-white transition-colors group"
+              title="Email Play Truth & Dare support"
+            >
+              <div className="w-6 h-6 rounded-lg bg-brand-500/15 border border-brand-500/30 flex items-center justify-center text-brand-400 group-hover:text-brand-300 shrink-0">
+                <Mail className="w-3.5 h-3.5" />
+              </div>
+              <span className="break-all font-medium text-[11px] text-slate-300 group-hover:text-white">
+                borkarvaibhav98@gmail.com
+              </span>
+            </a>
           </div>
         </div>
 
@@ -178,6 +192,16 @@ export function AppFooter() {
               <Link href={loc('/contact')} className="hover:text-white transition-colors">
                 {t('breadcrumbs.contact')}
               </Link>
+            </li>
+            <li className="pt-0.5">
+              <a
+                href="mailto:borkarvaibhav98@gmail.com"
+                className="inline-flex items-center gap-1.5 text-slate-300 hover:text-brand-300 transition-colors break-all group"
+                title="Email Play Truth & Dare directly"
+              >
+                <Mail className="w-3.5 h-3.5 text-brand-400 group-hover:text-brand-300 shrink-0" />
+                <span className="text-[11px] font-medium">borkarvaibhav98@gmail.com</span>
+              </a>
             </li>
             <li>
               <Link href={loc('/privacy')} className="hover:text-white transition-colors">
