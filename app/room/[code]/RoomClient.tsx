@@ -24,6 +24,14 @@ import {
   WifiOff,
   Edit3,
   UserCheck,
+  Check,
+  Lock,
+  Trophy,
+  Target,
+  AlertCircle,
+  RotateCcw,
+  Trash2,
+  Play,
 } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Card3D } from '@/components/game/Card3D';
@@ -115,7 +123,8 @@ export function RoomClient({ roomCode }: RoomClientProps) {
 
     const fetchRoom = async () => {
       try {
-        const res = await fetch(`/api/rooms/${roomCode}`);
+        const queryParam = playerId ? `?playerId=${encodeURIComponent(playerId)}` : '';
+        const res = await fetch(`/api/rooms/${roomCode}${queryParam}`);
         const data = await res.json();
         if (isSubscribed && data.success && data.room) {
           setRoom(data.room);
@@ -145,7 +154,7 @@ export function RoomClient({ roomCode }: RoomClientProps) {
       clearInterval(interval);
       speechService.stop();
     };
-  }, [roomCode]);
+  }, [roomCode, playerId]);
 
   // 3. Heartbeat Keep-Alive Loop (Every 10 seconds)
   useEffect(() => {
@@ -178,6 +187,20 @@ export function RoomClient({ roomCode }: RoomClientProps) {
         .catch(() => {});
     }
   }, [roomCode]);
+
+  // 5. Celebration effect when Most Likely To round finishes voting
+  const [lastCelebratedRound, setLastCelebratedRound] = useState<number | null>(null);
+  useEffect(() => {
+    if (
+      room?.gameId === 'most-likely-to' &&
+      room?.isVotingComplete &&
+      lastCelebratedRound !== room.roundNumber
+    ) {
+      setLastCelebratedRound(room.roundNumber);
+      triggerConfetti();
+      sound.playVictory();
+    }
+  }, [room?.gameId, room?.isVotingComplete, room?.roundNumber, lastCelebratedRound]);
 
   // 5. Handle Joining Room (Phase 2)
   const handleJoin = async (e: React.FormEvent) => {
@@ -418,6 +441,7 @@ export function RoomClient({ roomCode }: RoomClientProps) {
   const isInGame = room?.status === 'IN_PROGRESS' || room?.status === 'in_game';
   const isExpired = room?.status === 'EXPIRED';
   const isCancelled = room?.status === 'CANCELLED';
+  const isFinished = room?.status === 'finished' || room?.status === 'COMPLETED';
 
   // Categories list for host settings
   const categoriesList = [
@@ -427,6 +451,203 @@ export function RoomClient({ roomCode }: RoomClientProps) {
     { id: 'spicy-18', name: t('categories.spicy18.name'), icon: '🌶️' },
     { id: 'family-kids', name: t('categories.familyKids.name'), icon: '🌟' },
   ];
+
+  if (isFinished && room) {
+    const isMostLikelyTo = room.gameId === 'most-likely-to';
+    const sortedFinalPlayers = [...(room.players || [])].sort((a, b) => {
+      if (isMostLikelyTo) {
+        if ((b.score || 0) !== (a.score || 0)) return (b.score || 0) - (a.score || 0);
+        if ((b.crowns || 0) !== (a.crowns || 0)) return (b.crowns || 0) - (a.crowns || 0);
+        return 0;
+      }
+      return (b.score || 0) - (a.score || 0);
+    });
+
+    const topScore = sortedFinalPlayers[0]?.score || 0;
+    const champions = sortedFinalPlayers.filter((p) => (p.score || 0) === topScore);
+    const isTie = champions.length > 1;
+
+    // Most Crowned Player in Most Likely To
+    const maxCrowns = Math.max(...(room.players || []).map((p) => p.crowns || 0));
+    const crownedLeaders = (room.players || []).filter(
+      (p) => (p.crowns || 0) === maxCrowns && maxCrowns > 0
+    );
+
+    return (
+      <div className="w-full max-w-xl mx-auto p-4 sm:p-8 my-auto space-y-6 text-center animate-fade-in">
+        <div className="w-20 h-20 rounded-full bg-gradient-to-tr from-amber-400 to-purple-600 flex items-center justify-center mx-auto shadow-2xl shadow-purple-900/60">
+          <Crown className="w-10 h-10 text-white animate-bounce fill-current" />
+        </div>
+
+        <div className="space-y-1">
+          <span className="text-xs font-bold uppercase tracking-widest text-purple-400">
+            {isMostLikelyTo
+              ? `Game Completed (${room.gameLength || 10} Prompts)`
+              : 'Party Game Finished'}
+          </span>
+          <h1 className="text-3xl sm:text-4xl font-extrabold text-white">
+            Final Online Standings
+          </h1>
+          <p className="text-xs text-slate-400">
+            {isMostLikelyTo
+              ? 'Final prediction points and collected crowns from all players!'
+              : 'Final scores for everyone in the room!'}
+          </p>
+        </div>
+
+        {/* Podium Display */}
+        <div className="w-full p-6 rounded-3xl bg-surface-elevated border border-purple-500/40 shadow-[0_0_40px_rgba(168,85,247,0.25)] space-y-4">
+          <div className="p-4 rounded-2xl bg-purple-950/40 border border-purple-400/40 space-y-1.5">
+            <span className="text-[11px] font-bold uppercase tracking-wider text-amber-400 flex items-center justify-center gap-1.5">
+              <Trophy className="w-4 h-4 text-amber-400" />
+              <span>
+                {isTie
+                  ? '🤝 Shared Victory! Tied Champions'
+                  : isMostLikelyTo
+                  ? '🥇 Overall Prediction Champion'
+                  : '🥇 Game Winner'}
+              </span>
+            </span>
+            <h3 className="text-2xl sm:text-3xl font-extrabold text-white">
+              {champions.map((c) => c.name).join(' & ')}
+            </h3>
+            <span className="text-xs font-mono text-purple-300 font-bold block">
+              {topScore} {topScore === 1 ? 'Point' : 'Points'}
+            </span>
+
+            {isMostLikelyTo && crownedLeaders.length > 0 && (
+              <div className="pt-2 mt-2 border-t border-purple-400/20 text-xs text-amber-300 flex items-center justify-center gap-1.5">
+                <Crown className="w-3.5 h-3.5 fill-current text-amber-400" />
+                <span>
+                  Most Crowned:{' '}
+                  <strong className="text-white">
+                    {crownedLeaders.map((c) => c.name).join(' & ')}
+                  </strong>{' '}
+                  ({maxCrowns} 👑)
+                </span>
+              </div>
+            )}
+          </div>
+
+          {/* Full Roster Leaderboard with Collected Titles */}
+          <div className="space-y-3 text-left pt-2">
+            <span className="text-xs font-bold uppercase tracking-wider text-slate-400 block mb-1">
+              Final Room Leaderboard:
+            </span>
+            {sortedFinalPlayers.map((p, idx) => {
+              const isChamp = champions.some((c) => c.id === p.id);
+              const playerTitles = p.titles || [];
+
+              return (
+                <div
+                  key={p.id}
+                  className={`p-3.5 rounded-2xl border transition-all ${
+                    isChamp
+                      ? 'bg-purple-950/30 border-purple-500/50 shadow-md shadow-purple-950/40'
+                      : 'bg-canvas-base/80 border-white/5'
+                  }`}
+                >
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2.5">
+                      <span
+                        className={`w-6 h-6 rounded-full flex items-center justify-center font-bold text-xs ${
+                          idx === 0
+                            ? 'bg-amber-400 text-slate-950 font-black'
+                            : 'bg-surface-highlight text-slate-300'
+                        }`}
+                      >
+                        #{idx + 1}
+                      </span>
+                      <span className="font-bold text-sm text-white flex items-center gap-1.5">
+                        {p.name}
+                        {p.id === playerId && (
+                          <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-purple-500/20 text-purple-300">
+                            You
+                          </span>
+                        )}
+                        {isChamp && <Trophy className="w-3.5 h-3.5 text-amber-400" />}
+                      </span>
+                    </div>
+
+                    <div className="flex items-center gap-2.5 font-mono text-xs font-bold">
+                      <span className="text-emerald-400 flex items-center gap-1">
+                        <Target className="w-3.5 h-3.5" />
+                        <span>{p.score || 0} pts</span>
+                      </span>
+                      {isMostLikelyTo && (
+                        <span className="text-amber-400 flex items-center gap-1">
+                          <Crown className="w-3.5 h-3.5 fill-current" />
+                          <span>{p.crowns || 0} 👑</span>
+                        </span>
+                      )}
+                    </div>
+                  </div>
+
+                  {isMostLikelyTo && (
+                    <div className="mt-2.5 pt-2 border-t border-white/5 space-y-1">
+                      <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 flex items-center gap-1">
+                        <Crown className="w-3.5 h-3.5 text-amber-400 fill-current" />
+                        <span>Collected Titles ({playerTitles.length}):</span>
+                      </span>
+                      {playerTitles.length > 0 ? (
+                        <div className="flex flex-wrap gap-1.5 pt-0.5">
+                          {playerTitles.map((title, tIdx) => (
+                            <span
+                              key={tIdx}
+                              className="inline-block px-2.5 py-1 rounded-lg bg-purple-500/15 border border-purple-500/30 text-purple-200 text-[11px] italic font-medium max-w-full truncate"
+                              title={title}
+                            >
+                              "{title}"
+                            </span>
+                          ))}
+                        </div>
+                      ) : (
+                        <p className="text-[10px] text-slate-500 italic">No crowns earned</p>
+                      )}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Post-game actions */}
+        <div className="w-full space-y-2.5 pt-2">
+          {isHost ? (
+            <Button
+              variant="primary"
+              size="lg"
+              onClick={() => {
+                sound.playVictory();
+                triggerConfetti();
+                dispatch('RESTART_GAME');
+              }}
+              className="w-full bg-gradient-to-r from-purple-600 via-purple-700 to-indigo-600 text-white font-extrabold text-base min-h-[50px] shadow-lg shadow-purple-900/40"
+            >
+              <RotateCcw className="w-5 h-5 mr-1" />
+              <span>Play Again (Restart Room)</span>
+            </Button>
+          ) : (
+            <div className="p-3 rounded-xl bg-purple-950/30 border border-purple-500/20 text-xs text-purple-200 animate-pulse">
+              Waiting for the host to start a new match...
+            </div>
+          )}
+
+          <Link href={`/${locale}/games`} className="w-full block">
+            <Button
+              variant="secondary"
+              size="md"
+              className="w-full text-slate-300 hover:text-white border border-white/10"
+            >
+              <ArrowLeft className="w-4 h-4 mr-1.5" />
+              <span>Back to Games</span>
+            </Button>
+          </Link>
+        </div>
+      </div>
+    );
+  }
 
   if (isExpired) {
     return (
@@ -1155,7 +1376,11 @@ export function RoomClient({ roomCode }: RoomClientProps) {
                     />
                     {p.isHost && <Crown className="w-3 h-3 text-amber-400 shrink-0" />}
                     <span className="max-w-[100px] sm:max-w-[140px] truncate">{p.name}</span>
-                    <span className="text-[10px] text-brand-400 font-mono shrink-0">({p.score}pts)</span>
+                    <span className="text-[10px] text-brand-400 font-mono shrink-0">
+                      {room?.gameId === 'most-likely-to'
+                        ? `(${p.score}pts • ${p.crowns || 0}👑)`
+                        : `(${p.score}pts)`}
+                    </span>
                     {canEditThisPlayer && (
                       <button
                         type="button"
@@ -1168,6 +1393,20 @@ export function RoomClient({ roomCode }: RoomClientProps) {
                         aria-label={`Edit ${p.name}`}
                       >
                         <Edit3 className="w-3 h-3" />
+                      </button>
+                    )}
+                    {isHost && isLobby && !p.isHost && (
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          dispatch('KICK_PLAYER', { targetPlayerId: p.id });
+                        }}
+                        className="text-slate-500 hover:text-rose-400 p-0.5 rounded hover:bg-rose-500/10 transition-colors ml-0.5"
+                        title={`Remove ${p.name}`}
+                        aria-label={`Remove ${p.name}`}
+                      >
+                        <Trash2 className="w-3 h-3" />
                       </button>
                     )}
                   </div>
@@ -1207,19 +1446,46 @@ export function RoomClient({ roomCode }: RoomClientProps) {
               </div>
 
               {isHost ? (
-                <div className="space-y-2">
+                <div className="space-y-3">
+                  {room?.gameId === 'most-likely-to' && (
+                    <div className="space-y-1.5 p-3 rounded-2xl bg-canvas-base border border-purple-500/20 text-left">
+                      <span className="text-[11px] font-bold uppercase tracking-wider text-purple-300 block">
+                        Game Length (Prompts):
+                      </span>
+                      <div className="grid grid-cols-3 gap-2">
+                        {[5, 10, 15].map((len) => {
+                          const isSel = (room?.gameLength || 10) === len;
+                          return (
+                            <button
+                              key={len}
+                              type="button"
+                              onClick={() => dispatch('UPDATE_LOBBY_SETTINGS', { gameLength: len })}
+                              className={`py-1.5 rounded-xl text-xs font-bold border transition-all ${
+                                isSel
+                                  ? 'bg-purple-600 text-white border-purple-400 shadow-md shadow-purple-600/30'
+                                  : 'bg-surface-elevated text-slate-300 border-white/5 hover:border-white/20'
+                              }`}
+                            >
+                              {len} Prompts
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  )}
+
                   <Button
                     variant="primary"
                     size="xl"
                     onClick={() => dispatch('START_GAME')}
-                    disabled={!room || room.players.length < 2}
+                    disabled={!room || room.players.length < (room?.gameId === 'most-likely-to' ? 3 : 2)}
                     className="w-full font-bold min-h-[48px] disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     {dict.multiplayer.startGame} →
                   </Button>
-                  {room && room.players.length < 2 && (
+                  {room && room.players.length < (room?.gameId === 'most-likely-to' ? 3 : 2) && (
                     <p className="text-[11px] text-amber-300/90 font-medium pt-0.5">
-                      ⚠️ Waiting for at least 1 more player to join before starting.
+                      ⚠️ Waiting for at least {(room?.gameId === 'most-likely-to' ? 3 : 2) - room.players.length} more player(s) to join (minimum {room?.gameId === 'most-likely-to' ? 3 : 2} players required).
                     </p>
                   )}
                   <button
@@ -1231,8 +1497,15 @@ export function RoomClient({ roomCode }: RoomClientProps) {
                   </button>
                 </div>
               ) : (
-                <div className="p-3 rounded-xl bg-canvas-base border border-white/5 text-xs text-slate-400 animate-pulse">
-                  {dict.multiplayer.lobbyWaiting}
+                <div className="space-y-2">
+                  {room?.gameId === 'most-likely-to' && (
+                    <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-purple-500/10 text-purple-300 border border-purple-500/20 text-xs font-bold">
+                      <span>🎯 {room?.gameLength || 10} Prompts Match</span>
+                    </div>
+                  )}
+                  <div className="p-3 rounded-xl bg-canvas-base border border-white/5 text-xs text-slate-400 animate-pulse">
+                    {dict.multiplayer.lobbyWaiting}
+                  </div>
                 </div>
               )}
             </div>
@@ -1270,86 +1543,407 @@ export function RoomClient({ roomCode }: RoomClientProps) {
 
               {/* Synchronized Game Arena (Most Likely To Voting vs Truth or Dare 3D Card) */}
               {room?.gameId === 'most-likely-to' ? (
-                <div className="w-full max-w-xl mx-auto space-y-4 sm:space-y-6 my-auto">
-                  {/* Most Likely To Prompt Card */}
-                  <div className="w-full p-5 sm:p-8 rounded-3xl bg-surface-elevated border border-amber-400/30 shadow-[0_0_35px_rgba(245,158,11,0.25)] text-center space-y-3">
-                    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-500/10 text-amber-400 text-xs font-bold uppercase tracking-wider">
-                      <Users className="w-3.5 h-3.5" /> Most Likely To Online
-                    </span>
-                    <p className="font-display font-bold text-lg sm:text-2xl md:text-3xl text-white leading-relaxed break-words">
-                      {cleanQuestionPrompt(
-                        room?.currentCard?.prompt ||
-                          room?.currentCard?.question_text ||
-                          'Who in the room is most likely to do this?'
-                      )}
-                    </p>
-                  </div>
+                (() => {
+                  const totalPlayers = room?.players?.length || 0;
+                  const votedCount = room?.votedPlayerIds?.length || Object.keys(room?.votes || {}).length;
+                  const votingPercent = totalPlayers > 0 ? Math.round((votedCount / totalPlayers) * 100) : 0;
+                  const isVotingComplete = Boolean(
+                    room?.isVotingComplete || (totalPlayers >= 3 && votedCount >= totalPlayers)
+                  );
+                  const hasMyVote = Boolean(room?.votes?.[playerId]);
 
-                  {/* Connected Players Voting Grid */}
-                  <div className="w-full space-y-2.5">
-                    <div className="flex items-center justify-between px-1">
-                      <p className="text-xs font-bold uppercase tracking-wider text-slate-400">
-                        Cast your secret vote for:
-                      </p>
-                      <span className="text-[11px] font-mono text-brand-300">
-                        {Object.keys(room?.votes || {}).length} / {room?.players.length || 0} Voted
-                      </span>
-                    </div>
+                  // Round reveal calculations
+                  const roundTallies: Record<string, number> = {};
+                  if (isVotingComplete && room?.votes) {
+                    Object.values(room.votes).forEach((targetId) => {
+                      roundTallies[targetId] = (roundTallies[targetId] || 0) + 1;
+                    });
+                  }
+                  let maxV = 0;
+                  Object.values(roundTallies).forEach((cnt) => {
+                    if (cnt > maxV) maxV = cnt;
+                  });
 
-                    <div className="grid grid-cols-2 gap-2 sm:gap-3">
-                      {room?.players.map((p) => {
-                        const hasMyVote = room.votes?.[playerId] === p.id;
-                        const voteCount = Object.values(room.votes || {}).filter((v) => v === p.id).length;
-                        return (
-                          <button
-                            key={p.id}
-                            type="button"
-                            onClick={() => {
-                              sound.playVictory();
-                              sound.triggerHaptic([20, 30]);
-                              dispatch('SUBMIT_VOTE', { vote: p.id });
-                            }}
-                            className={`p-2.5 sm:p-3.5 rounded-2xl border flex items-center justify-between gap-1.5 min-w-0 transition-all ${
-                              hasMyVote
-                                ? 'bg-amber-500/25 border-amber-400 text-white shadow-glow-brand scale-[1.02]'
-                                : 'bg-surface-elevated hover:bg-surface-highlight border-white/10 text-slate-200'
-                            }`}
-                          >
-                            <div className="flex items-center gap-2 min-w-0">
-                              <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-brand-600 flex items-center justify-center font-bold text-xs text-white shrink-0">
-                                {p.name.charAt(0).toUpperCase()}
-                              </div>
-                              <span className="font-bold text-xs sm:text-sm truncate">{p.name}</span>
+                  // TASK 5 Consensus check: At least 2 votes must land on the top selection
+                  const hasConsensus = Boolean(room?.roundConsensusReached ?? (maxV >= 2));
+                  const roundWinners = isVotingComplete && hasConsensus
+                    ? (room?.players || []).filter((p) => (roundTallies[p.id] || 0) === maxV && maxV >= 2)
+                    : [];
+                  const winnerSet = new Set(roundWinners.map((w) => w.id));
+
+                  // Voters who correctly predicted any crowned winner (+1 point)
+                  const votersWhoScored = hasConsensus
+                    ? (room?.players || []).filter((p) => room?.votes?.[p.id] && winnerSet.has(room.votes[p.id]))
+                    : [];
+
+                  // Sorted online leaderboard: by score (points), then crowns
+                  const sortedOnlinePlayers = [...(room?.players || [])].sort((a, b) => {
+                    if ((b.score || 0) !== (a.score || 0)) return (b.score || 0) - (a.score || 0);
+                    if ((b.crowns || 0) !== (a.crowns || 0)) return (b.crowns || 0) - (a.crowns || 0);
+                    return 0;
+                  });
+
+                  const promptText = cleanQuestionPrompt(
+                    room?.currentCard?.prompt ||
+                      room?.currentCard?.question_text ||
+                      'Who in the room is most likely to do this?'
+                  );
+
+                  if (isVotingComplete) {
+                    return (
+                      <div className="w-full max-w-xl mx-auto space-y-4 sm:space-y-6 my-auto animate-fade-in">
+                        {/* Round Reveal Header */}
+                        <div className="w-full flex items-center justify-between text-xs text-slate-400 font-mono">
+                          <span className="text-purple-400 font-bold uppercase tracking-wider">
+                            Round {room?.roundNumber || 1} of {room?.gameLength || 10}
+                          </span>
+                          <span className="px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-bold uppercase tracking-wider">
+                            Round Reveal
+                          </span>
+                        </div>
+
+                        {/* Winner Announcement Banner or Split Decision Notice */}
+                        {hasConsensus && roundWinners.length > 0 ? (
+                          <div className="w-full p-6 sm:p-8 rounded-3xl bg-surface-elevated border border-purple-500/40 shadow-[0_0_40px_rgba(168,85,247,0.25)] text-center space-y-3">
+                            <div className="w-14 h-14 rounded-full bg-purple-500/20 border border-purple-400/40 flex items-center justify-center mx-auto text-amber-400">
+                              <Crown className="w-8 h-8 animate-bounce text-amber-400 fill-current" />
                             </div>
-                            {voteCount > 0 && (
-                              <span className="px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 text-[10px] font-mono font-bold shrink-0">
-                                {voteCount} {voteCount === 1 ? 'vote' : 'votes'}
-                              </span>
-                            )}
-                          </button>
-                        );
-                      })}
-                    </div>
-                  </div>
 
-                  {/* Host / Turn Control to advance prompt */}
-                  {(isHost || isMyTurn) && (
-                    <div className="pt-2 flex justify-center">
-                      <Button
-                        variant="primary"
-                        size="lg"
-                        onClick={() => {
-                          triggerConfetti();
-                          sound.playChime();
-                          dispatch('NEXT_TURN');
-                        }}
-                        className="w-full max-w-sm font-bold min-h-[46px]"
-                      >
-                        Next Prompt →
-                      </Button>
+                            <div className="space-y-1.5">
+                              <span className="text-xs font-bold uppercase tracking-wider text-purple-400">
+                                {roundWinners.length > 1
+                                  ? '👑 Tied Winners — Shared Crown!'
+                                  : 'The Group Has Spoken!'}
+                              </span>
+                              <h2 className="text-2xl sm:text-3xl font-extrabold text-white">
+                                {roundWinners.map((w) => w.name).join(' & ')}
+                              </h2>
+                              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-500/15 border border-amber-500/30 text-amber-300 text-xs font-bold">
+                                <Crown className="w-3.5 h-3.5 fill-current" />
+                                <span>+1 Crown Awarded</span>
+                              </div>
+                              <div className="p-3 mt-2 rounded-xl bg-purple-950/40 border border-purple-500/20 text-xs text-purple-200">
+                                <span className="text-[10px] font-bold uppercase tracking-wider text-amber-400 block mb-0.5">
+                                  👑 New Collected Title:
+                                </span>
+                                <p className="font-semibold italic">"{promptText}"</p>
+                              </div>
+                            </div>
+                          </div>
+                        ) : (
+                          <div className="w-full p-6 sm:p-8 rounded-3xl bg-surface-elevated border border-amber-500/40 shadow-[0_0_30px_rgba(245,158,11,0.15)] text-center space-y-3">
+                            <div className="w-14 h-14 rounded-full bg-amber-500/20 border border-amber-400/40 flex items-center justify-center mx-auto text-amber-400">
+                              <AlertCircle className="w-8 h-8 text-amber-400" />
+                            </div>
+
+                            <div className="space-y-1">
+                              <span className="text-xs font-bold uppercase tracking-wider text-amber-400">
+                                Split Decision — No Consensus
+                              </span>
+                              <h2 className="text-xl sm:text-2xl font-extrabold text-white">
+                                No Crowns or Points Awarded
+                              </h2>
+                              <p className="text-xs text-slate-300 max-w-md mx-auto pt-1">
+                                Every vote went to a different player. At least 2 votes must land on the top selection to award crowns and prediction points.
+                              </p>
+                              <p className="text-xs text-slate-400 italic pt-1">"{promptText}"</p>
+                            </div>
+                          </div>
+                        )}
+
+                        {/* Prediction Points This Round */}
+                        <div className="w-full p-4 rounded-2xl bg-canvas-base/80 border border-white/10 space-y-2">
+                          <div className="flex items-center justify-between text-xs">
+                            <span className="font-bold uppercase tracking-wider text-purple-300 flex items-center gap-1.5">
+                              <Target className="w-4 h-4 text-purple-400" />
+                              <span>Prediction Points This Round</span>
+                            </span>
+                            <span className="text-[11px] text-slate-400 font-mono">+1 pt for voting for a winner</span>
+                          </div>
+                          {votersWhoScored.length > 0 ? (
+                            <div className="flex flex-wrap gap-2 pt-1">
+                              {votersWhoScored.map((voter) => (
+                                <span
+                                  key={voter.id}
+                                  className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 text-xs font-bold"
+                                >
+                                  <Check className="w-3.5 h-3.5 text-emerald-400" />
+                                  <span>{voter.name}</span>
+                                  <span className="text-[10px] text-emerald-400 font-mono">(+1 pt)</span>
+                                </span>
+                              ))}
+                            </div>
+                          ) : (
+                            <p className="text-xs text-slate-400 italic">
+                              {hasConsensus
+                                ? 'Nobody predicted the crowned winner this round.'
+                                : 'No prediction points awarded due to split decision.'}
+                            </p>
+                          )}
+                        </div>
+
+                        {/* Animated Vote Breakdown Bar Graph */}
+                        <div className="w-full space-y-2.5 bg-canvas-base/80 p-4 sm:p-5 rounded-2xl border border-white/10">
+                          <h4 className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-3">
+                            Vote Distribution:
+                          </h4>
+
+                          {room?.players.map((p) => {
+                            const votesForP = roundTallies[p.id] || 0;
+                            const percentage = totalPlayers > 0 ? Math.round((votesForP / totalPlayers) * 100) : 0;
+                            const isRoundWinner = roundWinners.some((w) => w.id === p.id);
+
+                            return (
+                              <div key={p.id} className="space-y-1">
+                                <div className="flex items-center justify-between text-xs">
+                                  <span className={`font-bold flex items-center gap-1.5 ${isRoundWinner ? 'text-amber-300' : 'text-slate-200'}`}>
+                                    {p.name} {isRoundWinner && <Crown className="w-3.5 h-3.5 text-amber-400 fill-current" />}
+                                  </span>
+                                  <span className="font-mono text-[11px] text-slate-400">
+                                    {votesForP} {votesForP === 1 ? 'vote' : 'votes'} ({percentage}%)
+                                  </span>
+                                </div>
+                                <div className="w-full h-3 rounded-full bg-surface-highlight overflow-hidden relative">
+                                  <div
+                                    className={`h-full rounded-full transition-all duration-700 ease-out ${
+                                      isRoundWinner
+                                        ? 'bg-gradient-to-r from-amber-400 to-purple-500'
+                                        : 'bg-purple-600/70'
+                                    }`}
+                                    style={{ width: `${Math.max(percentage, 5)}%` }}
+                                  />
+                                </div>
+                              </div>
+                            );
+                          })}
+                        </div>
+
+                        {/* Live Standings Leaderboard */}
+                        <div className="w-full space-y-2.5 bg-canvas-base/80 p-4 sm:p-5 rounded-2xl border border-white/10">
+                          <div className="flex items-center justify-between mb-1">
+                            <h4 className="text-xs font-bold uppercase tracking-wider text-slate-400 flex items-center gap-1.5">
+                              <Trophy className="w-3.5 h-3.5 text-amber-400" />
+                              <span>Current Room Standings</span>
+                            </h4>
+                            <span className="text-[11px] text-slate-400 font-mono">
+                              Round {room?.roundNumber || 1}
+                            </span>
+                          </div>
+
+                          <div className="space-y-1.5">
+                            {sortedOnlinePlayers.map((p, idx) => (
+                              <div
+                                key={p.id}
+                                className="p-2 sm:p-2.5 rounded-xl bg-surface-elevated/70 border border-white/5 flex items-center justify-between text-xs"
+                              >
+                                <div className="flex items-center gap-2">
+                                  <span className={`w-5 h-5 rounded-full flex items-center justify-center font-bold text-[10px] ${
+                                    idx === 0 ? 'bg-amber-400 text-slate-950 font-black' : 'bg-surface-highlight text-slate-400'
+                                  }`}>
+                                    #{idx + 1}
+                                  </span>
+                                  <span className="font-bold text-white">{p.name}</span>
+                                </div>
+                                <div className="flex items-center gap-2.5 font-mono text-[11px]">
+                                  <span className="text-emerald-400 font-bold flex items-center gap-1">
+                                    <Target className="w-3 h-3" />
+                                    {p.score || 0} pts
+                                  </span>
+                                  <span className="text-amber-400 font-bold flex items-center gap-0.5">
+                                    <Crown className="w-3 h-3 fill-current" />
+                                    {p.crowns || 0}
+                                  </span>
+                                  {p.titles && p.titles.length > 0 && (
+                                    <span className="text-purple-300 text-[10px]">
+                                      ({p.titles.length} {p.titles.length === 1 ? 'title' : 'titles'})
+                                    </span>
+                                  )}
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+
+                        {/* Host / Turn Control to advance prompt */}
+                        {(isHost || isMyTurn) ? (
+                          <div className="pt-2 flex justify-center">
+                            {(() => {
+                              const isLastPrompt = (room?.roundNumber || 1) >= (room?.gameLength || 10);
+                              return (
+                                <Button
+                                  variant="primary"
+                                  size="lg"
+                                  onClick={() => {
+                                    sound.playWhoosh();
+                                    if (isLastPrompt) {
+                                      dispatch('FINISH_GAME');
+                                    } else {
+                                      dispatch('NEXT_TURN');
+                                    }
+                                  }}
+                                  className="w-full max-w-sm bg-gradient-to-r from-purple-600 via-purple-700 to-indigo-600 text-white font-extrabold min-h-[48px] shadow-lg shadow-purple-900/40"
+                                >
+                                  {isLastPrompt ? 'View Final Standings 🏆' : `Next Prompt (${(room?.roundNumber || 1) + 1}/${room?.gameLength || 10}) →`}
+                                </Button>
+                              );
+                            })()}
+                          </div>
+                        ) : (
+                          <div className="pt-2 text-center">
+                            <p className="text-xs text-slate-400 animate-pulse font-medium">
+                              Waiting for host to continue...
+                            </p>
+                          </div>
+                        )}
+                      </div>
+                    );
+                  }
+
+                  // SECRET VOTING PHASE
+                  return (
+                    <div className="w-full max-w-xl mx-auto space-y-4 sm:space-y-6 my-auto animate-fade-in">
+                      {/* Top Bar with Secret Banner */}
+                      <div className="w-full flex items-center justify-between">
+                        <span className="text-xs font-bold font-mono text-purple-400">
+                          Round {room?.roundNumber || 1} of {room?.gameLength || 10}
+                        </span>
+                        <span className="px-3 py-1 rounded-full bg-purple-500/10 border border-purple-500/30 text-purple-300 text-xs font-bold flex items-center gap-1.5 shadow-sm">
+                          <Lock className="w-3 h-3 text-purple-400" />
+                          <span>Secret Voting</span>
+                        </span>
+                      </div>
+
+                      {/* Voting Progress Indicator */}
+                      <div className="w-full space-y-1.5">
+                        <div className="flex items-center justify-between text-[11px] text-slate-400 font-mono">
+                          <span>{votedCount} of {totalPlayers} Players Voted</span>
+                          <span>{votingPercent}% Complete</span>
+                        </div>
+                        <div className="w-full h-1.5 rounded-full bg-surface-highlight overflow-hidden">
+                          <div
+                            className="h-full bg-gradient-to-r from-purple-500 to-indigo-500 transition-all duration-300"
+                            style={{ width: `${Math.max(votingPercent, 6)}%` }}
+                          />
+                        </div>
+                      </div>
+
+                      {/* Visual Player Status Badges */}
+                      <div className="w-full flex flex-wrap items-center justify-center gap-1.5">
+                        {room?.players.map((p) => {
+                          const playerHasVoted = (room?.votedPlayerIds || []).includes(p.id) || Boolean(room?.votes?.[p.id]);
+                          const isMe = p.id === playerId;
+                          return (
+                            <span
+                              key={p.id}
+                              className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold transition-all ${
+                                playerHasVoted
+                                  ? 'bg-emerald-500/15 border border-emerald-500/30 text-emerald-400'
+                                  : 'bg-white/5 border border-white/10 text-slate-400'
+                              }`}
+                            >
+                              {playerHasVoted ? (
+                                <Check className="w-3 h-3 text-emerald-400" />
+                              ) : (
+                                <span className="w-1.5 h-1.5 rounded-full bg-slate-500 animate-pulse" />
+                              )}
+                              <span className="truncate max-w-[80px]">{p.name}{isMe ? ' (You)' : ''}</span>
+                            </span>
+                          );
+                        })}
+                      </div>
+
+                      {/* Prompt Card */}
+                      <div className="w-full p-5 sm:p-8 rounded-3xl bg-surface-elevated border border-purple-400/40 shadow-[0_0_35px_rgba(168,85,247,0.22)] text-center space-y-3">
+                        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-purple-500/10 text-purple-300 text-xs font-bold uppercase tracking-wider">
+                          <Users className="w-3.5 h-3.5" /> Most Likely To...
+                        </span>
+                        <p className="font-display font-bold text-lg sm:text-2xl md:text-3xl text-white leading-relaxed break-words">
+                          {promptText}
+                        </p>
+                      </div>
+
+                      {/* Vote Submitted Confirmation Notice */}
+                      {hasMyVote && (
+                        <div className="w-full p-4 rounded-2xl bg-emerald-500/15 border border-emerald-500/30 text-center space-y-1 animate-fade-in shadow-lg">
+                          <div className="flex items-center justify-center gap-2 text-emerald-300 font-extrabold text-sm">
+                            <Check className="w-4 h-4 text-emerald-400 shrink-0" />
+                            <span>Vote Submitted!</span>
+                          </div>
+                          <p className="text-xs text-slate-300">
+                            Your choice is confidential. Waiting for remaining players to vote...
+                          </p>
+                        </div>
+                      )}
+
+                      {/* Voting Buttons */}
+                      <div className="w-full space-y-3">
+                        <div className="text-center">
+                          <p className="text-xs font-bold uppercase tracking-wider text-slate-400">
+                            {hasMyVote
+                              ? 'Your vote has been cast. Waiting for the rest of the room:'
+                              : 'Tap who you think fits best (you can vote for yourself!):'}
+                          </p>
+                        </div>
+
+                        <div className="grid grid-cols-2 gap-2 sm:gap-3">
+                          {room?.players.map((p) => {
+                            const isMySelection = room?.votes?.[playerId] === p.id;
+                            const isSelf = p.id === playerId;
+                            return (
+                              <button
+                                key={p.id}
+                                type="button"
+                                disabled={hasMyVote}
+                                onClick={() => {
+                                  if (hasMyVote) return;
+                                  sound.playChime();
+                                  sound.triggerHaptic([15, 25]);
+                                  dispatch('SUBMIT_VOTE', { vote: p.id });
+                                }}
+                                className={`p-3 sm:p-4 rounded-2xl border flex items-center justify-between gap-2 transition-all ${
+                                  isMySelection
+                                    ? 'bg-purple-600 text-white border-purple-400 shadow-lg shadow-purple-600/40 scale-[1.02]'
+                                    : hasMyVote
+                                    ? 'bg-surface-elevated/50 border-white/5 text-slate-400 opacity-70 cursor-not-allowed'
+                                    : 'bg-surface-elevated hover:bg-surface-highlight border-white/10 text-slate-200 active:scale-95'
+                                }`}
+                              >
+                                <div className="flex items-center gap-2.5 min-w-0">
+                                  <div
+                                    className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-xs shrink-0 transition-colors ${
+                                      isMySelection
+                                        ? 'bg-white text-purple-700'
+                                        : 'bg-purple-600 text-white'
+                                    }`}
+                                  >
+                                    {p.name.charAt(0).toUpperCase()}
+                                  </div>
+                                  <div className="flex items-center gap-1.5 min-w-0">
+                                    <span className="font-bold text-xs sm:text-sm truncate">
+                                      {p.name}
+                                    </span>
+                                    {isSelf && (
+                                      <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-purple-500/20 text-purple-300 font-medium">
+                                        You
+                                      </span>
+                                    )}
+                                  </div>
+                                </div>
+
+                                {isMySelection && <Check className="w-4 h-4 text-white shrink-0" />}
+                              </button>
+                            );
+                          })}
+                        </div>
+                      </div>
+
+                      <div className="text-center text-[11px] text-slate-500 flex items-center justify-center gap-1.5">
+                        <Lock className="w-3 h-3 text-slate-500" />
+                        <span>Votes are secret and hidden until all players finish voting.</span>
+                      </div>
                     </div>
-                  )}
-                </div>
+                  );
+                })()
               ) : (
                 /* Synchronized 3D Card */
                 <div className="w-full flex flex-col items-center justify-center my-auto">

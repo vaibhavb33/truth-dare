@@ -84,6 +84,7 @@ export class RoomEngine {
     timerSeconds?: 0 | 15 | 30 | 60;
     language?: SupportedLanguageCode;
     maxPlayers?: number;
+    gameLength?: 5 | 10 | 15;
     customDeckSnapshot?: MultiplayerRoom['customDeckSnapshot'];
     clientRequestId?: string;
   }): { room: MultiplayerRoom; hostPlayerId: string; sessionToken: string; roomId: string; roomCode: string } {
@@ -160,8 +161,11 @@ export class RoomEngine {
       timerSecondsRemaining: params.timerSeconds ?? 30,
       isTimerRunning: false,
       roundNumber: 1,
+      gameLength: (params.gameLength as 5 | 10 | 15) || (params.gameId === 'most-likely-to' ? 10 : undefined),
       maxPlayers,
       votes: {},
+      votedPlayerIds: [],
+      isVotingComplete: false,
       recentEmojis: [],
       language,
       customDeckSnapshot,
@@ -502,10 +506,11 @@ export class RoomEngine {
         if (room.status === 'IN_PROGRESS' || room.status === 'in_game') {
           return { success: false, error: 'Game is already in progress.' };
         }
-        if (room.players.length < 2) {
+        const minRequired = room.gameId === 'most-likely-to' ? 3 : 2;
+        if (room.players.length < minRequired) {
           return {
             success: false,
-            error: 'At least 2 players are required to start the game. Invite a friend using your room code!',
+            error: `At least ${minRequired} players are required to start the game. Invite a friend using your room code!`,
           };
         }
 
@@ -522,6 +527,10 @@ export class RoomEngine {
           room.currentCard = cleanQuestion(firstCardResult.card);
           room.isCardFlipped = true;
           room.votes = {};
+          room.votedPlayerIds = [];
+          room.isVotingComplete = false;
+          room.roundWinners = [];
+          room.roundConsensusReached = false;
         }
 
         room.updatedAt = Date.now();
@@ -544,6 +553,12 @@ export class RoomEngine {
         }
         if (params.payload?.timerSeconds !== undefined) {
           room.timerSecondsRemaining = Number(params.payload.timerSeconds);
+        }
+        if (params.payload?.gameLength !== undefined) {
+          const gl = Number(params.payload.gameLength);
+          if (gl === 5 || gl === 10 || gl === 15) {
+            room.gameLength = gl as 5 | 10 | 15;
+          }
         }
         if (params.payload?.maxPlayers !== undefined) {
           room.maxPlayers = Math.max(2, Math.min(20, Number(params.payload.maxPlayers)));
@@ -640,6 +655,8 @@ export class RoomEngine {
         room.currentCard = card;
         room.isCardFlipped = true;
         room.votes = {}; // Reset votes for new card
+        room.votedPlayerIds = [];
+        room.isVotingComplete = false;
 
         // Append to synchronized question history
         if (card) {
@@ -688,6 +705,15 @@ export class RoomEngine {
         this.advanceTurn(room);
 
         if (room.gameId === 'most-likely-to') {
+          room.roundNumber = (room.roundNumber || 1) + 1;
+          const maxPrompts = room.gameLength || 10;
+          if (room.roundNumber > maxPrompts) {
+            room.status = 'finished';
+            room.updatedAt = Date.now();
+            this.emitEvent(room.roomCode, 'GAME_FINISHED', { roundNumber: room.roundNumber - 1 });
+            break;
+          }
+
           const drawnIds = (room.questionHistory || []).map((h) => h.questionId);
           const nextCardResult = questionEngine.drawNextCard({
             gameId: 'most-likely-to',
@@ -697,6 +723,10 @@ export class RoomEngine {
           room.currentCard = cleanQuestion(nextCardResult.card);
           room.isCardFlipped = true;
           room.votes = {};
+          room.votedPlayerIds = [];
+          room.isVotingComplete = false;
+          room.roundWinners = [];
+          room.roundConsensusReached = false;
         }
 
         room.updatedAt = Date.now();
@@ -723,6 +753,15 @@ export class RoomEngine {
         this.advanceTurn(room);
 
         if (room.gameId === 'most-likely-to') {
+          room.roundNumber = (room.roundNumber || 1) + 1;
+          const maxPrompts = room.gameLength || 10;
+          if (room.roundNumber > maxPrompts) {
+            room.status = 'finished';
+            room.updatedAt = Date.now();
+            this.emitEvent(room.roomCode, 'GAME_FINISHED', { roundNumber: room.roundNumber - 1 });
+            break;
+          }
+
           const drawnIds = (room.questionHistory || []).map((h) => h.questionId);
           const nextCardResult = questionEngine.drawNextCard({
             gameId: 'most-likely-to',
@@ -732,6 +771,10 @@ export class RoomEngine {
           room.currentCard = cleanQuestion(nextCardResult.card);
           room.isCardFlipped = true;
           room.votes = {};
+          room.votedPlayerIds = [];
+          room.isVotingComplete = false;
+          room.roundWinners = [];
+          room.roundConsensusReached = false;
         }
 
         room.updatedAt = Date.now();
@@ -756,9 +799,95 @@ export class RoomEngine {
 
       case 'SUBMIT_VOTE': {
         const vote = (params.payload?.vote as string) || 'pass';
-        room.votes[player.id] = vote;
-        room.updatedAt = Date.now();
-        this.emitEvent(room.roomCode, 'VOTE_SUBMITTED', { playerId: player.id, vote });
+
+        if (room.gameId === 'most-likely-to') {
+          // Validate vote target belongs to the active room
+          if (!room.players.some((p) => p.id === vote)) {
+            return { success: false, error: 'Invalid vote target: player not found in this room.' };
+          }
+
+          // Prevent multiple votes from the same player in the same round
+          if (room.votes[player.id]) {
+            return { success: true, room: this.sanitizeRoomForPlayer(room, player.id) };
+          }
+
+          room.votes[player.id] = vote;
+          room.votedPlayerIds = Object.keys(room.votes);
+          room.updatedAt = Date.now();
+
+          // Check if all players (minimum 3) have voted
+          const allVoted = room.players.length >= 3 && room.players.every((p) => Boolean(room.votes[p.id]));
+
+          if (allVoted) {
+            room.isVotingComplete = true;
+
+            // Compute winners and add points
+            const tally: Record<string, number> = {};
+            Object.values(room.votes).forEach((targetId) => {
+              tally[targetId] = (tally[targetId] || 0) + 1;
+            });
+            let maxVotes = 0;
+            Object.values(tally).forEach((c) => {
+              if (c > maxVotes) maxVotes = c;
+            });
+
+            // TASK 5 Consensus Rule: At least two votes must land on top selection
+            const hasConsensus = maxVotes >= 2;
+            const roundWinners: string[] = [];
+            const pointsAwarded: Record<string, number> = {};
+            const currentPrompt = cleanQuestionPrompt(
+              room.currentCard?.prompt || room.currentCard?.question_text || ''
+            );
+
+            if (hasConsensus) {
+              // 1. Crown winner(s) who received maxVotes (ties share the crown)
+              room.players.forEach((p) => {
+                if ((tally[p.id] || 0) === maxVotes) {
+                  roundWinners.push(p.id);
+                  p.crowns = (p.crowns || 0) + 1;
+                  if (currentPrompt) {
+                    p.titles = [...(p.titles || []), currentPrompt];
+                  }
+                }
+              });
+
+              // 2. Award 1 prediction point to every player who voted for any crowned winner
+              const winnerSet = new Set(roundWinners);
+              room.players.forEach((voter) => {
+                const target = room.votes[voter.id];
+                if (target && winnerSet.has(target)) {
+                  voter.score = (voter.score || 0) + 1;
+                  pointsAwarded[voter.id] = 1;
+                }
+              });
+            }
+
+            room.roundWinners = roundWinners;
+            room.roundConsensusReached = hasConsensus;
+
+            // Emit voting completed event with full tallies, winners, consensus, and prediction points
+            this.emitEvent(room.roomCode, 'VOTING_COMPLETED', {
+              votes: room.votes,
+              tally,
+              roundNumber: room.roundNumber,
+              winners: roundWinners,
+              hasConsensus,
+              pointsAwarded,
+            });
+          } else {
+            room.isVotingComplete = false;
+            // Secret voting in progress: announce player has voted without exposing candidate
+            this.emitEvent(room.roomCode, 'VOTE_SUBMITTED', {
+              playerId: player.id,
+              totalVotes: Object.keys(room.votes).length,
+              totalPlayers: room.players.length,
+            });
+          }
+        } else {
+          room.votes[player.id] = vote;
+          room.updatedAt = Date.now();
+          this.emitEvent(room.roomCode, 'VOTE_SUBMITTED', { playerId: player.id, vote });
+        }
         break;
       }
 
@@ -776,6 +905,46 @@ export class RoomEngine {
 
       case 'LEAVE_ROOM': {
         this.leaveRoom(room.roomCode, player.id);
+        break;
+      }
+
+      case 'FINISH_GAME': {
+        if (!isHost) {
+          return { success: false, code: 'PERMISSION_DENIED', error: 'Only the host can finish the game.' };
+        }
+        room.status = 'finished';
+        room.updatedAt = Date.now();
+        this.emitEvent(room.roomCode, 'GAME_FINISHED', { roundNumber: room.roundNumber });
+        break;
+      }
+
+      case 'RESTART_GAME': {
+        if (!isHost) {
+          return { success: false, code: 'PERMISSION_DENIED', error: 'Only the host can restart the game.' };
+        }
+        room.roundNumber = 1;
+        room.votes = {};
+        room.votedPlayerIds = [];
+        room.isVotingComplete = false;
+        room.roundWinners = [];
+        room.roundConsensusReached = false;
+        room.players.forEach((p) => {
+          p.score = 0;
+          p.crowns = 0;
+          p.titles = [];
+        });
+        if (room.gameId === 'most-likely-to') {
+          const firstCardResult = questionEngine.drawNextCard({
+            gameId: 'most-likely-to',
+            language: room.language || 'en',
+            drawnCardIds: [],
+          });
+          room.currentCard = cleanQuestion(firstCardResult.card);
+          room.isCardFlipped = true;
+        }
+        room.status = 'IN_PROGRESS';
+        room.updatedAt = Date.now();
+        this.emitEvent(room.roomCode, 'GAME_RESTARTED', { roundNumber: 1 });
         break;
       }
 
@@ -834,7 +1003,43 @@ export class RoomEngine {
         return { success: false, error: `Unknown action: ${params.action}` };
     }
 
-    return { success: true, room };
+    return { success: true, room: this.sanitizeRoomForPlayer(room, player.id) };
+  }
+
+  /**
+   * Filter and sanitize room payload for secret voting privacy in Most Likely To
+   */
+  public sanitizeRoomForPlayer(room: MultiplayerRoom, playerId?: string): MultiplayerRoom {
+    if (room.gameId !== 'most-likely-to') {
+      return room;
+    }
+
+    const votedPlayerIds = Object.keys(room.votes || {});
+    const isVotingComplete = Boolean(
+      room.isVotingComplete ||
+      (room.players.length >= 3 && room.players.every((p) => Boolean(room.votes?.[p.id])))
+    );
+
+    if (isVotingComplete) {
+      return {
+        ...room,
+        isVotingComplete: true,
+        votedPlayerIds,
+      };
+    }
+
+    // Secret voting: conceal other players' votes
+    const maskedVotes: Record<string, string> = {};
+    if (playerId && room.votes && room.votes[playerId]) {
+      maskedVotes[playerId] = room.votes[playerId];
+    }
+
+    return {
+      ...room,
+      isVotingComplete: false,
+      votedPlayerIds,
+      votes: maskedVotes,
+    };
   }
 
   /**
@@ -846,8 +1051,8 @@ export class RoomEngine {
     const currentIndex = room.players.findIndex((p) => p.id === room.activePlayerId);
     const nextIndex = (currentIndex + 1) % room.players.length;
 
-    // Increment round number if turn has cycled back to the first player
-    if (nextIndex === 0) {
+    // Increment round number if turn has cycled back to the first player (for turn-based games like Truth or Dare)
+    if (room.gameId !== 'most-likely-to' && nextIndex === 0) {
       room.roundNumber += 1;
     }
 
@@ -855,6 +1060,10 @@ export class RoomEngine {
     room.isCardFlipped = false;
     room.currentCard = null;
     room.votes = {};
+    room.votedPlayerIds = [];
+    room.isVotingComplete = false;
+    room.roundWinners = [];
+    room.roundConsensusReached = false;
   }
 
   /**
@@ -866,6 +1075,15 @@ export class RoomEngine {
 
     room.players = room.players.filter((p) => p.id !== playerId);
     room.playerCount = room.players.length;
+
+    // Clean up vote if player left during active voting round
+    if (room.gameId === 'most-likely-to' && room.votes && room.votes[playerId]) {
+      delete room.votes[playerId];
+      room.votedPlayerIds = Object.keys(room.votes);
+      if (room.players.length >= 3 && room.players.every((p) => Boolean(room.votes[p.id]))) {
+        room.isVotingComplete = true;
+      }
+    }
 
     // Host Migration: If host left, promote the next player
     if (room.hostPlayerId === playerId && room.players.length > 0) {
@@ -880,6 +1098,8 @@ export class RoomEngine {
       room.isCardFlipped = false;
       room.currentCard = null;
       room.votes = {};
+      room.votedPlayerIds = [];
+      room.isVotingComplete = false;
     }
 
     room.updatedAt = Date.now();
@@ -893,7 +1113,7 @@ export class RoomEngine {
     }
 
     this.emitEvent(room.roomCode, 'PLAYER_LEFT', { playerId });
-    return { success: true, room };
+    return { success: true, room: this.sanitizeRoomForPlayer(room, playerId) };
   }
 
   /**

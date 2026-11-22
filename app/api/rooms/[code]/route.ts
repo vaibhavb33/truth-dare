@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { roomEngine } from '@/lib/multiplayer/roomEngine';
 
 export async function GET(
-  _request: NextRequest,
+  request: NextRequest,
   { params }: { params: Promise<{ code: string }> }
 ) {
   const { code } = await params;
@@ -20,8 +20,12 @@ export async function GET(
     );
   }
 
+  const url = new URL(request.url);
+  const playerId = url.searchParams.get('playerId') || request.headers.get('x-player-id') || undefined;
+  const sanitizedRoom = roomEngine.sanitizeRoomForPlayer(lookup.room, playerId);
+
   return NextResponse.json({
     success: true,
-    room: lookup.room,
+    room: sanitizedRoom,
   });
 }

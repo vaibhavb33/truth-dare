@@ -83,6 +83,8 @@ export interface Player {
   lastSeenAt?: number;
   sessionToken?: string;
   lives?: number; // For Never Have I Ever (default: 10)
+  crowns?: number; // For Most Likely To crowns
+  titles?: string[]; // For Most Likely To collected titles
 }
 
 export interface GameSettings {
@@ -143,8 +145,13 @@ export interface MultiplayerRoom {
   timerSecondsRemaining: number;
   isTimerRunning: boolean;
   roundNumber: number;
+  gameLength?: 5 | 10 | 15; // Total prompts for Most Likely To (5, 10, or 15)
   maxPlayers: number;
   votes: Record<string, string>; // playerId -> vote ('pass' | 'fail' | 'optionA' | 'optionB')
+  votedPlayerIds?: string[]; // IDs of players who have submitted their vote in current round
+  isVotingComplete?: boolean; // True when all eligible players have submitted secret votes
+  roundWinners?: string[]; // IDs of players crowned in the current round
+  roundConsensusReached?: boolean; // True if top vote count >= 2
   recentEmojis: Array<{ id: string; emoji: string; timestamp: number; playerName: string }>;
   language: SupportedLanguageCode; // Room question language selected by the host
   customDeckSnapshot?: {

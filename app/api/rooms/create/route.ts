@@ -24,6 +24,7 @@ export async function POST(request: NextRequest) {
       timerSeconds = 30,
       language = 'en',
       maxPlayers = 12,
+      gameLength,
       deckId,
       creatorId,
       customDeckSnapshot = null,
@@ -65,6 +66,7 @@ export async function POST(request: NextRequest) {
       timerSeconds,
       language: chosenLanguage,
       maxPlayers: Number(maxPlayers),
+      gameLength: gameLength ? (Number(gameLength) as 5 | 10 | 15) : undefined,
       customDeckSnapshot: verifiedSnapshot,
       clientRequestId,
     });
