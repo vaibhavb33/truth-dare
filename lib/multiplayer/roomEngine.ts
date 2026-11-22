@@ -79,7 +79,7 @@ export class RoomEngine {
    */
   public createRoom(params: {
     gameId: GameType;
-    categoryId: CategoryId;
+    categoryId?: CategoryId;
     hostName: string;
     timerSeconds?: 0 | 15 | 30 | 60;
     language?: SupportedLanguageCode;
@@ -150,7 +150,7 @@ export class RoomEngine {
       id: roomId,
       roomCode,
       gameId: params.gameId,
-      categoryId: params.categoryId,
+      categoryId: params.categoryId || 'classic-party',
       hostPlayerId,
       status: 'WAITING', // Canonical lifecycle: newly created room enters WAITING
       players: [hostPlayer],

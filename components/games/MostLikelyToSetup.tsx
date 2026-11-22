@@ -43,10 +43,19 @@ export type GameLengthOption = 5 | 10 | 15;
 export type PlayingMode = 'pass-and-play' | 'online';
 export type PassAndPlaySubMode = 'secret-voting' | 'quick-pick';
 
+export interface ActiveGameResumeInfo {
+  round: number;
+  gameLength: GameLengthOption;
+  mode: PassAndPlaySubMode;
+}
+
 interface MostLikelyToSetupProps {
   initialPlayers: MostLikelyPlayer[];
   initialGameLength?: GameLengthOption;
   initialSubMode?: PassAndPlaySubMode;
+  activeGameResume?: ActiveGameResumeInfo | null;
+  onResumeActiveGame?: () => void;
+  onDiscardActiveGame?: () => void;
   onStartPassAndPlay: (config: {
     players: MostLikelyPlayer[];
     gameLength: GameLengthOption;
@@ -65,6 +74,9 @@ export function MostLikelyToSetup({
   initialPlayers,
   initialGameLength = 10,
   initialSubMode = 'secret-voting',
+  activeGameResume,
+  onResumeActiveGame,
+  onDiscardActiveGame,
   onStartPassAndPlay,
 }: MostLikelyToSetupProps) {
   const router = useRouter();
@@ -438,6 +450,47 @@ export function MostLikelyToSetup({
 
       {/* Main Setup Card Container with Purple Accents */}
       <div className="w-full p-5 sm:p-7 rounded-3xl bg-surface-elevated border border-purple-500/30 shadow-[0_0_40px_rgba(168,85,247,0.18)] space-y-6">
+        {/* Active Game Resume Alert Banner (if match was in-progress) */}
+        {activeGameResume && (
+          <div className="p-3.5 sm:p-4 rounded-2xl bg-purple-950/60 border border-purple-400/40 flex flex-col sm:flex-row items-center justify-between gap-3 shadow-lg shadow-purple-950/50 animate-fade-in">
+            <div className="flex items-center gap-3 text-left">
+              <div className="w-9 h-9 rounded-xl bg-purple-500/20 border border-purple-400/40 flex items-center justify-center shrink-0 text-purple-300">
+                <Play className="w-4 h-4 fill-current" />
+              </div>
+              <div>
+                <p className="text-xs sm:text-sm font-bold text-white">
+                  Active Match in Progress!
+                </p>
+                <p className="text-[11px] text-purple-300 font-mono">
+                  Prompt {activeGameResume.round} of {activeGameResume.gameLength} ({activeGameResume.mode === 'secret-voting' ? 'Secret Voting' : 'Quick Pick'})
+                </p>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-2 w-full sm:w-auto shrink-0">
+              {onDiscardActiveGame && (
+                <button
+                  type="button"
+                  onClick={onDiscardActiveGame}
+                  className="px-3 py-1.5 rounded-xl border border-white/10 hover:border-white/20 text-slate-300 text-xs font-semibold hover:bg-white/5 transition-colors"
+                >
+                  Discard
+                </button>
+              )}
+              {onResumeActiveGame && (
+                <Button
+                  variant="primary"
+                  size="sm"
+                  onClick={onResumeActiveGame}
+                  className="bg-purple-600 hover:bg-purple-500 text-white font-bold text-xs"
+                >
+                  Resume Match →
+                </Button>
+              )}
+            </div>
+          </div>
+        )}
+
         {/* =========================================================
             SECTION 1: PLAYING OPTION SELECTOR (Pass & Play vs Online)
            ========================================================= */}

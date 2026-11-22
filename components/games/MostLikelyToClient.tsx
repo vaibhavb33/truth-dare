@@ -92,11 +92,19 @@ export function MostLikelyToClient() {
   const [isAddingPlayer, setIsAddingPlayer] = useState(false);
   const [newPlayerName, setNewPlayerName] = useState('');
 
+  // Track saved active match for optional resume from Setup screen
+  const [activeGameInfo, setActiveGameInfo] = useState<{
+    round: number;
+    gameLength: GameLengthOption;
+    mode: PassAndPlaySubMode;
+    savedPhase: GamePhase;
+  } | null>(null);
+
   // 1. Persistence on Client Mount
   useEffect(() => {
     if (typeof window === 'undefined') return;
     try {
-      // Check for active game state to resume during navigation/refresh
+      // Check for active game state to allow resuming from setup screen
       const activeSaved = localStorage.getItem(ACTIVE_GAME_KEY);
       if (activeSaved) {
         const parsedActive = JSON.parse(activeSaved);
@@ -111,11 +119,21 @@ export function MostLikelyToClient() {
           if (parsedActive.passAndPlaySubMode) setPassAndPlaySubMode(parsedActive.passAndPlaySubMode);
           if (parsedActive.selectedQuickPickPlayerId) setSelectedQuickPickPlayerId(parsedActive.selectedQuickPickPlayerId);
 
-          // For privacy: if reloading mid-vote, return to intermission cover screen so next voter must confirm identity
-          if (parsedActive.gamePhase === 'pass-and-play-voting') {
-            setGamePhase('pass-and-play-intermission');
-          } else if (parsedActive.gamePhase) {
-            setGamePhase(parsedActive.gamePhase);
+          const targetPhase: GamePhase = parsedActive.gamePhase === 'pass-and-play-voting'
+            ? 'pass-and-play-intermission'
+            : (parsedActive.gamePhase || 'setup');
+
+          // If the URL specifically has ?resume=true, resume directly, else stay on setup screen with a resume banner
+          const urlParams = new URLSearchParams(window.location.search);
+          if (urlParams.get('resume') === 'true' && targetPhase !== 'setup') {
+            setGamePhase(targetPhase);
+          } else if (targetPhase !== 'setup' && targetPhase !== 'game-over') {
+            setActiveGameInfo({
+              round: parsedActive.currentRound || 1,
+              gameLength: parsedActive.gameLength || 10,
+              mode: parsedActive.passAndPlaySubMode || 'secret-voting',
+              savedPhase: targetPhase,
+            });
           }
           return;
         }
@@ -618,6 +636,29 @@ export function MostLikelyToClient() {
         initialPlayers={players}
         initialGameLength={gameLength}
         initialSubMode={passAndPlaySubMode}
+        activeGameResume={
+          activeGameInfo
+            ? {
+                round: activeGameInfo.round,
+                gameLength: activeGameInfo.gameLength,
+                mode: activeGameInfo.mode,
+              }
+            : null
+        }
+        onResumeActiveGame={() => {
+          if (activeGameInfo?.savedPhase) {
+            setGamePhase(activeGameInfo.savedPhase);
+            setActiveGameInfo(null);
+            sound.playChime();
+          }
+        }}
+        onDiscardActiveGame={() => {
+          if (typeof window !== 'undefined') {
+            localStorage.removeItem(ACTIVE_GAME_KEY);
+          }
+          setActiveGameInfo(null);
+          sound.triggerHaptic(10);
+        }}
         onStartPassAndPlay={handleStartPassAndPlay}
       />
     );
@@ -817,9 +858,18 @@ export function MostLikelyToClient() {
           </div>
         </div>
 
-        <div className="text-center text-[11px] text-slate-500 flex items-center justify-center gap-1.5">
-          <Lock className="w-3 h-3 text-slate-500" />
-          <span>Your selection is hidden from everyone until the round ends.</span>
+        <div className="w-full flex flex-col items-center gap-1.5 text-center">
+          <div className="text-[11px] text-slate-500 flex items-center justify-center gap-1.5">
+            <Lock className="w-3 h-3 text-slate-500" />
+            <span>Your selection is hidden from everyone until the round ends.</span>
+          </div>
+          <button
+            type="button"
+            onClick={handleReturnToSetup}
+            className="text-xs text-slate-500 hover:text-slate-300 transition-colors pt-1"
+          >
+            ← Exit to Game Setup
+          </button>
         </div>
       </div>
     );
@@ -1030,8 +1080,8 @@ export function MostLikelyToClient() {
           </div>
         </div>
 
-        {/* Next Prompt CTA */}
-        <div className="w-full pt-2">
+        {/* Next Prompt CTA & Exit to Setup */}
+        <div className="w-full pt-2 flex flex-col items-center gap-2">
           <Button
             variant="primary"
             size="lg"
@@ -1044,6 +1094,14 @@ export function MostLikelyToClient() {
                 : `Next Prompt (${currentRound + 1}/${gameLength}) →`}
             </span>
           </Button>
+
+          <button
+            type="button"
+            onClick={handleReturnToSetup}
+            className="text-xs text-slate-500 hover:text-slate-300 transition-colors pt-1"
+          >
+            ← Exit to Game Setup
+          </button>
         </div>
       </div>
     );
