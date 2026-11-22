@@ -1,6 +1,7 @@
 import { Question, GameType, CategoryId, QuestionType, SupportedLanguageCode, QuestionCategory } from '@/types';
 import { ALL_QUESTIONS, LEGACY_CATEGORY_MAP } from './database';
 import { cleanQuestion } from './cleanPrompt';
+import { ShuffleBag } from './shuffleBag';
 
 export interface DrawCardParams {
   gameId: GameType;
@@ -10,6 +11,7 @@ export interface DrawCardParams {
   maxIntensity?: number;
   drawnCardIds: string[];
   isFamilySafe?: boolean;
+  allowCycleRestart?: boolean;
 }
 
 export interface EligibleQuestionsParams {
@@ -124,10 +126,34 @@ export class QuestionEngine {
     isExhausted: boolean;
     remainingCount: number;
     language: SupportedLanguageCode;
+    isNewCycle?: boolean;
+    cycleNumber?: number;
   } {
     const targetLang: SupportedLanguageCode = params.language || 'en';
 
-    const eligible = this.getEligibleQuestions({
+    // 1. Check all questions matching game, category, and language without exclusions
+    const totalMatching = this.getEligibleQuestions({
+      gameId: params.gameId,
+      categoryId: params.categoryId,
+      type: params.type,
+      language: targetLang,
+      maxIntensity: params.maxIntensity,
+      excludeIds: [],
+      isFamilySafe: params.isFamilySafe,
+    });
+
+    if (totalMatching.length === 0) {
+      return {
+        card: null,
+        isExhausted: true,
+        remainingCount: 0,
+        language: targetLang,
+        isNewCycle: false,
+      };
+    }
+
+    // 2. Filter remaining eligible questions excluding already drawn cards
+    const remainingEligible = this.getEligibleQuestions({
       gameId: params.gameId,
       categoryId: params.categoryId,
       type: params.type,
@@ -137,24 +163,42 @@ export class QuestionEngine {
       isFamilySafe: params.isFamilySafe,
     });
 
-    if (eligible.length === 0) {
+    // If all questions drawn and auto-restart not explicitly requested
+    if (remainingEligible.length === 0) {
+      if (params.allowCycleRestart !== true) {
+        return {
+          card: null,
+          isExhausted: true,
+          remainingCount: 0,
+          language: targetLang,
+          isNewCycle: false,
+        };
+      }
+
+      // Start new cycle with anti-immediate repeat
+      const bag = new ShuffleBag(totalMatching, params.drawnCardIds);
+      const drawResult = bag.draw();
       return {
-        card: null,
-        isExhausted: true,
-        remainingCount: 0,
+        card: cleanQuestion(drawResult.item),
+        isExhausted: false,
+        remainingCount: drawResult.remainingInCycle,
         language: targetLang,
+        isNewCycle: true,
+        cycleNumber: drawResult.cycleNumber,
       };
     }
 
-    // Pick random card from eligible pool
-    const randomIndex = Math.floor(Math.random() * eligible.length);
-    const selectedCard = eligible[randomIndex];
+    // 3. Draw using ShuffleBag selection from remaining eligible cards
+    const bag = new ShuffleBag(remainingEligible);
+    const drawResult = bag.draw();
 
     return {
-      card: cleanQuestion(selectedCard),
+      card: cleanQuestion(drawResult.item),
       isExhausted: false,
-      remainingCount: eligible.length - 1,
+      remainingCount: remainingEligible.length - 1,
       language: targetLang,
+      isNewCycle: false,
+      cycleNumber: 1,
     };
   }
 

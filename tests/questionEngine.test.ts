@@ -84,7 +84,19 @@ describe('QuestionEngine Unit Tests', () => {
     expect(draw2.card!.id).not.toBe(draw1.card!.id);
     drawnIds.push(draw2.card!.id);
 
-    // Third draw: Deck must be exhausted
+    // Third draw with auto-cycle restart
+    const drawCycle2 = engine.drawNextCard({
+      gameId: 'truth-or-dare',
+      categoryId: 'classic-party',
+      type: 'truth',
+      drawnCardIds: drawnIds,
+      allowCycleRestart: true,
+    });
+    expect(drawCycle2.card).toBeDefined();
+    expect(drawCycle2.isNewCycle).toBe(true);
+    expect(drawCycle2.isExhausted).toBe(false);
+
+    // Third draw without cycle restart - strictly reports exhausted
     const draw3 = engine.drawNextCard({
       gameId: 'truth-or-dare',
       categoryId: 'classic-party',

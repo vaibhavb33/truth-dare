@@ -9,6 +9,11 @@ import { ID_QUESTIONS } from './id';
 import { AR_QUESTIONS } from './ar';
 import { DE_QUESTIONS } from './de';
 import { PARTY_GAMES_QUESTIONS } from './partyGamesCatalog';
+import { MOST_LIKELY_TO_QUESTIONS } from './mostLikelyTo';
+import { NEVER_HAVE_I_EVER_QUESTIONS } from './neverHaveIEver';
+import { WOULD_YOU_RATHER_QUESTIONS } from './wouldYouRather';
+import { THIS_OR_THAT_QUESTIONS } from './thisOrThat';
+import { EXPANDED_TRUTHS_DARES } from './expandedTruthsDares';
 
 export * from './categories';
 export {
@@ -22,11 +27,16 @@ export {
   AR_QUESTIONS,
   DE_QUESTIONS,
   PARTY_GAMES_QUESTIONS,
+  MOST_LIKELY_TO_QUESTIONS,
+  NEVER_HAVE_I_EVER_QUESTIONS,
+  WOULD_YOU_RATHER_QUESTIONS,
+  THIS_OR_THAT_QUESTIONS,
+  EXPANDED_TRUTHS_DARES,
 };
 
 // Map of Truth or Dare questions strictly segregated by ISO 639-1 language code
 export const QUESTIONS_BY_LANGUAGE: Record<SupportedLanguageCode, Question[]> = {
-  en: [...INITIAL_QUESTIONS, ...EN_QUESTIONS],
+  en: [...INITIAL_QUESTIONS, ...EN_QUESTIONS, ...EXPANDED_TRUTHS_DARES],
   hi: [...HI_QUESTIONS],
   es: [...ES_QUESTIONS],
   pt: [...PT_QUESTIONS],
@@ -38,7 +48,13 @@ export const QUESTIONS_BY_LANGUAGE: Record<SupportedLanguageCode, Question[]> = 
 
 // Map of party game questions segregated by language code
 export const PARTY_QUESTIONS_BY_LANGUAGE: Record<SupportedLanguageCode, Question[]> = {
-  en: PARTY_GAMES_QUESTIONS.filter((q) => q.language_code === 'en'),
+  en: [
+    ...PARTY_GAMES_QUESTIONS.filter((q) => q.language_code === 'en'),
+    ...MOST_LIKELY_TO_QUESTIONS,
+    ...NEVER_HAVE_I_EVER_QUESTIONS,
+    ...WOULD_YOU_RATHER_QUESTIONS,
+    ...THIS_OR_THAT_QUESTIONS,
+  ],
   hi: PARTY_GAMES_QUESTIONS.filter((q) => q.language_code === 'hi'),
   es: PARTY_GAMES_QUESTIONS.filter((q) => q.language_code === 'es'),
   pt: PARTY_GAMES_QUESTIONS.filter((q) => q.language_code === 'pt'),
@@ -52,6 +68,7 @@ export const PARTY_QUESTIONS_BY_LANGUAGE: Record<SupportedLanguageCode, Question
 export const ALL_QUESTIONS: Question[] = [
   ...INITIAL_QUESTIONS,
   ...EN_QUESTIONS,
+  ...EXPANDED_TRUTHS_DARES,
   ...HI_QUESTIONS,
   ...ES_QUESTIONS,
   ...PT_QUESTIONS,
@@ -60,6 +77,10 @@ export const ALL_QUESTIONS: Question[] = [
   ...AR_QUESTIONS,
   ...DE_QUESTIONS,
   ...PARTY_GAMES_QUESTIONS,
+  ...MOST_LIKELY_TO_QUESTIONS,
+  ...NEVER_HAVE_I_EVER_QUESTIONS,
+  ...WOULD_YOU_RATHER_QUESTIONS,
+  ...THIS_OR_THAT_QUESTIONS,
 ];
 
 // In-memory index map by Question ID for O(1) lookups
